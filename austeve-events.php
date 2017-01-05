@@ -1,17 +1,4 @@
 <?php
-/**
- * Plugin Name: Events - Canvas & Cocktails
- * Plugin URI: https://github.com/australiansteve/wp-plugin-austeve-events
- * Description: Showcase a series of events
- * Version: 0.0.1
- * Author: AustralianSteve
- * Author URI: http://AustralianSteve.com
- * License: GPL2
- */
-
-include( plugin_dir_path( __FILE__ ) . 'admin.php');
-include( plugin_dir_path( __FILE__ ) . 'shortcode.php');
-include( plugin_dir_path( __FILE__ ) . 'widget.php');
 
 /*
 * Creating a function to create our CPT

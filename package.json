@@ -22,12 +22,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/australiansteve/wp-plugin-austeve-events"
+    "url": "https://github.com/australiansteve/wp-plugin-austeve-canvas"
   },
   "author": "AustralianSteve",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/australiansteve/wp-plugin-austeve-events/issues"
+    "url": "https://github.com/australiansteve/wp-plugin-austeve-canvas/issues"
   },
-  "homepage": "https://github.com/australiansteve/wp-plugin-austeve-events"
+  "homepage": "https://github.com/australiansteve/wp-plugin-austeve-canvas"
 }
