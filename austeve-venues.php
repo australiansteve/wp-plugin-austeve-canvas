@@ -32,7 +32,7 @@ function austeve_create_venues_post_type() {
 		// Features this CPT supports in Post Editor
 		'supports'            => array( 'title', 'author', 'revisions', ),
 		// You can associate this CPT with a taxonomy or custom taxonomy. 
-		'taxonomies'          => array( 'regions'),
+		'taxonomies'          => array( 'territories'),
 		/* A hierarchical CPT is like Pages and can have
 		* Parent and child items. A non-hierarchical CPT
 		* is like Posts.
@@ -61,26 +61,26 @@ function austeve_create_venues_post_type() {
 
 
 	$taxonomyLabels = array(
-		'name'              => _x( 'Regions', 'taxonomy general name' ),
-		'singular_name'     => _x( 'Region', 'taxonomy singular name' ),
-		'search_items'      => __( 'Search Regions' ),
-		'all_items'         => __( 'All Regions' ),
-		'parent_item'       => __( 'Parent Region' ),
-		'parent_item_colon' => __( 'Parent Region:' ),
-		'edit_item'         => __( 'Edit Region' ),
-		'update_item'       => __( 'Update Region' ),
-		'add_new_item'      => __( 'Add New Region' ),
-		'new_item_name'     => __( 'New Region Name' ),
-		'menu_name'         => __( 'Regions' ),
+		'name'              => _x( 'Territories', 'taxonomy general name' ),
+		'singular_name'     => _x( 'Territory', 'taxonomy singular name' ),
+		'search_items'      => __( 'Search Territories' ),
+		'all_items'         => __( 'All Territories' ),
+		'parent_item'       => __( 'Parent Territory' ),
+		'parent_item_colon' => __( 'Parent Territory:' ),
+		'edit_item'         => __( 'Edit Territory' ),
+		'update_item'       => __( 'Update Territory' ),
+		'add_new_item'      => __( 'Add New Territory' ),
+		'new_item_name'     => __( 'New Territory Name' ),
+		'menu_name'         => __( 'Territories' ),
 	);
 
 	$taxonomyArgs = array(
 
-		'label'               => __( 'austeve_regions', 'austeve-venues' ),
+		'label'               => __( 'austeve_territories', 'austeve-venues' ),
 		'labels'              => $taxonomyLabels,
 		'show_admin_column'	=> false,
 		'hierarchical' 		=> true,
-		'rewrite'           => array( 'slug' => 'regions' ),
+		'rewrite'           => array( 'slug' => 'territories' ),
 		'capabilities'		=> array(
 							    'manage_terms' => 'edit_users',
 							    'edit_terms' => 'edit_users',
@@ -89,7 +89,7 @@ function austeve_create_venues_post_type() {
 							 )
 		);
 
-	register_taxonomy( 'austeve_regions', 'austeve-venues', $taxonomyArgs );
+	register_taxonomy( 'austeve_territories', 'austeve-venues', $taxonomyArgs );
 
 }
 
@@ -127,7 +127,7 @@ add_filter( 'template_include', 'venue_include_template_function', 1 );
 
 function venue_filter_archive_title( $title ) {
 
-    if( is_tax('austeve_regions' ) ) {
+    if( is_tax('austeve_territories' ) ) {
 
         $title = single_cat_title( '', false ) . ' venues';
 

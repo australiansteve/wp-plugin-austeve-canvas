@@ -86,19 +86,19 @@ function austeve_filter_events_for_admins( $query ) {
     
 	if (!is_admin() ||  //Not in admin screens 
 		(isset($query->query_vars['post_type']) && $query->query_vars['post_type'] != 'austeve-events' ) || //Not on an events admin page
-		current_user_can('edit_users') ) //Has access to all regions/venues
+		current_user_can('edit_users') ) //Has access to all territories/venues
 	{
 		return $query;
 	}
 
-	//If we get here the current user has access to view venues, therefore they should be able to set Regions
+	//If we get here the current user has access to view venues, therefore they should be able to set Territories
 
 	//Get current user roles
 	$roles = wp_get_current_user()->roles;
 	$my_terms = austeve_get_my_terms($roles);
 	error_log(print_r( $my_terms, true ));
 
-	//Get all venues in the users allowed region(s)
+	//Get all venues in the users allowed territory(s)
 	$args = array(
 		'posts_per_page'   => -1,
 		'orderby'          => 'ID',
@@ -145,7 +145,7 @@ add_action( 'pre_get_posts', 'austeve_filter_events_for_admins' , 10, 1 );
 function austeve_get_my_terms($roles)
 {
 	//Pull our map from the options table
-	$option_name = 'austeve_regions_role_terms' ;
+	$option_name = 'austeve_territories_role_terms' ;
 	$role_map = json_decode( get_option( $option_name ), true);
 
 	$my_terms = array();
@@ -163,7 +163,7 @@ function austeve_get_my_terms($roles)
 
 function austeve_add_roles_on_taxonomy_creation($term_id, $tt_id, $taxonomy) {
 
-	if ($taxonomy == 'austeve_regions')
+	if ($taxonomy == 'austeve_territories')
 	{
 		$term = get_term($term_id, $taxonomy);
 		$term_slug = $term->slug;
@@ -196,7 +196,7 @@ add_action( 'create_term', 'austeve_add_roles_on_taxonomy_creation', 10, 3 );
 
 function austeve_delete_roles_on_taxonomy_deletion($term_id, $tt_id, $taxonomy, $deleted_term, $object_ids ) {
 
-	if ($taxonomy == 'austeve_regions')
+	if ($taxonomy == 'austeve_territories')
 	{
 		$term_slug = $deleted_term->slug;
 
@@ -214,13 +214,13 @@ function austeve_add_venue_role_caps() {
 	// Add the roles you'd like to administer the custom post types
 	$roles = array('editor','administrator');
 
-	//Get all regions
+	//Get all territories
 	$terms = get_terms( array(
-	    'taxonomy' => 'austeve_regions',
+	    'taxonomy' => 'austeve_territories',
 	    'hide_empty' => false,
 	) );
 
-	// Loop through each region - adding the associated role to the list to update
+	// Loop through each territory - adding the associated role to the list to update
 	foreach($terms as $the_term) { 
 		array_push($roles,  'austeve_'.$the_term->slug.'_role' );
 	}
@@ -266,16 +266,16 @@ add_action('admin_init','austeve_add_venue_role_caps',999);
 //Store the relationship between the custom roles we've created and the taxonomy that relates to. So that we can filter taxonomies displayed to the admins
 function austeve_save_role_term_relationships() {
 
-	$option_name = 'austeve_regions_role_terms' ;
+	$option_name = 'austeve_territories_role_terms' ;
 	$relationship_array = array();
 
-	//Get all regions
+	//Get all territories
 	$terms = get_terms( array(
-	    'taxonomy' => 'austeve_regions',
+	    'taxonomy' => 'austeve_territories',
 	    'hide_empty' => false,
 	) );
 
-	// Loop through each region - adding the associated role to the list to update
+	// Loop through each territory - adding the associated role to the list to update
 	foreach($terms as $the_term) { 
 		$relationship_array['austeve_'.$the_term->slug.'_role'] = $the_term->slug;
 	}
@@ -300,7 +300,7 @@ add_action('admin_init','austeve_save_role_term_relationships',999);
 
 // Add Project Type column to admin header
 function austeve_venues_columns_head($defaults) {
-    $defaults['region'] = 'Region';
+    $defaults['territory'] = 'Territory';
 
     return $defaults;
 }
@@ -308,9 +308,9 @@ add_filter('manage_austeve-venues_posts_columns', 'austeve_venues_columns_head')
  
 // Add Project Type column content to admin table
 function austeve_venues_columns_content($column_name, $post_ID) {
-    if ($column_name == 'region') {
+    if ($column_name == 'territory') {
 
-    	$term_list = wp_get_post_terms($post_ID, 'austeve_regions', array("fields" => "all"));
+    	$term_list = wp_get_post_terms($post_ID, 'austeve_territories', array("fields" => "all"));
     	$string_list = "";
 		foreach($term_list as $term_single) {
 			$string_list .= $term_single->name.", "; //do something here
@@ -322,18 +322,18 @@ function austeve_venues_columns_content($column_name, $post_ID) {
 add_action('manage_austeve-venues_posts_custom_column', 'austeve_venues_columns_content', 10, 2);
 
 
-//Filter the admin call for Regions based on the current users role(s) - Only display regions that the user has access to
-function austeve_filter_regions_for_admins( $args, $taxonomies ) {
+//Filter the admin call for Territories based on the current users role(s) - Only display territories that the user has access to
+function austeve_filter_territories_for_admins( $args, $taxonomies ) {
     
 	if (!is_admin() ||  //Not in admin screens 
 		(isset($query->query_vars['post_type']) && $query->query_vars['post_type'] != 'austeve-venues' ) || //Not on a venues admin page
 		!current_user_can('edit_venues') || //Cannot edit venues
-		current_user_can('edit_users')) //Has access to all regions
+		current_user_can('edit_users')) //Has access to all territories
 	{
 		return $args;
 	}
 
-	//If we get here the current user has access to edit venues, therefore they should be able to set Regions
+	//If we get here the current user has access to edit venues, therefore they should be able to set Territories
 
 	//Get current user roles
 	$roles = wp_get_current_user()->roles;
@@ -344,19 +344,19 @@ function austeve_filter_regions_for_admins( $args, $taxonomies ) {
     return $args;
 }
 
-add_filter( 'get_terms_args', 'austeve_filter_regions_for_admins' , 10, 2 );
+add_filter( 'get_terms_args', 'austeve_filter_territories_for_admins' , 10, 2 );
 
-//Filter the admin call for Regions based on the current users role(s) - Only display regions that the user has access to
+//Filter the admin call for Territories based on the current users role(s) - Only display territories that the user has access to
 function austeve_filter_venues_for_admins( $query ) {
     
 	if (!is_admin() ||  //Not in admin screens 
 		(isset($query->query_vars['post_type']) && $query->query_vars['post_type'] != 'austeve-venues' ) || //Not on a venues admin page
-		current_user_can('edit_users') ) //Has access to all regions/venues
+		current_user_can('edit_users') ) //Has access to all territories/venues
 	{
 		return $query;
 	}
 
-	//If we get here the current user has access to view venues, therefore they should be able to set Regions
+	//If we get here the current user has access to view venues, therefore they should be able to set Territories
 
 	//Get current user roles
 	$roles = wp_get_current_user()->roles;
@@ -364,7 +364,7 @@ function austeve_filter_venues_for_admins( $query ) {
 	//Create new tax_query
 	$tax_query = array (
 		array (
-			'taxonomy'         => 'austeve_regions',
+			'taxonomy'         => 'austeve_territories',
 			'terms'            => austeve_get_my_terms($roles),
 			'field'            => 'slug',
 			'operator'         => 'IN',
