@@ -86,45 +86,45 @@ function austeve_filter_events_for_admins( $query ) {
     
 	if (!is_admin() ||  //Not in admin screens 
 		(isset($query->query_vars['post_type']) && $query->query_vars['post_type'] != 'austeve-events' ) || //Not on an events admin page
-		current_user_can('edit_users') ) //Has access to all regions/locations
+		current_user_can('edit_users') ) //Has access to all regions/venues
 	{
 		return $query;
 	}
 
-	//If we get here the current user has access to view locations, therefore they should be able to set Regions
+	//If we get here the current user has access to view venues, therefore they should be able to set Regions
 
 	//Get current user roles
 	$roles = wp_get_current_user()->roles;
 	$my_terms = austeve_get_my_terms($roles);
 	error_log(print_r( $my_terms, true ));
 
-	//Get all locations in the users allowed region(s)
+	//Get all venues in the users allowed region(s)
 	$args = array(
 		'posts_per_page'   => -1,
 		'orderby'          => 'ID',
 		'order'            => 'ASC',
-		'post_type'        => 'austeve-locations',
+		'post_type'        => 'austeve-venues',
 		'post_status'      => 'publish',
 		'suppress_filters' => false 
 	);
-	$locations_array = get_posts( $args );
-	error_log(print_r( $locations_array, true ));
+	$venues_array = get_posts( $args );
+	error_log(print_r( $venues_array, true ));
 
 	$value_string = '';
-	if (count($locations_array) > 0)
+	if (count($venues_array) > 0)
 	{
-		$location_ids = array();
-		foreach($locations_array as $location)
+		$venue_ids = array();
+		foreach($venues_array as $venue)
 		{
-			$location_ids[] = $location->ID;
+			$venue_ids[] = $venue->ID;
 		}
 
-		$value_string = (count($location_ids) > 1) ? implode(",", $location_ids) : $location_ids[0];
+		$value_string = (count($venue_ids) > 1) ? implode(",", $venue_ids) : $venue_ids[0];
 	}
 
 	$meta_query = array(
 		array(
-			'key'     => 'location',
+			'key'     => 'venue',
 			'value'   => $value_string,
 			'compare' => 'IN',
 			'type'    => 'NUMERIC',
@@ -173,16 +173,16 @@ function austeve_add_roles_on_taxonomy_creation($term_id, $tt_id, $taxonomy) {
 		   	$term->name.' Administrator', 
 		   	array(
 		        'read'         => true,  // true allows this capability
-		        'read_locations'   => true,
-		        'edit_locations'   => true,
-		        'edit_others_locations'   => true,
-		        'edit_private_locations'   => true,
-		        'edit_published_locations'   => true,
-		        'publish_locations'   => true,
-		        'delete_locations'   => true,
-		        'delete_others_locations'   => true,
-		        'delete_private_locations'   => true,
-		        'delete_published_locations'   => true,
+		        'read_venues'   => true,
+		        'edit_venues'   => true,
+		        'edit_others_venues'   => true,
+		        'edit_private_venues'   => true,
+		        'edit_published_venues'   => true,
+		        'publish_venues'   => true,
+		        'delete_venues'   => true,
+		        'delete_others_venues'   => true,
+		        'delete_private_venues'   => true,
+		        'delete_published_venues'   => true,
 		        'delete_posts' => false, // Use false to explicitly deny
 		        'delete_pages' => false, // Use false to explicitly deny
 		    ) 
@@ -209,7 +209,7 @@ function austeve_delete_roles_on_taxonomy_deletion($term_id, $tt_id, $taxonomy, 
 
 add_action( 'delete_term', 'austeve_delete_roles_on_taxonomy_deletion', 10, 5 );
 
-function austeve_add_location_role_caps() {
+function austeve_add_venue_role_caps() {
 
 	// Add the roles you'd like to administer the custom post types
 	$roles = array('editor','administrator');
@@ -231,17 +231,17 @@ function austeve_add_location_role_caps() {
 		$role = get_role($the_role);
 
 		$role->add_cap( 'read' );
-		$role->add_cap( 'read_locations');
-		$role->add_cap( 'read_private_locations' );
-		$role->add_cap( 'edit_locations' );
-		$role->add_cap( 'edit_others_locations' );
-		$role->add_cap( 'edit_private_locations' );
-		$role->add_cap( 'edit_published_locations' );
-		$role->add_cap( 'publish_locations' );
-		$role->add_cap( 'delete_locations' );
-		$role->add_cap( 'delete_others_locations' );
-		$role->add_cap( 'delete_private_locations' );
-		$role->add_cap( 'delete_published_locations' );
+		$role->add_cap( 'read_venues');
+		$role->add_cap( 'read_private_venues' );
+		$role->add_cap( 'edit_venues' );
+		$role->add_cap( 'edit_others_venues' );
+		$role->add_cap( 'edit_private_venues' );
+		$role->add_cap( 'edit_published_venues' );
+		$role->add_cap( 'publish_venues' );
+		$role->add_cap( 'delete_venues' );
+		$role->add_cap( 'delete_others_venues' );
+		$role->add_cap( 'delete_private_venues' );
+		$role->add_cap( 'delete_published_venues' );
 
 		//Also add capabilities for events
 		$role->add_cap( 'read_events');
@@ -260,7 +260,7 @@ function austeve_add_location_role_caps() {
 
 }
  
-add_action('admin_init','austeve_add_location_role_caps',999);
+add_action('admin_init','austeve_add_venue_role_caps',999);
 
 
 //Store the relationship between the custom roles we've created and the taxonomy that relates to. So that we can filter taxonomies displayed to the admins
@@ -299,15 +299,15 @@ add_action('admin_init','austeve_save_role_term_relationships',999);
 
 
 // Add Project Type column to admin header
-function austeve_locations_columns_head($defaults) {
+function austeve_venues_columns_head($defaults) {
     $defaults['region'] = 'Region';
 
     return $defaults;
 }
-add_filter('manage_austeve-locations_posts_columns', 'austeve_locations_columns_head');
+add_filter('manage_austeve-venues_posts_columns', 'austeve_venues_columns_head');
  
 // Add Project Type column content to admin table
-function austeve_locations_columns_content($column_name, $post_ID) {
+function austeve_venues_columns_content($column_name, $post_ID) {
     if ($column_name == 'region') {
 
     	$term_list = wp_get_post_terms($post_ID, 'austeve_regions', array("fields" => "all"));
@@ -319,21 +319,21 @@ function austeve_locations_columns_content($column_name, $post_ID) {
 		echo substr($string_list, 0, -2);
     }
 }
-add_action('manage_austeve-locations_posts_custom_column', 'austeve_locations_columns_content', 10, 2);
+add_action('manage_austeve-venues_posts_custom_column', 'austeve_venues_columns_content', 10, 2);
 
 
 //Filter the admin call for Regions based on the current users role(s) - Only display regions that the user has access to
 function austeve_filter_regions_for_admins( $args, $taxonomies ) {
     
 	if (!is_admin() ||  //Not in admin screens 
-		(isset($query->query_vars['post_type']) && $query->query_vars['post_type'] != 'austeve-locations' ) || //Not on a locations admin page
-		!current_user_can('edit_locations') || //Cannot edit locations
+		(isset($query->query_vars['post_type']) && $query->query_vars['post_type'] != 'austeve-venues' ) || //Not on a venues admin page
+		!current_user_can('edit_venues') || //Cannot edit venues
 		current_user_can('edit_users')) //Has access to all regions
 	{
 		return $args;
 	}
 
-	//If we get here the current user has access to edit locations, therefore they should be able to set Regions
+	//If we get here the current user has access to edit venues, therefore they should be able to set Regions
 
 	//Get current user roles
 	$roles = wp_get_current_user()->roles;
@@ -347,16 +347,16 @@ function austeve_filter_regions_for_admins( $args, $taxonomies ) {
 add_filter( 'get_terms_args', 'austeve_filter_regions_for_admins' , 10, 2 );
 
 //Filter the admin call for Regions based on the current users role(s) - Only display regions that the user has access to
-function austeve_filter_locations_for_admins( $query ) {
+function austeve_filter_venues_for_admins( $query ) {
     
 	if (!is_admin() ||  //Not in admin screens 
-		(isset($query->query_vars['post_type']) && $query->query_vars['post_type'] != 'austeve-locations' ) || //Not on a locations admin page
-		current_user_can('edit_users') ) //Has access to all regions/locations
+		(isset($query->query_vars['post_type']) && $query->query_vars['post_type'] != 'austeve-venues' ) || //Not on a venues admin page
+		current_user_can('edit_users') ) //Has access to all regions/venues
 	{
 		return $query;
 	}
 
-	//If we get here the current user has access to view locations, therefore they should be able to set Regions
+	//If we get here the current user has access to view venues, therefore they should be able to set Regions
 
 	//Get current user roles
 	$roles = wp_get_current_user()->roles;
@@ -374,6 +374,6 @@ function austeve_filter_locations_for_admins( $query ) {
 	$query->set( 'tax_query', $tax_query );
 }
 
-add_action( 'pre_get_posts', 'austeve_filter_locations_for_admins' , 10, 1 );
+add_action( 'pre_get_posts', 'austeve_filter_venues_for_admins' , 10, 1 );
 
 ?>

@@ -13,6 +13,6 @@ include( plugin_dir_path( __FILE__ ) . 'admin.php');
 include( plugin_dir_path( __FILE__ ) . 'shortcode.php');
 include( plugin_dir_path( __FILE__ ) . 'widget.php');
 include( plugin_dir_path( __FILE__ ) . 'austeve-events.php');
-include( plugin_dir_path( __FILE__ ) . 'austeve-locations.php');
+include( plugin_dir_path( __FILE__ ) . 'austeve-venues.php');
 
 ?>

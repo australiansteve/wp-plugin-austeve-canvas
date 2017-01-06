@@ -4,7 +4,7 @@
  *
  * @link https://codex.wordpress.org/Template_Hierarchy
  * 
- * @package AUSteve Events
+ * @package AUSteve Canvas
  */
 ?>
 <?php 
@@ -24,10 +24,6 @@
 ?>
 <article id="post-<?php the_ID(); ?>" <?php post_class( $paddingClass ); ?>>
 	
-	<div class="corner-background corner-background-1">&nbsp;</div>
-	<div class="corner-background corner-background-2">&nbsp;</div>
-	<div class="corner-background corner-background-3">&nbsp;</div>
-	<div class="corner-background corner-background-4">&nbsp;</div>
 	<div class="entry-content">
 
 		<?php 

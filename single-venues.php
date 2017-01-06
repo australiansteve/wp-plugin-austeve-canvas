@@ -1,10 +1,10 @@
 <?php
 /**
- * The template for displaying all single locations.
+ * The template for displaying all single venues.
  *
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#single-post
  *
- * @package AUSteve Locations
+ * @package AUSteve Canvas
  */
 
 get_header(); ?>
@@ -20,12 +20,12 @@ get_header(); ?>
 				
 				<?php 
 
-            		if (locate_template('page-templates/partials/locations-single.php') != '') {
+            		if (locate_template('page-templates/partials/venues-single.php') != '') {
 						// yep, load the page template
-						get_template_part('page-templates/partials/locations', 'single');
+						get_template_part('page-templates/partials/venues', 'single');
 					} else {
 						// nope, load the default
-						include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/locations-single.php');
+						include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/venues-single.php');
 					}
 
 				?>
@@ -34,7 +34,7 @@ get_header(); ?>
 				the_post_navigation(array(
 			        'prev_text'          => '<i class="fa fa-arrow-left"></i> Previous',
 			        'next_text'          => 'Next <i class="fa fa-arrow-right"></i>',
-			        'screen_reader_text' => __( 'More locations:' ),
+			        'screen_reader_text' => __( 'More venues:' ),
 			    )); ?>
 
 			<?php endwhile; // end of the loop. ?>

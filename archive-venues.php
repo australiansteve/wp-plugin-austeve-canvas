@@ -4,7 +4,7 @@
  *
  * @link https://codex.wordpress.org/Template_Hierarchy
  *
- * @package AUSteve Locations
+ * @package AUSteve Canvas
  */
 
 get_header(); ?>
@@ -25,26 +25,26 @@ get_header(); ?>
 					?>
 				</header><!-- .page-header -->
 
-				<div class="row small-up-1 medium-up-2 large-up-3 align-middle" id="locations-block-grid">
+				<div class="row small-up-1 medium-up-2 large-up-3 align-middle" id="venues-block-grid">
 
 				<?php /* Start the Loop */ ?>
 				<?php while ( have_posts() ) : the_post(); ?>
 					<div class="column">
 				<?php 
 
-            		if (locate_template('page-templates/partials/locations-archive.php') != '') {
+            		if (locate_template('page-templates/partials/venues-archive.php') != '') {
 						// yep, load the page template
-						get_template_part('page-templates/partials/locations', 'archive');
+						get_template_part('page-templates/partials/venues', 'archive');
 					} else {
 						// nope, load the default
-						include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/locations-archive.php');
+						include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/venues-archive.php');
 					}
 
 				?>
 					</div>
 				<?php endwhile; ?>
 
-				</div> <!-- #locations-block-grid -->
+				</div> <!-- #venues-block-grid -->
 
 				<?php the_posts_navigation(); ?>
 

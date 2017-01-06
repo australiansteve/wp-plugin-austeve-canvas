@@ -4,7 +4,7 @@
  *
  * @link https://codex.wordpress.org/Template_Hierarchy
  *
- * @package ChurchPew
+ * @package AUSteve Canvas
  */
 
 get_header(); ?>
