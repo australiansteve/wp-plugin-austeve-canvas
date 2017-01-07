@@ -5,6 +5,9 @@
  *  Create roles when plugin is activated
  */
 function austeve_add_roles_on_plugin_activation() {
+
+	remove_role('austeve_territory_admin_role');
+
 	error_log("Creating roles");
 	$result = add_role( 
 		'austeve_territory_admin_role', 
@@ -36,6 +39,30 @@ function austeve_add_roles_on_plugin_activation() {
 			'delete_private_events'   => true,
 			'delete_published_events'   => true,
 
+			'read_events'   => true,					//Event permissions
+			'read_private_events'   => true,
+			'edit_events'   => true,
+			'edit_others_events'   => true,
+			'edit_private_events'   => true,
+			'edit_published_events'   => true,
+			'publish_events'   => true,
+			'delete_events'   => true,
+			'delete_others_events'   => true,
+			'delete_private_events'   => true,
+			'delete_published_events'   => true,
+
+			'read_paintings'   => true,					//Painting permissions
+			'read_private_paintings'   => true,
+			'edit_paintings'   => true,
+			'edit_others_paintings'   => true,
+			'edit_private_paintings'   => true,
+			'edit_published_paintings'   => true,
+			'publish_paintings'   => true,
+			'delete_paintings'   => true,
+			'delete_others_paintings'   => true,
+			'delete_private_paintings'   => true,
+			'delete_published_paintings'   => true,
+
 			'delete_posts' => false, 					// Use false to explicitly deny
 			'delete_pages' => false, 					// Use false to explicitly deny
 		) 
@@ -47,8 +74,49 @@ function austeve_add_roles_on_plugin_activation() {
 	else {
 	    error_log( 'Territory Admin role already exists.' );
 	}
-	remove_role( 'austeve_saint-john_role' );
-	remove_role( 'austeve_fredericton_role' );
+
+	//Add permissions to Administrator role too
+    $role = get_role( 'administrator' );
+
+    //Venues
+    $role->add_cap( 'read_venues' ); 
+    $role->add_cap( 'read_private_venues' ); 
+    $role->add_cap( 'edit_venues' ); 
+    $role->add_cap( 'edit_others_venues' ); 
+    $role->add_cap( 'edit_private_venues' ); 
+    $role->add_cap( 'edit_published_venues' ); 
+    $role->add_cap( 'publish_venues' ); 
+    $role->add_cap( 'delete_venues' ); 
+    $role->add_cap( 'delete_others_venues' ); 
+    $role->add_cap( 'delete_private_venues' ); 
+    $role->add_cap( 'delete_published_venues' ); 
+
+    //Events
+    $role->add_cap( 'read_events' ); 
+    $role->add_cap( 'read_private_events' ); 
+    $role->add_cap( 'edit_events' ); 
+    $role->add_cap( 'edit_others_events' ); 
+    $role->add_cap( 'edit_private_events' ); 
+    $role->add_cap( 'edit_published_events' ); 
+    $role->add_cap( 'publish_events' ); 
+    $role->add_cap( 'delete_events' ); 
+    $role->add_cap( 'delete_others_events' ); 
+    $role->add_cap( 'delete_private_events' ); 
+    $role->add_cap( 'delete_published_events' ); 
+
+    //Paintings
+    $role->add_cap( 'read_paintings' ); 
+    $role->add_cap( 'read_private_paintings' ); 
+    $role->add_cap( 'edit_paintings' ); 
+    $role->add_cap( 'edit_others_paintings' ); 
+    $role->add_cap( 'edit_private_paintings' ); 
+    $role->add_cap( 'edit_published_paintings' ); 
+    $role->add_cap( 'publish_paintings' ); 
+    $role->add_cap( 'delete_paintings' ); 
+    $role->add_cap( 'delete_others_paintings' ); 
+    $role->add_cap( 'delete_private_paintings' ); 
+    $role->add_cap( 'delete_published_paintings' ); 
+
 }
 #endregion Plugin activation
 
