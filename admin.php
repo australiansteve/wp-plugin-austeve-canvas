@@ -1,5 +1,6 @@
 <?php
 
+#region Plugin activation
 /**
  *  Create roles when plugin is activated
  */
@@ -49,7 +50,9 @@ function austeve_add_roles_on_plugin_activation() {
 	remove_role( 'austeve_saint-john_role' );
 	remove_role( 'austeve_fredericton_role' );
 }
+#endregion Plugin activation
 
+#region Admin_init
 function austeve_populate_event_types() {
 
 	$taxonomy = 'austeve_event_types';
@@ -78,9 +81,10 @@ function austeve_populate_event_types() {
 		);
 	}
 }
-
 add_action('admin_init','austeve_populate_event_types', 999);
+#endregion Admin_init
 
+#region acf/save_post actions
 //After an Event has been saved, update the austeve_event_types taxonomy with saved values
 function austeve_update_post_event_type( $post_id ) {
     
@@ -129,7 +133,9 @@ function austeve_update_post_event_type( $post_id ) {
     }
 }
 add_action('acf/save_post', 'austeve_update_post_event_type', 20);
+#endregion acf/save_post actions
 
+#region Admin list filters to add columns to lists
 // Add Project Type column to admin header
 function austeve_venues_columns_head($defaults) {
     $defaults['territory'] = 'Territory';
@@ -151,8 +157,9 @@ function austeve_venues_columns_content($column_name, $post_ID) {
     }
 }
 add_action('manage_austeve-venues_posts_custom_column', 'austeve_venues_columns_content', 10, 2);
+#endregion Admin list filters to add columns to lists
 
-
+#region Filter Territory taxonomy
 //Filter the admin call for Territories based on the current users role(s) - Only display territories that the user has access to
 function austeve_filter_territories_for_admins( $args, $taxonomies ) {
     
@@ -203,7 +210,9 @@ function austeve_filter_territories_for_admins( $args, $taxonomies ) {
     return $args;
 }
 add_filter( 'get_terms_args', 'austeve_filter_territories_for_admins' , 10, 2 );
+#endregion Filter Territory taxonomy
 
+#region pre_get_posts filter
 //Filter the admin call for Territories and Venues based on the current users role(s) - Only display items that the user has access to
 function austeve_filter_objects_for_admins( $query ) {
     
@@ -283,5 +292,5 @@ function austeve_filter_objects_for_admins( $query ) {
 }
 
 add_action( 'pre_get_posts', 'austeve_filter_objects_for_admins' , 10, 1 );
-
+#endregion pre_get_posts filter
 ?>
