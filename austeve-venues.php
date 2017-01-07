@@ -51,7 +51,7 @@ function austeve_create_venues_post_type() {
 		'publicly_queryable'  => true,
 		'capability_type'     => array( 'venue' , 'venues' ),
         'map_meta_cap'        => true,
-        'menu_icon'				=> 'dashicons-venue',
+        'menu_icon'				=> 'dashicons-location',
 
 
 	);

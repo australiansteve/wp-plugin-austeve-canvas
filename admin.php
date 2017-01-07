@@ -1,5 +1,55 @@
 <?php
 
+/**
+ *  Create roles when plugin is activated
+ */
+function austeve_add_roles_on_plugin_activation() {
+	error_log("Creating roles");
+	$result = add_role( 
+		'austeve_territory_admin_role', 
+		'Territory Administrator', 
+		array(
+			'read'         => true,                      
+
+			'read_venues'   => true,					//Venue permissions
+			'read_private_venues'   => true,
+			'edit_venues'   => true,
+			'edit_others_venues'   => true,
+			'edit_private_venues'   => true,
+			'edit_published_venues'   => true,
+			'publish_venues'   => true,
+			'delete_venues'   => true,
+			'delete_others_venues'   => true,
+			'delete_private_venues'   => true,
+			'delete_published_venues'   => true,			
+
+			'read_events'   => true,					//Event permissions
+			'read_private_events'   => true,
+			'edit_events'   => true,
+			'edit_others_events'   => true,
+			'edit_private_events'   => true,
+			'edit_published_events'   => true,
+			'publish_events'   => true,
+			'delete_events'   => true,
+			'delete_others_events'   => true,
+			'delete_private_events'   => true,
+			'delete_published_events'   => true,
+
+			'delete_posts' => false, 					// Use false to explicitly deny
+			'delete_pages' => false, 					// Use false to explicitly deny
+		) 
+	);
+
+	if ( null !== $result ) {
+	    error_log( 'Territory Admin role created!' );
+	}
+	else {
+	    error_log( 'Territory Admin role already exists.' );
+	}
+	remove_role( 'austeve_saint-john_role' );
+	remove_role( 'austeve_fredericton_role' );
+}
+
 function austeve_populate_event_types() {
 
 	$taxonomy = 'austeve_event_types';
@@ -137,10 +187,6 @@ function austeve_filter_events_for_admins( $query ) {
 
 add_action( 'pre_get_posts', 'austeve_filter_events_for_admins' , 10, 1 );
 
-?>
-
-<?php
-
 //Helper function that returns an array of term slugs for the given set of user roles
 function austeve_get_my_terms($roles)
 {
@@ -161,143 +207,6 @@ function austeve_get_my_terms($roles)
 }
 
 
-function austeve_add_roles_on_taxonomy_creation($term_id, $tt_id, $taxonomy) {
-
-	if ($taxonomy == 'austeve_territories')
-	{
-		$term = get_term($term_id, $taxonomy);
-		$term_slug = $term->slug;
-
-		add_role( 
-		   	'austeve_'.$term_slug.'_role', 
-		   	$term->name.' Administrator', 
-		   	array(
-		        'read'         => true,  // true allows this capability
-		        'read_venues'   => true,
-		        'edit_venues'   => true,
-		        'edit_others_venues'   => true,
-		        'edit_private_venues'   => true,
-		        'edit_published_venues'   => true,
-		        'publish_venues'   => true,
-		        'delete_venues'   => true,
-		        'delete_others_venues'   => true,
-		        'delete_private_venues'   => true,
-		        'delete_published_venues'   => true,
-		        'delete_posts' => false, // Use false to explicitly deny
-		        'delete_pages' => false, // Use false to explicitly deny
-		    ) 
-		);
-	}
-
-}
-add_action( 'edit_term', 'austeve_add_roles_on_taxonomy_creation', 10, 3 );
-add_action( 'create_term', 'austeve_add_roles_on_taxonomy_creation', 10, 3 );
-
-
-function austeve_delete_roles_on_taxonomy_deletion($term_id, $tt_id, $taxonomy, $deleted_term, $object_ids ) {
-
-	if ($taxonomy == 'austeve_territories')
-	{
-		$term_slug = $deleted_term->slug;
-
-		if( get_role( 'austeve_'.$term_slug.'_role' ) ){
-			remove_role( 'austeve_'.$term_slug.'_role' );
-		}
-
-	}
-}
-
-add_action( 'delete_term', 'austeve_delete_roles_on_taxonomy_deletion', 10, 5 );
-
-function austeve_add_venue_role_caps() {
-
-	// Add the roles you'd like to administer the custom post types
-	$roles = array('editor','administrator');
-
-	//Get all territories
-	$terms = get_terms( array(
-	    'taxonomy' => 'austeve_territories',
-	    'hide_empty' => false,
-	) );
-
-	// Loop through each territory - adding the associated role to the list to update
-	foreach($terms as $the_term) { 
-		array_push($roles,  'austeve_'.$the_term->slug.'_role' );
-	}
-
-	// Loop through each role and assign capabilities
-	foreach($roles as $the_role) { 
-
-		$role = get_role($the_role);
-
-		$role->add_cap( 'read' );
-		$role->add_cap( 'read_venues');
-		$role->add_cap( 'read_private_venues' );
-		$role->add_cap( 'edit_venues' );
-		$role->add_cap( 'edit_others_venues' );
-		$role->add_cap( 'edit_private_venues' );
-		$role->add_cap( 'edit_published_venues' );
-		$role->add_cap( 'publish_venues' );
-		$role->add_cap( 'delete_venues' );
-		$role->add_cap( 'delete_others_venues' );
-		$role->add_cap( 'delete_private_venues' );
-		$role->add_cap( 'delete_published_venues' );
-
-		//Also add capabilities for events
-		$role->add_cap( 'read_events');
-		$role->add_cap( 'read_private_events' );
-		$role->add_cap( 'edit_events' );
-		$role->add_cap( 'edit_others_events' );
-		$role->add_cap( 'edit_private_events' );
-		$role->add_cap( 'edit_published_events' );
-		$role->add_cap( 'publish_events' );
-		$role->add_cap( 'delete_events' );
-		$role->add_cap( 'delete_others_events' );
-		$role->add_cap( 'delete_private_events' );
-		$role->add_cap( 'delete_published_events' );
-
-	}
-
-}
- 
-add_action('admin_init','austeve_add_venue_role_caps',999);
-
-
-//Store the relationship between the custom roles we've created and the taxonomy that relates to. So that we can filter taxonomies displayed to the admins
-function austeve_save_role_term_relationships() {
-
-	$option_name = 'austeve_territories_role_terms' ;
-	$relationship_array = array();
-
-	//Get all territories
-	$terms = get_terms( array(
-	    'taxonomy' => 'austeve_territories',
-	    'hide_empty' => false,
-	) );
-
-	// Loop through each territory - adding the associated role to the list to update
-	foreach($terms as $the_term) { 
-		$relationship_array['austeve_'.$the_term->slug.'_role'] = $the_term->slug;
-	}
-
-
-	if ( get_option( $option_name ) !== false ) {
-
-	    // The option already exists, so we just update it.
-	    update_option( $option_name, json_encode($relationship_array) );
-
-	} else {
-
-	    // The option hasn't been added yet. We'll add it with $autoload set to 'no'.
-	    $deprecated = null;
-	    $autoload = 'no';
-	    add_option( $option_name, json_encode($relationship_array), $deprecated, $autoload );
-	}
-}
-
-add_action('admin_init','austeve_save_role_term_relationships',999);
-
-
 // Add Project Type column to admin header
 function austeve_venues_columns_head($defaults) {
     $defaults['territory'] = 'Territory';
@@ -310,13 +219,12 @@ add_filter('manage_austeve-venues_posts_columns', 'austeve_venues_columns_head')
 function austeve_venues_columns_content($column_name, $post_ID) {
     if ($column_name == 'territory') {
 
-    	$term_list = wp_get_post_terms($post_ID, 'austeve_territories', array("fields" => "all"));
-    	$string_list = "";
-		foreach($term_list as $term_single) {
-			$string_list .= $term_single->name.", "; //do something here
-		}
-
-		echo substr($string_list, 0, -2);
+		$term_args = array('orderby' => 'name', 'order' => 'ASC', 'fields' => 'names');
+    	$term_list = wp_get_post_terms($post_ID, 'austeve_territories', $term_args);
+    	if (count($term_list) > 1)
+			echo implode(",", $term_list);
+		else if (count($term_list) > 0)
+			echo $term_list[0];
     }
 }
 add_action('manage_austeve-venues_posts_custom_column', 'austeve_venues_columns_content', 10, 2);
@@ -325,22 +233,50 @@ add_action('manage_austeve-venues_posts_custom_column', 'austeve_venues_columns_
 //Filter the admin call for Territories based on the current users role(s) - Only display territories that the user has access to
 function austeve_filter_territories_for_admins( $args, $taxonomies ) {
     
-	if (!is_admin() ||  //Not in admin screens 
-		(isset($query->query_vars['post_type']) && $query->query_vars['post_type'] != 'austeve-venues' ) || //Not on a venues admin page
-		!current_user_can('edit_venues') || //Cannot edit venues
-		current_user_can('edit_users')) //Has access to all territories
+	$taxonomy_name = 'austeve_territories';
+
+	//Only filter for austeve_territories in admin screens here, and only if not looking at a specific object (ie querying which taxonomies are available to a user)
+	if ( !is_admin() || !in_array($taxonomy_name, $args['taxonomy']) || is_array($args['object_ids']))
+	{
+		return $args;
+	}
+
+	if ( current_user_can('edit_users') ) //User has access to all territories
 	{
 		return $args;
 	}
 
 	//If we get here the current user has access to edit venues, therefore they should be able to set Territories
 
-	//Get current user roles
-	$roles = wp_get_current_user()->roles;
+	//Get current user territories	
+	$ut_args = array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'all');
+	$user_territories = wp_get_object_terms( get_current_user_id(),  $taxonomy_name, $ut_args );
+	$user_territories_inc_children = array();
 
-	//Set slug filter for each term 
-	$args['slug'] = austeve_get_my_terms($roles);
+	if ( ! empty( $user_territories ) ) {
+		if ( ! is_wp_error( $user_territories ) ) {
 
+			foreach($user_territories as $territory)
+			{
+				//Add each territory as well as it's child territories to the array of slugs
+				$user_territories_inc_children[] = $territory->slug;
+				//Get children
+				$territory_child = get_term_children( $territory->term_id, $taxonomy_name );
+				foreach ( $territory_child as $child ) {
+					//Get the actual child term
+					$term = get_term_by( 'id', $child, $taxonomy_name );
+					//Add it to the array
+					$user_territories_inc_children[] = $term->slug;
+				}
+			}
+
+			//Set slug filter for territories
+			$args['slug'] = $user_territories_inc_children;
+
+			//error_log("Returning Args: ".print_r($args, true));
+		}
+	}
+	
     return $args;
 }
 
@@ -358,20 +294,28 @@ function austeve_filter_venues_for_admins( $query ) {
 
 	//If we get here the current user has access to view venues, therefore they should be able to set Territories
 
-	//Get current user roles
-	$roles = wp_get_current_user()->roles;
+	//Get current user territories
+	$ut_args = array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'slugs');
+	$user_territories = wp_get_object_terms( get_current_user_id(),  'austeve_territories', $ut_args );
 
-	//Create new tax_query
-	$tax_query = array (
-		array (
-			'taxonomy'         => 'austeve_territories',
-			'terms'            => austeve_get_my_terms($roles),
-			'field'            => 'slug',
-			'operator'         => 'IN',
-		),
-	);
+	if ( ! empty( $user_territories ) ) {
+		if ( ! is_wp_error( $user_territories ) ) {
+			
+			//Create new tax_query
+			$tax_query = array (
+				array (
+					'taxonomy'         => 'austeve_territories',
+					'terms'            => $user_territories,
+					'field'            => 'slug',
+					'operator'         => 'IN',
+				),
+			);
 
-	$query->set( 'tax_query', $tax_query );
+			$query->set( 'tax_query', $tax_query );
+			error_log("Tax Query: ".print_r($tax_query, true));
+
+		}
+	}
 }
 
 add_action( 'pre_get_posts', 'austeve_filter_venues_for_admins' , 10, 1 );
