@@ -136,16 +136,25 @@ add_action('acf/save_post', 'austeve_update_post_event_type', 20);
 #endregion acf/save_post actions
 
 #region Admin list filters to add columns to lists
-// Add Project Type column to admin header
+
+/* Venues */
 function austeve_venues_columns_head($defaults) {
-    $defaults['territory'] = 'Territory';
+
+	$res = array_slice($defaults, 0, 2, true) +
+	    array("territory" => "Territory") +
+	    array_slice($defaults, 2, count($defaults) - 1, true) ;
+
+	$defaults = $res;
+
+	//Remove the old date column
+	unset($defaults['date']);
 
     return $defaults;
 }
 add_filter('manage_austeve-venues_posts_columns', 'austeve_venues_columns_head');
  
-// Add Project Type column content to admin table
 function austeve_venues_columns_content($column_name, $post_ID) {
+
     if ($column_name == 'territory') {
 
 		$term_args = array('orderby' => 'name', 'order' => 'ASC', 'fields' => 'names');
@@ -157,6 +166,52 @@ function austeve_venues_columns_content($column_name, $post_ID) {
     }
 }
 add_action('manage_austeve-venues_posts_custom_column', 'austeve_venues_columns_content', 10, 2);
+
+/* Events */
+function austeve_events_columns_head($defaults) {
+
+	$res = array_slice($defaults, 0, 2, true) +
+	    array("venue" => "Venue") +
+	    array("territory" => "Territory") +
+	    array("event_date" => "Event Date") +
+	    array_slice($defaults, 2, count($defaults) - 1, true) ;
+
+	$defaults = $res;
+
+	//Remove the old date column
+	unset($defaults['date']);
+
+    return $defaults;
+}
+add_filter('manage_austeve-events_posts_columns', 'austeve_events_columns_head');
+
+function austeve_events_columns_content($column_name, $post_ID) {
+
+    if ($column_name == 'venue') {
+
+		//error_log(print_r(get_field('venue', $post_ID), true));
+		echo get_field('venue', $post_ID)->post_title;
+
+    }
+    else if ($column_name == 'territory') {
+
+    	$taxonomy_name = 'austeve_territories';
+    	$venue_args = array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'names');
+		$venue_territories = wp_get_object_terms( get_field('venue', $post_ID)->ID,  $taxonomy_name, $venue_args );
+		echo $venue_territories[0];
+
+    }
+    else if ($column_name == 'event_date') {
+
+		echo get_field('start_time', $post_ID);
+
+    }
+}
+function get_event_venue($event_id)
+{
+
+}
+add_action('manage_austeve-events_posts_custom_column', 'austeve_events_columns_content', 10, 2);
 #endregion Admin list filters to add columns to lists
 
 #region Filter Territory taxonomy
