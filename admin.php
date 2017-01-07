@@ -130,58 +130,6 @@ function austeve_update_post_event_type( $post_id ) {
 }
 add_action('acf/save_post', 'austeve_update_post_event_type', 20);
 
-//Filter the admin call for Events based on the current users role(s) - Only display events that the user has access to
-function austeve_filter_events_for_admins( $query ) {
-    
-	if (!is_admin() ||  //Not in admin screens 
-		(isset($query->query_vars['post_type']) && $query->query_vars['post_type'] != 'austeve-events' ) || //Not on an events admin page
-		current_user_can('edit_users') ) //Has access to all territories/venues
-	{
-		return $query;
-	}
-
-	//If we get here the current user has access to view venues, therefore they should be able to set Territories
-
-	//Get all venues in the users allowed territory(s)
-	$args = array(
-		'posts_per_page'   => -1,
-		'orderby'          => 'ID',
-		'order'            => 'ASC',
-		'post_type'        => 'austeve-venues',
-		'post_status'      => 'publish',
-		'suppress_filters' => false 
-	);
-	$venues_array = get_posts( $args );
-	//error_log("Venues: ".print_r( $venues_array, true ));
-
-	$value_string = '';
-	if (count($venues_array) > 0)
-	{
-		$venue_ids = array();
-		foreach($venues_array as $venue)
-		{
-			$venue_ids[] = $venue->ID;
-		}
-
-		$value_string = (count($venue_ids) > 1) ? implode(",", $venue_ids) : $venue_ids[0];
-	}
-
-	$meta_query = array(
-		array(
-			'key'     => 'venue',
-			'value'   => $value_string,
-			'compare' => 'IN',
-			'type'    => 'NUMERIC',
-		),
-	);
-
-	$query->set( 'meta_query', $meta_query );
-	error_log(print_r( $query, true ));
-	
-}
-add_action( 'pre_get_posts', 'austeve_filter_events_for_admins' , 10, 1 );
-
-
 // Add Project Type column to admin header
 function austeve_venues_columns_head($defaults) {
     $defaults['territory'] = 'Territory';
@@ -256,42 +204,84 @@ function austeve_filter_territories_for_admins( $args, $taxonomies ) {
 }
 add_filter( 'get_terms_args', 'austeve_filter_territories_for_admins' , 10, 2 );
 
-//Filter the admin call for Territories based on the current users role(s) - Only display territories that the user has access to
-function austeve_filter_venues_for_admins( $query ) {
+//Filter the admin call for Territories and Venues based on the current users role(s) - Only display items that the user has access to
+function austeve_filter_objects_for_admins( $query ) {
     
-	if (!is_admin() ||  //Not in admin screens 
-		(isset($query->query_vars['post_type']) && $query->query_vars['post_type'] != 'austeve-venues' ) || //Not on a venues admin page
-		current_user_can('edit_users') ) //Has access to all territories/venues
+	if ( !is_admin() ||  //Not in admin screens 
+		current_user_can('edit_users') ) //User has access to all territories/venues
 	{
 		return $query;
 	}
 
 	//If we get here the current user has access to view venues, therefore they should be able to set Territories
 
-	//Get current user territories
-	$ut_args = array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'slugs');
-	$user_territories = wp_get_object_terms( get_current_user_id(),  'austeve_territories', $ut_args );
+	if (isset($query->query_vars['post_type']))
+	{
+		if ( $query->query_vars['post_type'] == 'austeve-venues' )
+		{
+			//Filter the list of venues
 
-	if ( ! empty( $user_territories ) ) {
-		if ( ! is_wp_error( $user_territories ) ) {
-			
-			//Create new tax_query
-			$tax_query = array (
-				array (
-					'taxonomy'         => 'austeve_territories',
-					'terms'            => $user_territories,
-					'field'            => 'slug',
-					'operator'         => 'IN',
-				),
+			//Get current user territories
+			$ut_args = array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'slugs');
+			$user_territories = wp_get_object_terms( get_current_user_id(),  'austeve_territories', $ut_args );
+
+			if ( ! empty( $user_territories ) ) {
+				if ( ! is_wp_error( $user_territories ) ) {
+					
+					//Create new tax_query
+					$tax_query = array (
+						array (
+							'taxonomy'         => 'austeve_territories',
+							'terms'            => $user_territories,
+							'field'            => 'slug',
+							'operator'         => 'IN',
+						),
+					);
+
+					$query->set( 'tax_query', $tax_query );
+					error_log("Tax Query: ".print_r($tax_query, true));
+
+				}
+			}
+		}
+		else if ( $query->query_vars['post_type'] == 'austeve-events' )
+		{
+			//Filter the list of events
+
+			//Get all venues in the users allowed territory(s)
+			$args = array(
+				'posts_per_page'   => -1,
+				'orderby'          => 'ID',
+				'order'            => 'ASC',
+				'post_type'        => 'austeve-venues',
+				'post_status'      => 'publish'
 			);
+			$venues = get_posts( $args );
+			//error_log("Venues: ".print_r( $venues_array, true ));
 
-			$query->set( 'tax_query', $tax_query );
-			error_log("Tax Query: ".print_r($tax_query, true));
+			if ($venues)
+			{
+				$venue_ids = array();
+				foreach($venues as $venue)
+				{
+					$venue_ids[] = $venue->ID;
+				}
+				
+				$meta_query = array(
+					array(
+						'key'     => 'venue',
+						'value'   => (count($venue_ids) > 1) ? implode(",", $venue_ids) : $venue_ids[0],
+						'compare' => 'IN',
+						'type'    => 'NUMERIC',
+					),
+				);
 
+				$query->set( 'meta_query', $meta_query );
+			}
 		}
 	}
 }
 
-add_action( 'pre_get_posts', 'austeve_filter_venues_for_admins' , 10, 1 );
+add_action( 'pre_get_posts', 'austeve_filter_objects_for_admins' , 10, 1 );
 
 ?>
