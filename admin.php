@@ -128,7 +128,6 @@ function austeve_update_post_event_type( $post_id ) {
 
     }
 }
-
 add_action('acf/save_post', 'austeve_update_post_event_type', 20);
 
 //Filter the admin call for Events based on the current users role(s) - Only display events that the user has access to
@@ -143,11 +142,6 @@ function austeve_filter_events_for_admins( $query ) {
 
 	//If we get here the current user has access to view venues, therefore they should be able to set Territories
 
-	//Get current user roles
-	$roles = wp_get_current_user()->roles;
-	$my_terms = austeve_get_my_terms($roles);
-	error_log(print_r( $my_terms, true ));
-
 	//Get all venues in the users allowed territory(s)
 	$args = array(
 		'posts_per_page'   => -1,
@@ -158,7 +152,7 @@ function austeve_filter_events_for_admins( $query ) {
 		'suppress_filters' => false 
 	);
 	$venues_array = get_posts( $args );
-	error_log(print_r( $venues_array, true ));
+	//error_log("Venues: ".print_r( $venues_array, true ));
 
 	$value_string = '';
 	if (count($venues_array) > 0)
@@ -183,28 +177,9 @@ function austeve_filter_events_for_admins( $query ) {
 
 	$query->set( 'meta_query', $meta_query );
 	error_log(print_r( $query, true ));
+	
 }
-
 add_action( 'pre_get_posts', 'austeve_filter_events_for_admins' , 10, 1 );
-
-//Helper function that returns an array of term slugs for the given set of user roles
-function austeve_get_my_terms($roles)
-{
-	//Pull our map from the options table
-	$option_name = 'austeve_territories_role_terms' ;
-	$role_map = json_decode( get_option( $option_name ), true);
-
-	$my_terms = array();
-	foreach($roles as $role)
-	{
-		if (array_key_exists($role, $role_map))
-		{
-			array_push($my_terms, $role_map[$role]);
-		}
-	}
-
-	return $my_terms;
-}
 
 
 // Add Project Type column to admin header
@@ -279,7 +254,6 @@ function austeve_filter_territories_for_admins( $args, $taxonomies ) {
 	
     return $args;
 }
-
 add_filter( 'get_terms_args', 'austeve_filter_territories_for_admins' , 10, 2 );
 
 //Filter the admin call for Territories based on the current users role(s) - Only display territories that the user has access to
