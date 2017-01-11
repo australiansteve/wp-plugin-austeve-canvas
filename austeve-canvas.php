@@ -15,6 +15,7 @@ include( plugin_dir_path( __FILE__ ) . 'widget.php');
 include( plugin_dir_path( __FILE__ ) . 'austeve-events.php');
 include( plugin_dir_path( __FILE__ ) . 'austeve-venues.php');
 include( plugin_dir_path( __FILE__ ) . 'austeve-paintings.php');
+include( plugin_dir_path( __FILE__ ) . 'austeve-profiles.php');
 
 
 register_activation_hook( __FILE__, 'austeve_add_roles_on_plugin_activation' );
