@@ -9,25 +9,25 @@ function austeve_create_events_post_type() {
 // Set UI labels for Custom Post Type
 	$labels = array(
 		'name'                => _x( 'Events', 'Post Type General Name', 'austeve-events' ),
-		'singular_name'       => _x( 'Event', 'Post Type Singular Name', 'austeve-events' ),
-		'menu_name'           => __( 'Events', 'austeve-events' ),
-		'parent_item_colon'   => __( 'Parent Event', 'austeve-events' ),
-		'all_items'           => __( 'All Events', 'austeve-events' ),
-		'view_item'           => __( 'View Event', 'austeve-events' ),
-		'add_new_item'        => __( 'Add New Event', 'austeve-events' ),
-		'add_new'             => __( 'Add New', 'austeve-events' ),
-		'edit_item'           => __( 'Edit Event', 'austeve-events' ),
-		'update_item'         => __( 'Update Event', 'austeve-events' ),
-		'search_items'        => __( 'Search Event', 'austeve-events' ),
-		'not_found'           => __( 'Not Found', 'austeve-events' ),
-		'not_found_in_trash'  => __( 'Not found in Trash', 'austeve-events' ),
+		'singular_name'       => _x( 'Event', 'Post Type Singular Name', 'austeve-canvas' ),
+		'menu_name'           => __( 'Events', 'austeve-canvas' ),
+		'parent_item_colon'   => __( 'Parent Event', 'austeve-canvas' ),
+		'all_items'           => __( 'All Events', 'austeve-canvas' ),
+		'view_item'           => __( 'View Event', 'austeve-canvas' ),
+		'add_new_item'        => __( 'Add New Event', 'austeve-canvas' ),
+		'add_new'             => __( 'Add New', 'austeve-canvas' ),
+		'edit_item'           => __( 'Edit Event', 'austeve-canvas' ),
+		'update_item'         => __( 'Update Event', 'austeve-canvas' ),
+		'search_items'        => __( 'Search Event', 'austeve-canvas' ),
+		'not_found'           => __( 'Not Found', 'austeve-canvas' ),
+		'not_found_in_trash'  => __( 'Not found in Trash', 'austeve-canvas' ),
 	);
 	
 // Set other options for Custom Post Type
 	
 	$args = array(
-		'label'               => __( 'Events', 'austeve-events' ),
-		'description'         => __( 'Canvas & Cocktail Events', 'austeve-events' ),
+		'label'               => __( 'Events', 'austeve-canvas' ),
+		'description'         => __( 'Canvas & Cocktail Events', 'austeve-canvas' ),
 		'labels'              => $labels,
 		// Features this CPT supports in Post Editor
 		'supports'            => array( 'title', 'author', 'revisions', ),
@@ -74,7 +74,7 @@ function austeve_create_events_post_type() {
 
 	$taxonomyArgs = array(
 
-		'label'               => __( 'austeve_event_types', 'austeve-events' ),
+		'label'               => __( 'austeve_event_types', 'austeve-canvas' ),
 		'labels'              => $taxonomyLabels,
 		'show_admin_column'	=> false,
 		'hierarchical' 		=> false,

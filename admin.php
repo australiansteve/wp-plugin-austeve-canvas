@@ -117,6 +117,19 @@ function austeve_add_roles_on_plugin_activation() {
     $role->add_cap( 'delete_private_paintings' ); 
     $role->add_cap( 'delete_published_paintings' ); 
 
+    //Profiles
+    $role->add_cap( 'read_profiles' ); 
+    $role->add_cap( 'read_private_profiles' ); 
+    $role->add_cap( 'edit_profiles' ); 
+    $role->add_cap( 'edit_others_profiles' ); 
+    $role->add_cap( 'edit_private_profiles' ); 
+    $role->add_cap( 'edit_published_profiles' ); 
+    $role->add_cap( 'publish_profiles' ); 
+    $role->add_cap( 'delete_profiles' ); 
+    $role->add_cap( 'delete_others_profiles' ); 
+    $role->add_cap( 'delete_private_profiles' ); 
+    $role->add_cap( 'delete_published_profiles' ); 
+
 }
 #endregion Plugin activation
 
@@ -148,59 +161,117 @@ function austeve_populate_event_types() {
 			)
 		);
 	}
+
+	$taxonomy = 'austeve_profile_types';
+
+	if (!term_exists( 'Host', $taxonomy ) ) 
+	{
+		wp_insert_term(
+			'Host', // the term 
+			$taxonomy, // the taxonomy
+			array(
+				'description'=> 'Host profile',
+				'slug' => 'austeve-profile-host'
+			)
+		);
+	}
+
+	if (!term_exists( 'Guest', $taxonomy ) ) 
+	{
+		wp_insert_term(
+			'Guest', // the term 
+			$taxonomy, // the taxonomy
+			array(
+				'description'=> 'Guest profile',
+				'slug' => 'austeve-profile-guest'
+			)
+		);
+	}
+
+	if (!term_exists( 'Artist', $taxonomy ) ) 
+	{
+		wp_insert_term(
+			'Artist', // the term 
+			$taxonomy, // the taxonomy
+			array(
+				'description'=> 'Artist profile',
+				'slug' => 'austeve-profile-artist'
+			)
+		);
+	}
+
 }
 add_action('admin_init','austeve_populate_event_types', 999);
 #endregion Admin_init
 
 #region acf/save_post actions
 //After an Event has been saved, update the austeve_event_types taxonomy with saved values
+
+function austeve_assign_term_to_post($post_id, $term, $taxonomy, $assignedTerms) {
+
+	//Should always be the case, since we are only using 2 preset values (public/private)
+	if ($term)
+	{
+		$alreadyAssigned = false;
+
+    	if ($assignedTerms)
+    	{
+    		foreach($assignedTerms as $assignedTerm)
+    		{
+    			if ($assignedTerm->term_id != $term['term_id'])
+    			{
+    				//var_dump($assignedTerm);
+    				error_log("Removing: Term ".$assignedTerm->term_id. " from post_id ".$post_id);
+    				wp_remove_object_terms( $post_id, $assignedTerm->term_id, $taxonomy );
+    			}
+    			else 
+    			{
+    				$alreadyAssigned = true;
+    			}
+    		}
+    	}
+
+    	if (!$alreadyAssigned)
+    	{
+    		error_log("Assigning: Term ".$term['term_id']. " to post_id ".$post_id);
+    		wp_set_post_terms( $post_id, array( intval($term['term_id']) ), $taxonomy );
+    	}
+	}
+	else 
+	{
+		error_log("Cannot assign term to post: ".$post_id);
+	}
+}
+
 function austeve_update_post_event_type( $post_id ) {
     
-	$taxonomy = 'austeve_event_types';
-	error_log("austeve_update_post_event_type: ");
-
-    // get new value
     $value = get_field('event_type');
 
     if ($value)
     {
-		error_log($value['value']);
+		$taxonomy = 'austeve_event_types';
     	$assignedTerms = wp_get_post_terms( $post_id, $taxonomy );
     	$slug = 'austeve-event-'.$value['value'];
     	$term = term_exists( $slug, $taxonomy );
 
-    	//Should always be the case, since we are only using 2 preset values (public/private)
-    	if ($term)
-    	{
-			$alreadyAssigned = false;
-
-	    	if ($assignedTerms)
-	    	{
-	    		foreach($assignedTerms as $assignedTerm)
-	    		{
-	    			if ($assignedTerm->term_id != $term['term_id'])
-	    			{
-	    				//var_dump($assignedTerm);
-	    				error_log("Removing: Term ".$assignedTerm->term_id. " from post_id ".$post_id);
-	    				wp_remove_object_terms( $post_id, $assignedTerm->term_id, $taxonomy );
-	    			}
-	    			else 
-	    			{
-	    				$alreadyAssigned = true;
-	    			}
-	    		}
-	    	}
-
-	    	if (!$alreadyAssigned)
-	    	{
-	    		error_log("Assigning: Term ".$term['term_id']. " to post_id ".$post_id);
-	    		wp_set_post_terms( $post_id, array( intval($term['term_id']) ), $taxonomy );
-	    	}
-    	}
-
+    	austeve_assign_term_to_post($post_id, $term, $taxonomy, $assignedTerms);
     }
+
+    $value = get_field('profile_type');
+
+    if ($value)
+    {
+		$taxonomy = 'austeve_profile_types';
+    	$assignedTerms = wp_get_post_terms( $post_id, $taxonomy );
+    	$slug = 'austeve-profile-'.$value['value'];
+    	$term = term_exists( $slug, $taxonomy );
+
+    	austeve_assign_term_to_post($post_id, $term, $taxonomy, $assignedTerms);
+    }
+
 }
 add_action('acf/save_post', 'austeve_update_post_event_type', 20);
+
 #endregion acf/save_post actions
 
 #region Admin list filters to add columns to lists
