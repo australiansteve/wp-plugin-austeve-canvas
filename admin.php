@@ -6,7 +6,7 @@
  */
 function austeve_add_roles_on_plugin_activation() {
 
-	remove_role('austeve_territory_admin_role');
+	//remove_role('austeve_territory_admin_role');
 
 	error_log("Creating roles");
 	$result = add_role( 
@@ -39,18 +39,6 @@ function austeve_add_roles_on_plugin_activation() {
 			'delete_private_events'   => true,
 			'delete_published_events'   => true,
 
-			'read_events'   => true,					//Event permissions
-			'read_private_events'   => true,
-			'edit_events'   => true,
-			'edit_others_events'   => true,
-			'edit_private_events'   => true,
-			'edit_published_events'   => true,
-			'publish_events'   => true,
-			'delete_events'   => true,
-			'delete_others_events'   => true,
-			'delete_private_events'   => true,
-			'delete_published_events'   => true,
-
 			'read_paintings'   => true,					//Painting permissions
 			'read_private_paintings'   => true,
 			'edit_paintings'   => true,
@@ -63,6 +51,18 @@ function austeve_add_roles_on_plugin_activation() {
 			'delete_private_paintings'   => true,
 			'delete_published_paintings'   => true,
 
+			'read_profiles'   => true,					//Profile permissions
+			'read_private_profiles'   => true,
+			'edit_profiles'   => true,
+			'edit_others_profiles'   => true,
+			'edit_private_profiles'   => true,
+			'edit_published_profiles'   => true,
+			'publish_profiles'   => true,
+			'delete_profiles'   => true,
+			'delete_others_profiles'   => true,
+			'delete_private_profiles'   => true,
+			'delete_published_profiles'   => true,
+
 			'delete_posts' => false, 					// Use false to explicitly deny
 			'delete_pages' => false, 					// Use false to explicitly deny
 		) 
@@ -73,6 +73,25 @@ function austeve_add_roles_on_plugin_activation() {
 	}
 	else {
 	    error_log( 'Territory Admin role already exists.' );
+	}
+
+	//remove_role('austeve_event_host_role');
+	$result = add_role( 
+		'austeve_event_host_role', 
+		'Event Host', 
+		array(
+			'read'         => true,                   
+			
+			'delete_posts' => false, 					// Use false to explicitly deny
+			'delete_pages' => false, 					// Use false to explicitly deny
+		) 
+	);
+
+	if ( null !== $result ) {
+	    error_log( 'Event Host role created!' );
+	}
+	else {
+	    error_log( 'Event Host role already exists.' );
 	}
 
 	//Add permissions to Administrator role too
@@ -162,44 +181,6 @@ function austeve_populate_event_types() {
 		);
 	}
 
-	$taxonomy = 'austeve_profile_types';
-
-	if (!term_exists( 'Host', $taxonomy ) ) 
-	{
-		wp_insert_term(
-			'Host', // the term 
-			$taxonomy, // the taxonomy
-			array(
-				'description'=> 'Host profile',
-				'slug' => 'austeve-profile-host'
-			)
-		);
-	}
-
-	if (!term_exists( 'Guest', $taxonomy ) ) 
-	{
-		wp_insert_term(
-			'Guest', // the term 
-			$taxonomy, // the taxonomy
-			array(
-				'description'=> 'Guest profile',
-				'slug' => 'austeve-profile-guest'
-			)
-		);
-	}
-
-	if (!term_exists( 'Artist', $taxonomy ) ) 
-	{
-		wp_insert_term(
-			'Artist', // the term 
-			$taxonomy, // the taxonomy
-			array(
-				'description'=> 'Artist profile',
-				'slug' => 'austeve-profile-artist'
-			)
-		);
-	}
-
 }
 add_action('admin_init','austeve_populate_event_types', 999);
 #endregion Admin_init
@@ -252,18 +233,6 @@ function austeve_update_post_event_type( $post_id ) {
 		$taxonomy = 'austeve_event_types';
     	$assignedTerms = wp_get_post_terms( $post_id, $taxonomy );
     	$slug = 'austeve-event-'.$value['value'];
-    	$term = term_exists( $slug, $taxonomy );
-
-    	austeve_assign_term_to_post($post_id, $term, $taxonomy, $assignedTerms);
-    }
-
-    $value = get_field('profile_type');
-
-    if ($value)
-    {
-		$taxonomy = 'austeve_profile_types';
-    	$assignedTerms = wp_get_post_terms( $post_id, $taxonomy );
-    	$slug = 'austeve-profile-'.$value['value'];
     	$term = term_exists( $slug, $taxonomy );
 
     	austeve_assign_term_to_post($post_id, $term, $taxonomy, $assignedTerms);
@@ -346,11 +315,46 @@ function austeve_events_columns_content($column_name, $post_ID) {
 
     }
 }
-function get_event_venue($event_id)
-{
-
-}
 add_action('manage_austeve-events_posts_custom_column', 'austeve_events_columns_content', 10, 2);
+
+/* Paintings */
+function austeve_paintings_columns_head($defaults) {
+
+	$res = array_slice($defaults, 0, 2, true) +
+	    array("artist" => "Artist") +
+	    array("painting_tags" => "Tags") +
+	    array_slice($defaults, 2, count($defaults) - 1, true) ;
+
+	$defaults = $res;
+
+	//Remove the old date column
+	unset($defaults['date']);
+
+    return $defaults;
+}
+add_filter('manage_austeve-paintings_posts_columns', 'austeve_paintings_columns_head');
+
+function austeve_paintings_columns_content($column_name, $post_ID) {
+
+    if ($column_name == 'artist') {
+
+    	$artist = get_field('artist', $post_ID);
+    	error_log(print_r($artist, true));
+    	if ($artist)
+			echo $artist->post_title;
+
+    }
+    else if ($column_name == 'painting_tags') {
+
+    	$taxonomy_name = 'austeve_painting_tags';
+    	$tags_args = array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'names');
+		$painting_tags = wp_get_object_terms( $post_ID,  $taxonomy_name, $tags_args );
+		echo implode(',', $painting_tags);
+
+    }
+}
+add_action('manage_austeve-paintings_posts_custom_column', 'austeve_paintings_columns_content', 10, 2);
+
 #endregion Admin list filters to add columns to lists
 
 #region Filter Territory taxonomy

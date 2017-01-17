@@ -36,7 +36,7 @@ function austeve_create_paintings_post_type() {
 		'description'           => __( 'Paintings for Canvas & Cocktails events', 'austeve-canvas' ),
 		'labels'                => $labels,
 		'supports'              => array( 'title', 'author', 'thumbnail', 'revisions', ),
-		'taxonomies'            => array( 'post_tag' ),
+		'taxonomies'            => array( 'painting_tags' ),
 		'hierarchical'          => false,
 		'public'                => true,
 		'show_ui'               => true,
@@ -54,6 +54,38 @@ function austeve_create_paintings_post_type() {
         'map_meta_cap'        => true,
 	);
 	register_post_type( 'austeve-paintings', $args );
+
+	$taxonomyLabels = array(
+		'name'              => _x( 'Tags', 'taxonomy general name' ),
+		'singular_name'     => _x( 'Tag', 'taxonomy singular name' ),
+		'search_items'      => __( 'Search Tags' ),
+		'all_items'         => __( 'All Tags' ),
+		'parent_item'       => __( 'Parent Tag' ),
+		'parent_item_colon' => __( 'Parent Tag:' ),
+		'edit_item'         => __( 'Edit Tag' ),
+		'update_item'       => __( 'Update Tag' ),
+		'add_new_item'      => __( 'Add New Tag' ),
+		'new_item_name'     => __( 'New Tag Name' ),
+		'menu_name'         => __( 'Tags' ),
+	);
+
+	$taxonomyArgs = array(
+
+		'label'               => __( 'austeve_painting_tags', 'austeve-canvas' ),
+		'labels'              => $taxonomyLabels,
+		'show_admin_column'	=> false,
+		'hierarchical' 		=> false,
+		'show_ui'			=> true,
+		'rewrite'           => array( 'slug' => 'painting_tags' ),
+		'capabilities'		=> array(
+							    'manage_terms' => 'edit_paintings',
+							    'edit_terms' => 'edit_paintings',
+							    'delete_terms' => 'edit_paintings',
+							    'assign_terms' => 'edit_paintings'
+							 )
+		);
+
+	register_taxonomy( 'austeve_painting_tags', 'austeve-paintings', $taxonomyArgs );
 
 }
 add_action( 'init', 'austeve_create_paintings_post_type', 0 );
