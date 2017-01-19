@@ -10,8 +10,14 @@
 <article id="post-<?php the_ID(); ?>">
 	
 	<div class="entry-content">
+<a href="<?php echo get_permalink();?>">
+	<?php
+	$the_painting = get_field('painting', get_field('painting'));
+	?>
 
-	<a href="<?php echo get_permalink();?>"><?php echo the_title(); ?></a>
+	<img src="<?php echo $the_painting['sizes']['thumbnail'];?>" width="<?php echo $the_painting['sizes']['thumbnail-width'];?>" height="<?php echo $the_painting['sizes']['thumbnail-height'];?>"/><br/>
+
+	<h3><?php echo the_title(); ?></h3></a>
 	<br/>
 		<?php 
 

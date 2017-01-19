@@ -208,7 +208,7 @@ function austeve_update_wc_product_variation( $post_id ) {
 		update_post_meta( $new_product_id, '_price', get_field('price') );
 		update_post_meta( $new_product_id, '_regular_price', get_field('price') );
 		update_post_meta( $new_product_id, '_stock', get_field('capacity', get_field('venue')) ); //Venue capacity
-		update_post_meta( $new_product_id, '_thumbnail_id',  get_field('painting', get_field('painting'))->ID); //Media ID
+		update_post_meta( $new_product_id, '_thumbnail_id',  get_field('painting', get_field('painting'))['ID']); //Media ID
 		//Pre-sale related info
 		update_post_meta( $new_product_id, '_sale_price', '' );
 		update_post_meta( $new_product_id, '_sale_price_dates_from', '' );
