@@ -6,14 +6,15 @@
  */
 function austeve_add_roles_on_plugin_activation() {
 
-	//remove_role('austeve_territory_admin_role');
+	remove_role('austeve_territory_admin_role');
 
 	error_log("Creating roles");
 	$result = add_role( 
 		'austeve_territory_admin_role', 
 		'Territory Administrator', 
 		array(
-			'read'         => true,                      
+			'read'         => true,   
+			'view_admin_dashboard' => true,                   
 
 			'read_venues'   => true,					//Venue permissions
 			'read_private_venues'   => true,
@@ -226,6 +227,7 @@ function austeve_assign_term_to_post($post_id, $term, $taxonomy, $assignedTerms)
 
 function austeve_update_post_event_type( $post_id ) {
     
+    //Update the event type
     $value = get_field('event_type');
 
     if ($value)
@@ -298,16 +300,19 @@ function austeve_events_columns_content($column_name, $post_ID) {
     if ($column_name == 'venue') {
 
 		//error_log(print_r(get_field('venue', $post_ID), true));
-		echo get_field('venue', $post_ID)->post_title;
+		if(get_field('venue', $post_ID))
+			echo get_field('venue', $post_ID)->post_title;
 
     }
     else if ($column_name == 'territory') {
 
-    	$taxonomy_name = 'austeve_territories';
-    	$venue_args = array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'names');
-		$venue_territories = wp_get_object_terms( get_field('venue', $post_ID)->ID,  $taxonomy_name, $venue_args );
-		echo $venue_territories[0];
-
+    	if (get_field('venue', $post_ID))
+    	{
+	    	$taxonomy_name = 'austeve_territories';
+	    	$venue_args = array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'names');
+			$venue_territories = wp_get_object_terms( get_field('venue', $post_ID)->ID,  $taxonomy_name, $venue_args );
+			echo $venue_territories[0];
+		}
     }
     else if ($column_name == 'event_date') {
 
@@ -349,11 +354,40 @@ function austeve_paintings_columns_content($column_name, $post_ID) {
     	$taxonomy_name = 'austeve_painting_tags';
     	$tags_args = array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'names');
 		$painting_tags = wp_get_object_terms( $post_ID,  $taxonomy_name, $tags_args );
-		echo implode(',', $painting_tags);
+		echo implode(', ', $painting_tags);
 
     }
 }
 add_action('manage_austeve-paintings_posts_custom_column', 'austeve_paintings_columns_content', 10, 2);
+
+/* Users */
+function austeve_users_columns_head($defaults) {
+
+	$res = array_slice($defaults, 0, 5, true) +
+	    array("territories" => "Territories") +
+	    array_slice($defaults, 5, count($defaults) - 1, true) ;
+
+	$defaults = $res;
+
+    return $defaults;
+}
+add_filter('manage_users_columns', 'austeve_users_columns_head');
+
+function austeve_users_columns_content($val, $column_name, $user_id) {
+
+    if ($column_name == 'territories') {
+
+		$term_args = array('orderby' => 'name', 'order' => 'ASC', 'fields' => 'names');
+    	$term_list = wp_get_object_terms($user_id, 'austeve_territories', $term_args);
+    	if (count($term_list) > 1)
+			return implode(", ", $term_list);
+		else if (count($term_list) > 0)
+			return $term_list[0];
+    }
+    return $val;
+
+}
+add_filter('manage_users_custom_column', 'austeve_users_columns_content', 10, 3);
 
 #endregion Admin list filters to add columns to lists
 

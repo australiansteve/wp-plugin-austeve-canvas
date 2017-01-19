@@ -41,7 +41,7 @@ gulp.task('deploylocal', function() {
 		'*.php',
 		'*.css'];
 
-	var dest = 'C:/wamp/www/theme-dev/wp-content/plugins/austeve-canvas';
+	var dest = 'C:/wamp/www/canvas/wp-content/plugins/austeve-canvas';
 
 	return gulp.src(files, {base:"."})
 	        .pipe(gulp.dest(dest));

@@ -8,26 +8,26 @@ function austeve_create_venues_post_type() {
 
 // Set UI labels for Custom Post Type
 	$labels = array(
-		'name'                => _x( 'Venues', 'Post Type General Name', 'austeve-venues' ),
-		'singular_name'       => _x( 'Venue', 'Post Type Singular Name', 'austeve-venues' ),
-		'menu_name'           => __( 'Venues', 'austeve-venues' ),
-		'parent_item_colon'   => __( 'Parent Venue', 'austeve-venues' ),
-		'all_items'           => __( 'All Venues', 'austeve-venues' ),
-		'view_item'           => __( 'View Venue', 'austeve-venues' ),
-		'add_new_item'        => __( 'Add New Venue', 'austeve-venues' ),
-		'add_new'             => __( 'Add New', 'austeve-venues' ),
-		'edit_item'           => __( 'Edit Venue', 'austeve-venues' ),
-		'update_item'         => __( 'Update Venue', 'austeve-venues' ),
-		'search_items'        => __( 'Search Venue', 'austeve-venues' ),
-		'not_found'           => __( 'Not Found', 'austeve-venues' ),
-		'not_found_in_trash'  => __( 'Not found in Trash', 'austeve-venues' ),
+		'name'                => _x( 'Venues', 'Post Type General Name', 'austeve-canvas' ),
+		'singular_name'       => _x( 'Venue', 'Post Type Singular Name', 'austeve-canvas' ),
+		'menu_name'           => __( 'Venues', 'austeve-canvas' ),
+		'parent_item_colon'   => __( 'Parent Venue', 'austeve-canvas' ),
+		'all_items'           => __( 'All Venues', 'austeve-canvas' ),
+		'view_item'           => __( 'View Venue', 'austeve-canvas' ),
+		'add_new_item'        => __( 'Add New Venue', 'austeve-canvas' ),
+		'add_new'             => __( 'Add New', 'austeve-canvas' ),
+		'edit_item'           => __( 'Edit Venue', 'austeve-canvas' ),
+		'update_item'         => __( 'Update Venue', 'austeve-canvas' ),
+		'search_items'        => __( 'Search Venue', 'austeve-canvas' ),
+		'not_found'           => __( 'Not Found', 'austeve-canvas' ),
+		'not_found_in_trash'  => __( 'Not found in Trash', 'austeve-canvas' ),
 	);
 	
 // Set other options for Custom Post Type
 	
 	$args = array(
-		'label'               => __( 'Venues', 'austeve-venues' ),
-		'description'         => __( 'Event Venues', 'austeve-venues' ),
+		'label'               => __( 'Venues', 'austeve-canvas' ),
+		'description'         => __( 'Event Venues', 'austeve-canvas' ),
 		'labels'              => $labels,
 		// Features this CPT supports in Post Editor
 		'supports'            => array( 'title', 'author', 'revisions', ),
@@ -142,6 +142,6 @@ function venue_filter_archive_title( $title ) {
 
 }
 
-add_filter( 'get_the_archive_title', 'venue_filter_archive_title');
+//add_filter( 'get_the_archive_title', 'venue_filter_archive_title');
 
 ?>
