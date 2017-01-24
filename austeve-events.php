@@ -232,4 +232,42 @@ function austeve_update_wc_product_variation( $post_id ) {
 
 }
 add_action('acf/save_post', 'austeve_update_wc_product_variation', 20);
+
+
+function austeve_pre_get_posts_order_events( $query ) {
+	
+	// do not modify queries in the admin
+	if( is_admin() ) {
+		
+		return $query;
+		
+	}
+
+	// only modify queries for 'event' post type
+	if( isset($query->query_vars['post_type']) && $query->query_vars['post_type'] == 'austeve-events' ) {
+		
+		// find date time now
+		$date_now = date('Y-m-d H:i:s');
+
+		//Find the next events
+		$query->set('posts_per_page', -1);	
+		$query->set('orderby', 'meta_value');	
+		$query->set('meta_key', 'start_time');	 	
+		$query->set('meta_type', 'DATETIME');	 
+		$query->set('order', 'ASC');	 
+		$query->set('meta_query', array(
+	        'key'			=> 'start_time',
+	        'compare'		=> '>=',
+	        'value'			=> $date_now,
+	        'type'			=> 'DATETIME',
+	    ));
+	}
+
+	// return
+	return $query;
+
+}
+
+add_action('pre_get_posts', 'austeve_pre_get_posts_order_events');
+
 ?>
