@@ -25,11 +25,11 @@ get_header(); ?>
 					?>
 				</header><!-- .page-header -->
 
-				<div class="row small-up-1 medium-up-2 large-up-3 align-middle" id="events-block-grid">
 
 				<?php /* Start the Loop */ ?>
 				<?php while ( have_posts() ) : the_post(); ?>
-					<div class="column">
+
+					<div class="row column">
 				<?php 
 
             		if (locate_template('page-templates/partials/events-archive.php') != '') {
@@ -42,9 +42,8 @@ get_header(); ?>
 
 				?>
 					</div>
+					
 				<?php endwhile; ?>
-
-				</div> <!-- #events-block-grid -->
 
 				<?php the_posts_navigation(); ?>
 
