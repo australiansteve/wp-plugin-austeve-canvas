@@ -30,12 +30,12 @@ get_header(); ?>
 
 				?>
 				
-				<?php 
+				<!--?php 
 				the_post_navigation(array(
-			        'prev_text'          => '<i class="fa fa-arrow-left"></i> Previous',
-			        'next_text'          => 'Next <i class="fa fa-arrow-right"></i>',
+			        'prev_text'          => '<i class="fa fa-arrow-left"></i> Next',
+			        'next_text'          => 'Previous <i class="fa fa-arrow-right"></i>',
 			        'screen_reader_text' => __( 'More events:' ),
-			    )); ?>
+			    )); ?-->
 
 			<?php endwhile; // end of the loop. ?>
 

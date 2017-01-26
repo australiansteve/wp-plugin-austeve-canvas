@@ -29,13 +29,6 @@ get_header(); ?>
 					}
 
 				?>
-				
-				<?php 
-				the_post_navigation(array(
-			        'prev_text'          => '<i class="fa fa-arrow-left"></i> Previous',
-			        'next_text'          => 'Next <i class="fa fa-arrow-right"></i>',
-			        'screen_reader_text' => __( 'More profiles:' ),
-			    )); ?>
 
 			<?php endwhile; // end of the loop. ?>
 

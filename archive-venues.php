@@ -25,6 +25,14 @@ get_header(); ?>
 					?>
 				</header><!-- .page-header -->
 
+				<div class="row"><!-- .row start -->
+
+					<div class="small-12 columns"><!-- .columns start -->
+						Search for a venue here
+					</div>
+
+				</div>
+
 				<div class="row small-up-1 medium-up-2 large-up-3 align-middle" id="venues-block-grid">
 
 				<?php /* Start the Loop */ ?>

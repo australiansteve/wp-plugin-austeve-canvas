@@ -57,4 +57,30 @@ function austeve_create_canvasprofiles_post_type() {
 
 }
 add_action( 'init', 'austeve_create_canvasprofiles_post_type', 0 );
+
+function profile_include_template_function( $template_path ) {
+    if ( get_post_type() == 'austeve-profiles' ) {
+        if ( is_single() ) {
+            // checks if the file exists in the theme first,
+            // otherwise serve the file from the plugin
+            if ( $theme_file = locate_template( array ( 'single-profiles.php' ) ) ) {
+                $template_path = $theme_file;
+            } else {
+                $template_path = plugin_dir_path( __FILE__ ) . '/single-profiles.php';
+            }
+        }
+        else if ( is_archive() ) {
+            // checks if the file exists in the theme first,
+            // otherwise serve the file from the plugin
+            if ( $theme_file = locate_template( array ( 'archive-profiles.php' ) ) ) {
+                $template_path = $theme_file;
+            } else {
+                $template_path = plugin_dir_path( __FILE__ ) . '/archive-profiles.php';
+            }
+        }
+    }
+    return $template_path;
+}
+add_filter( 'template_include', 'profile_include_template_function', 1 );
+
 ?>
