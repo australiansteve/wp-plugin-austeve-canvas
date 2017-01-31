@@ -20,11 +20,22 @@
 			
 					<?php
 					$artist = get_field('artist');
-					$the_painting = get_field('painting');
+
+					//get featured image if that's available
+					if ( has_post_thumbnail( ) ) 
+					{
+        				echo get_the_post_thumbnail( null, array( 300, 300) );
+					}
+					else 
+					{
+						$the_painting = get_field('painting');
 					?>
 					
 					<img class="event-painting" src="<?php echo $the_painting['sizes']['medium'];?>" width="<?php echo $the_painting['sizes']['medium-width'];?>" height="<?php echo $the_painting['sizes']['medium-height'];?>"/>	
 
+					<?php
+					}
+					?>
 				</div>
 			
 			</div>

@@ -22,7 +22,7 @@ function austeve_events_upcoming(){
         'meta_type'        => 'DATETIME',
         'orderby'        => 'meta_value',
     	'order'          => 'ASC',
-		'posts_per_page' => 2,
+		'posts_per_page' => 4,
 		'paged' 		=> false,
 		'meta_query' => $meta_query
     );
@@ -31,15 +31,15 @@ function austeve_events_upcoming(){
 	
     if( $query->have_posts() ){
 
-		echo "<div class='row small-up-1 medium-up-2 large-up-3 align-middle' id='events-block-grid'>";
+		echo "<div id='upcoming-events'>";
 
 		//loop over query results
         while( $query->have_posts() ){
             $query->the_post();
             
-            echo '<div class="column">';
-            include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/events-archive.php');
-    		echo '</div>';
+            echo "<div class='upcoming-event'>";
+            include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/events-shortcode.php');
+            echo '</div>';
         }
 
     	echo '</div>';
@@ -49,7 +49,7 @@ function austeve_events_upcoming(){
 ?>
 		<div class="row archive-container">
 		  	<div class="col-xs-12">
-		  		<em>No results found.</em>
+		  		<em>No upcoming events found.</em>
 		  	</div>
 	  	</div>
 <?php	
@@ -61,4 +61,6 @@ function austeve_events_upcoming(){
 
 add_shortcode( 'upcoming_events', 'austeve_events_upcoming' );
 
+// Enable shortcodes in text widgets
+add_filter('widget_text','do_shortcode');
 ?>

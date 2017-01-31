@@ -10,6 +10,19 @@
 
 <div class="row">
 
+	<div class="medium-2 columns show-for-medium event-painting">
+		<!-- Image -->
+		
+		<a href="<?php echo get_permalink();?>">
+			<?php
+			$the_painting = get_field('painting', get_field('painting'));
+			?>
+
+			<img src="<?php echo $the_painting['sizes']['thumbnail'];?>" width="<?php echo $the_painting['sizes']['thumbnail-width'];?>" height="<?php echo $the_painting['sizes']['thumbnail-height'];?>"/>
+
+		</a>
+	</div>
+
 	<div class="small-1 columns event-date">
 		<!-- Date -->
 		<?php 
@@ -24,19 +37,6 @@
 
 	</div>
 	
-	<div class="medium-2 columns show-for-medium event-painting">
-		<!-- Image -->
-		
-		<a href="<?php echo get_permalink();?>">
-			<?php
-			$the_painting = get_field('painting', get_field('painting'));
-			?>
-
-			<img src="<?php echo $the_painting['sizes']['thumbnail'];?>" width="<?php echo $the_painting['sizes']['thumbnail-width'];?>" height="<?php echo $the_painting['sizes']['thumbnail-height'];?>"/>
-
-		</a>
-	</div>
-
 	<div class="small-6 medium-5 columns">
 		<!-- Event -->
 		<?php 
