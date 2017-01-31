@@ -144,7 +144,7 @@ function event_filter_archive_title( $title ) {
 //add_filter( 'get_the_archive_title', 'event_filter_archive_title');
 
 
-function austeve_update_wc_product_variation( $post_id ) {
+function austeve_update_wc_product( $post_id ) {
 
 	$event_post = get_post($post_id);
 
@@ -231,7 +231,7 @@ function austeve_update_wc_product_variation( $post_id ) {
     }
 
 }
-add_action('acf/save_post', 'austeve_update_wc_product_variation', 20);
+add_action('acf/save_post', 'austeve_update_wc_product', 20);
 
 
 function austeve_pre_get_posts_order_events( $query ) {
