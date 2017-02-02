@@ -193,6 +193,7 @@ function austeve_update_wc_product( $post_id ) {
 		    'post_content' => '',
 		    'post_status' => 'publish',
 		    'post_type' => "product",
+		    'post_excerpt' => '<a href='.get_permalink($post_id).'>See full event details</a>',
 		    'comment_status' => "closed",
 		) );
 
