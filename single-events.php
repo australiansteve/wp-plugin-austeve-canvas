@@ -41,7 +41,7 @@ get_header(); ?>
 						// Get qty for each order
 						$sale_qtys = $wpdb->get_results( $wpdb->prepare(
 							"SELECT oim.order_item_id as order_item_id, oim.meta_value as qty 
-								FROM wp_woocommerce_order_itemmeta oim 
+								FROM {$wpdb->prefix}woocommerce_order_itemmeta oim 
 								WHERE oim.meta_key = '_qty' AND oim.order_item_id IN(SELECT oi.order_item_id FROM
 							{$wpdb->prefix}woocommerce_order_itemmeta oim
 							INNER JOIN {$wpdb->prefix}woocommerce_order_items oi
@@ -88,6 +88,7 @@ get_header(); ?>
 							$userdata = get_userdata( get_field('_customer_user', $sale->order_id));
 							$sales[$id]['customer_id'] = $userdata->ID;
 							$sales[$id]['customer_name'] = $userdata->first_name." ".$userdata->last_name;
+							$sales[$id]['customer_email'] = $userdata->user_email;
 						}
 
 						error_log("Merged array: ".print_r($sales, true));
@@ -103,51 +104,63 @@ get_header(); ?>
 
 						return $sales;
 					}
-					$guestlist = get_sorted_event_guestlist();
 
-					error_log("Sorted guestlist: ".print_r($guestlist, true));
+					//If event host is viewing
+					$current_user = wp_get_current_user();
+					$event_host = get_field('host');
+					error_log("Current user ID: ".print_r($current_user->ID , true));
+					error_log("Event host ID: ".print_r($event_host['ID'] , true));
 
-					echo "<div class='row'>";
-					echo "<div class='small-12 columns'><h2>Guestlist</h2></div>";
-					echo "</div>";
-					echo "<div class='row'>";
-					echo "<div class='small-6 columns'><strong>Name</strong></div>";
-					echo "<div class='small-3 columns'><strong>Tickets</strong></div>";
-					echo "<div class='small-3 columns'><strong>Checked In</strong></div>";
-					echo "</div>";
+					if ( $current_user->ID == $event_host['ID']) {
 
-					//Fetch the current checked in guestlist
-					$checklist = get_field('guest_list');
-					if ($checklist)
-					{
-						$checklist = json_decode($checklist, true);
-					}
-					else
-					{
-						$checklist = array();
-					}
-					//$checklist['157'] = 1;
+						$guestlist = get_sorted_event_guestlist();
 
-					error_log("Saved checklist: ".print_r($checklist, true));
+						error_log("Sorted guestlist: ".print_r($guestlist, true));
 
-					foreach($guestlist as $guest)
-					{
-						error_log( "Order: ".$guest['order_id']);
-						$checkedInAlready = array_key_exists($guest['order_id'], $checklist) ? $checklist[$guest['order_id']] : 0;
+						echo "<div id='event-guest-list'>";
 						echo "<div class='row'>";
-						echo "<div class='small-6 columns'>".$guest['customer_name']."</div>";
-						echo "<div class='small-3 columns'>".$guest['qty']."</div>";
-						echo "<div class='small-3 columns'>";
-						echo "<input type='number' value='$checkedInAlready' class='event-check-in' data-order-id='".$guest['order_id']."' min='0' max='".$guest['qty']."' />";
-						echo "<input type='button' class='update-guest-list' value='Check In' />";
+						echo "<div class='small-12 columns'><h2>Guestlist</h2></div>";
 						echo "</div>";
+
+						//Fetch the current checked in guestlist
+						$checklist = get_field('guest_list');
+						if ($checklist)
+						{
+							$checklist = json_decode($checklist, true);
+						}
+						else
+						{
+							$checklist = array();
+						}
+
+						error_log("Saved checklist: ".print_r($checklist, true));
+
+						foreach($guestlist as $guest)
+						{
+							error_log( "Order: ".$guest['order_id']);
+							$checkedInAlready = array_key_exists($guest['order_id'], $checklist) ? $checklist[$guest['order_id']] : 0;
+							$buttonClass = $checkedInAlready > 0 ? ($checkedInAlready >= $guest['qty'] ? 'all-present' : 'semi-present') : '';
+
+							echo "<div class='row'>";
+							echo "<div class='small-6 medium-8 columns'>";
+							echo "<div class='row'><div class='small-12 medium-6 columns'>".$guest['customer_name']."</div><div class='small-12 medium-6 columns'><em>".$guest['customer_email']."</em></div></div>";
+							echo "</div>";
+							echo "<div class='small-6 medium-4 columns'>";
+							echo "<input type='number' value='$checkedInAlready' class='event-check-in' data-order-id='".$guest['order_id']."' min='0' max='".$guest['qty']."' />";
+							echo " of ".$guest['qty'];
+							echo " <input type='button' class='update-guest-list ".$buttonClass."' value='Check In' />";
+							echo "</div>";
+							echo "</div>";
+						}
+
+						echo "<div style='display:none'>";
+						acf_form(array('fields' => array('guest_list')));
 						echo "</div>";
+						echo "</div> <!-- END #event-guest-list -->";
+
+				    	//Reset back to the main loop
+						wp_reset_postdata();
 					}
-
-					acf_form(array('fields' => array('guest_list')));
-
-			    	//Reset back to the main loop
-					wp_reset_postdata();
 				?>
 				
 				<!--?php 
@@ -173,6 +186,8 @@ get_header(); ?>
 					
 						jQuery('.acf-field[data-name=guest_list] input').val(JSON.stringify(updatedCheckIn)); 
 						jQuery( ".acf-form" ).submit();
+
+						jQuery(this).after('<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i><span class="sr-only">Loading...</span>');
 					});
 
 

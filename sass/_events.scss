@@ -30,3 +30,24 @@ header.page-header {
     padding: 1rem;
     margin: 1rem 0;
 }
+
+#event-guest-list {
+	.event-check-in {
+		max-width: 2rem;
+		display: inline-block;
+
+	}
+
+	.update-guest-list {
+		margin-bottom: 0;
+		background-color: red;
+	}
+
+	.all-present {
+		background-color: green;
+	}
+
+	.semi-present {
+		background-color: orange;
+	}
+}
