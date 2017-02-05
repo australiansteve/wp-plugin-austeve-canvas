@@ -26,10 +26,20 @@ function austeve_canvas_enqueue_style() {
 }
 
 function austeve_canvas_enqueue_script() {
-	//wp_enqueue_script( 'my-js', 'filename.js', false );
+	
+	if ( WP_DEBUG )
+	{
+		wp_enqueue_script( 'austeve-profiles-js', plugin_dir_url( __FILE__ ). '/js/front-end.js' , array( 'jquery' ) , '1.0'); 
+	}
+	else 
+	{
+		wp_enqueue_script( 'austeve-profiles-js', plugin_dir_url( __FILE__ ). '/assets/dist/js/front-end.min.js' , array( 'jquery' ) , '1.0'); 
+	}
+
 }
 
 add_action( 'wp_enqueue_scripts', 'austeve_canvas_enqueue_style' );
 add_action( 'wp_enqueue_scripts', 'austeve_canvas_enqueue_script' );
+
 
 ?>
