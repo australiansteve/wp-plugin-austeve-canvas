@@ -53,7 +53,7 @@
 		<?php
 		if (get_field('wc_product') && get_field('price'))
 		{
-			echo do_shortcode('[add_to_cart id="'.get_field('wc_product').'"]');
+			echo do_shortcode('[canvas_to_cart id="'.get_field('wc_product').'"]');
 		}
 		else 
 		{
