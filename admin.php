@@ -529,8 +529,8 @@ add_action( 'pre_get_posts', 'austeve_filter_objects_for_admins' , 10, 1 );
 /**
  * Auto Complete all WooCommerce orders.
  */
-add_action( 'woocommerce_thankyou', 'custom_woocommerce_auto_complete_order' );
-function custom_woocommerce_auto_complete_order( $order_id ) { 
+add_action( 'woocommerce_thankyou', 'austeve_woocommerce_auto_complete_order' );
+function austeve_woocommerce_auto_complete_order( $order_id ) { 
     if ( ! $order_id ) {
         return;
     }
