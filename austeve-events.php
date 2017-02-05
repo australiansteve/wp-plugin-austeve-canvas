@@ -168,7 +168,10 @@ function austeve_update_wc_product( $post_id ) {
 			update_post_meta( $product_id, '_regular_price', get_field('price') );
 
 			//Update stock - impacted bu if there has been a change of venue
-			$new_capacity = intval(get_field('capacity', get_field('venue')));
+			if (get_field('custom_capacity'))
+				$new_capacity = intval(get_field('custom_capacity'));
+			else
+				$new_capacity = intval(get_field('capacity', get_field('venue')));
 			$sold_so_far = get_post_meta($product_id, 'total_sales', true);
 			error_log("Stock: ".print_r($sold_so_far, true)." vs ".$new_capacity);
 			$still_remaining = $new_capacity - $sold_so_far;
@@ -208,8 +211,19 @@ function austeve_update_wc_product( $post_id ) {
 		//update metadata for the Product
 		update_post_meta( $new_product_id, '_price', get_field('price') );
 		update_post_meta( $new_product_id, '_regular_price', get_field('price') );
-		update_post_meta( $new_product_id, '_stock', get_field('capacity', get_field('venue')) ); //Venue capacity
 		update_post_meta( $new_product_id, '_thumbnail_id',  get_field('painting', get_field('painting'))['ID']); //Media ID
+
+		if (get_field('custom_capacity'))
+		{
+			//Custom event capacity
+			update_post_meta( $new_product_id, '_stock', get_field('custom_capacity') ); 
+		}
+		else
+		{
+			//Venue capacity
+			update_post_meta( $new_product_id, '_stock', get_field('capacity', get_field('venue')) ); 
+		}
+
 		//Pre-sale related info
 		update_post_meta( $new_product_id, '_sale_price', '' );
 		update_post_meta( $new_product_id, '_sale_price_dates_from', '' );

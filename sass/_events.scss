@@ -51,3 +51,38 @@ header.page-header {
 		background-color: orange;
 	}
 }
+
+.add-to-cart {
+
+	text-align: center;
+
+	input[type=submit] {
+	    background: green;
+	}
+
+	.sold-out {
+		background: red;
+		color: white;
+	    border-radius: 1px;
+	    display: inline-block;
+	    padding: 0.8rem;
+	}
+
+	.hurry-up {
+		background: orange;
+		color: white;
+	    border-radius: 1px;
+	    display: inline-block;
+	    padding: 0.8rem;
+	    margin-bottom: 1rem;
+	}
+
+	form.custom-add-to-cart {
+		margin: auto;
+	}
+
+	input[type=number]{
+	    display: inline-block;
+	    max-width: 4rem;
+	}
+}

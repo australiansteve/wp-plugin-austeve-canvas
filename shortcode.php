@@ -79,18 +79,26 @@ function austeve_add_to_cart($atts, $content) {
 
     if (intval($remaining) > 0)
     {
-        $shortcodeOutput .= "<div class='row'>";
+        $shortcodeOutput .= "<div class='row add-to-cart'>";
         $shortcodeOutput .= "<form class='custom-add-to-cart' method='post' action='".site_url('cart')."'>";
 
-        if (intval($remaining) < 5)
+        if (get_field('custom_capacity'))
+            $capacity = intval(get_field('custom_capacity'));
+        else
+            $capacity = intval(get_field('capacity', get_field('venue')));
+
+        error_log(get_the_ID()." Remaining tickets: " . intval($remaining));
+        error_log(get_the_ID()." Event capacity * 0.25 = " . ($capacity * 0.25));
+
+        if (intval($remaining) <= ($capacity * 0.25))
         {
-            $shortcodeOutput .= "<div class='small-12 columns hurry'>";
-            $shortcodeOutput .= $remaining." tickets remaining";
+            $shortcodeOutput .= "<div class='small-12 columns'>";
+            $shortcodeOutput .= "<div class='hurry-up'>Only ".$remaining." spots remaining</div>";
             $shortcodeOutput .= "</div>";
         }
 
         $shortcodeOutput .= "<div class='small-12 columns'>";
-        $shortcodeOutput .= "<input type='number' min='1' max='".$remaining."' name='quantity' value='1'/>";
+        $shortcodeOutput .= "Tickets: <input type='number' min='1' max='".$remaining."' name='quantity' value='1'/>";
         $shortcodeOutput .= "<input type='hidden' name='add-to-cart' value='$id'/>";
         $shortcodeOutput .= "</div>";
 
@@ -103,8 +111,8 @@ function austeve_add_to_cart($atts, $content) {
     else
     {
 
-        $shortcodeOutput .= "<div class='row columns sold-out'>";
-        $shortcodeOutput .= "Sold out";
+        $shortcodeOutput .= "<div class='row columns add-to-cart'>";
+        $shortcodeOutput .= "<div class='sold-out'>Sold out!</div>";
         $shortcodeOutput .= "</div>";
     }
 
