@@ -525,4 +525,18 @@ function austeve_filter_objects_for_admins( $query ) {
 
 add_action( 'pre_get_posts', 'austeve_filter_objects_for_admins' , 10, 1 );
 #endregion pre_get_posts filter
+
+/**
+ * Auto Complete all WooCommerce orders.
+ */
+add_action( 'woocommerce_thankyou', 'custom_woocommerce_auto_complete_order' );
+function custom_woocommerce_auto_complete_order( $order_id ) { 
+    if ( ! $order_id ) {
+        return;
+    }
+
+    $order = wc_get_order( $order_id );
+    $order->update_status( 'completed' );
+}
+
 ?>
