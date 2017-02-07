@@ -111,7 +111,23 @@ get_header(); ?>
 					error_log("Current user ID: ".print_r($current_user->ID , true));
 					error_log("Event host ID: ".print_r($event_host['ID'] , true));
 
-					if ( $current_user->ID == $event_host['ID']) {
+					$event_territory = get_field('territory', get_field('venue')->ID);
+					$event_territories = get_ancestors( $event_territory, 'austeve_territories', 'taxonomy' );
+					array_push($event_territories, $event_territory);
+
+					error_log("Event territory: ".$event_territory);
+					error_log("Territories: ".print_r($event_territories, true));
+
+					//Get current user territories	
+					$ut_args = array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'ids');
+					$user_territories = wp_get_object_terms( $current_user->ID,  'austeve_territories', $ut_args );
+
+					error_log("User terms:".print_r($user_territories, true));
+
+					if ( $current_user->ID == $event_host['ID'] || 
+							current_user_can('edit_users') || 
+							( current_user_can('edit_events', get_the_ID()) && count(array_intersect($event_territories, $user_territories)) >= 1 ) 
+						) {
 
 						$guestlist = get_sorted_event_guestlist();
 
