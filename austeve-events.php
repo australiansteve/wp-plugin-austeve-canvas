@@ -190,9 +190,10 @@ function austeve_update_wc_product( $post_id ) {
     else
     {
     	error_log("Product needs to be added");
+		$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time'));
 
     	$new_product_id = wp_insert_post( array(
-		    'post_title' => 'Event: '.$event_post->post_title,
+		    'post_title' => 'Event ticket: '.$event_post->post_title.', '.get_the_title(get_field('venue')).', '.$eventDate->format('F jS Y'),
 		    'post_content' => '',
 		    'post_status' => 'publish',
 		    'post_type' => "product",
