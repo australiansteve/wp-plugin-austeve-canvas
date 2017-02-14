@@ -51,26 +51,45 @@
 			$venue = get_field('venue'); 
 			?>
 
-			<a href="<?php echo get_permalink();?>">
-				<h3 class='event-name'><?php echo the_title(); ?></h3>
-			</a>
+			<h3 class='event-name'><a href="<?php echo get_permalink();?>"><?php echo the_title(); ?></a></h3>
+			
+			<p class='event-venue'>
 
-			<p><i class="icon-map-marker"></i><?php echo $venue->post_title; ?> - Accessible?</p>
+				<a data-open="mapModal<?php echo $venue->ID; ?>">
+
+					<i class="fa fa-map-marker" aria-hidden="true"></i>
+					<?php echo $venue->post_title; ?>
+
+				</a>
+
+				<?php
+				if (get_field('accessible', $venue->ID)) 
+				{
+					echo "<i class='fa fa-wheelchair' aria-hidden='true' title='This venue is accessible'></i>";
+				}
+
+				?>
+				<div class="reveal" id="mapModal<?php echo $venue->ID; ?>" data-reveal>
+				  <h3><?php echo $venue->post_title; ?></h3>
+				  <p> Map goes here</p>
+				</div>
+
+			</p>
 
 			<?php 
 			$host_info = get_field('host');
 			?>
 
-			<p>Instructor: <?php echo $host_info['display_name'];?></p>
+			<p class='event-instructor'>Instructor: <?php echo $host_info['display_name'];?></p>
 
 			<?php
 			$difficultyField = get_field_object('difficulty_level', $paintingId);
 			$difficultyValue = $difficultyField['value'];
 			$difficultyLabel = $difficultyField['choices'][ $difficultyValue ];
 			?>
-			<p>Difficulty: <?php echo $difficultyLabel; ?></p>
+			<p class='event-level'>Difficulty: <?php echo $difficultyLabel; ?></p>
 
-			<p>Painting tags:
+			<p class='event-painting-tags'>Painting tags:
 			<?php
 			$painting_terms = wp_get_object_terms( $paintingId,  'austeve_painting_tags' );
 			$termOutput = array();
