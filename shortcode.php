@@ -80,7 +80,7 @@ function austeve_add_to_cart($atts, $content) {
         }
 
         $shortcodeOutput .= "<div class='small-12 columns'>";
-        $shortcodeOutput .= "Tickets: <input type='number' min='1' max='".$remaining."' name='quantity' value='1'/>";
+        $shortcodeOutput .= "Purchase tickets: <input type='number' min='1' max='".$remaining."' name='quantity' value='1'/>";
         $shortcodeOutput .= "<input type='hidden' name='add-to-cart' value='$id'/>";
         $shortcodeOutput .= "</div>";
 

@@ -7,7 +7,7 @@ header.page-header {
 }
 
 .upcoming-event {   
-	border: 2px solid crimson;
+	border: 2px solid $general-color-secondary;
     padding: 1rem;
     margin: 1rem 0;
     background: white;
@@ -48,11 +48,16 @@ header.page-header {
 	text-align: center;
 
 	input[type=submit] {
-	    background: green;
+	    background: $button-color-primary;
+	}
+
+	input[type=submit]:hover, input[type=submit]:active, input[type=submit]:focus {
+	    background: scale-color($button-color-primary, $lightness: -15%);
+	    outline-color: scale-color($button-color-primary, $lightness: -15%);
 	}
 
 	.sold-out {
-		background: red;
+		background: $button-color-inactive;
 		color: white;
 	    border-radius: 1px;
 	    display: inline-block;
@@ -60,11 +65,10 @@ header.page-header {
 	}
 
 	.hurry-up {
-		background: orange;
-		color: white;
-	    border-radius: 1px;
+		border-top: 1px solid black;
+		border-bottom: 1px solid black;
 	    display: inline-block;
-	    padding: 0.8rem;
+	    padding: 0.4rem;
 	    margin-bottom: 1rem;
 	}
 
