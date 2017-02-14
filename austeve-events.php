@@ -265,8 +265,10 @@ function austeve_pre_get_posts_order_events( $query ) {
 		// find date time now
 		$date_now = date('Y-m-d H:i:s');
 
+		error_log("Querying events for front end with: ".print_r($query, true));
+
 		//Find the next events
-		$query->set('posts_per_page', -1);	
+		$query->set('posts_per_page', isset($query->query_vars['posts_per_page']) ? $query->query_vars['posts_per_page'] : -1);	
 		$query->set('orderby', 'meta_value');	
 		$query->set('meta_key', 'start_time');	 	
 		$query->set('meta_type', 'DATETIME');	 

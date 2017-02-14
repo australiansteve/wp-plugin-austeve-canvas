@@ -26,10 +26,11 @@ get_header(); ?>
 				</header><!-- .page-header -->
 
 
+				<div id='upcoming-events'>
 				<?php /* Start the Loop */ ?>
 				<?php while ( have_posts() ) : the_post(); ?>
 
-					<div class="row column">
+       			<div class='upcoming-event'>
 				<?php 
 
             		if (locate_template('page-templates/partials/events-archive.php') != '') {
@@ -41,9 +42,11 @@ get_header(); ?>
 					}
 
 				?>
-					</div>
+				</div>
 					
 				<?php endwhile; ?>
+
+				</div>
 
 				<?php the_posts_navigation(); ?>
 

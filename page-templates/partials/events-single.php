@@ -67,7 +67,7 @@
 					<?php 
 					$host_info = get_field('host');
 					?>
-					Hosted by: <?php echo $host_info['display_name'];?>
+					Instructor: <?php echo $host_info['display_name'];?>
 				</span>		
 				
 			</div>

@@ -4,29 +4,11 @@
 function austeve_events_upcoming(){
 	ob_start();
 
-	// find date time now
-	$date_now = date('Y-m-d H:i:s');
-
-	$meta_query = array(
-        'key'			=> 'date',
-        'compare'		=> '>=',
-        'value'			=> $date_now,
-        'type'			=> 'DATETIME',
-    );
-
-
     $args = array(
         'post_type' => 'austeve-events',
         'post_status' => array('publish'),
-        'meta_key'        => 'date',
-        'meta_type'        => 'DATETIME',
-        'orderby'        => 'meta_value',
-    	'order'          => 'ASC',
-		'posts_per_page' => 4,
-		'paged' 		=> false,
-		'meta_query' => $meta_query
+        'posts_per_page' => 4,
     );
-    //var_dump($args);
     $query = new WP_Query( $args );
 	
     if( $query->have_posts() ){
@@ -38,7 +20,7 @@ function austeve_events_upcoming(){
             $query->the_post();
             
             echo "<div class='upcoming-event'>";
-            include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/events-shortcode.php');
+            include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/events-archive.php');
             echo '</div>';
         }
 
