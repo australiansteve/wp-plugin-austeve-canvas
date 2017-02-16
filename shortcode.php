@@ -58,8 +58,26 @@ function austeve_add_to_cart($atts, $content) {
     $remaining = get_field('_stock', $id);
 
     $shortcodeOutput = "";
+    
+    $product = get_post( $id ); 
 
-    if (intval($remaining) > 0)
+    if ($product->post_type == 'product_variation' && has_term( 'gift-certificate', 'product_cat', $product->post_parent ))
+    {
+        $shortcodeOutput .= "<div class='row add-to-cart'>";
+        $shortcodeOutput .= "<form class='custom-add-to-cart' method='post' action='".site_url('cart')."'>";
+
+        $shortcodeOutput .= "<div class='small-12 columns'>";
+        $shortcodeOutput .= "Gift now: <input type='number' min='1' name='quantity' value='1'/>";
+        $shortcodeOutput .= "<input type='hidden' name='add-to-cart' value='$id'/>";
+        $shortcodeOutput .= "</div>";
+
+        $shortcodeOutput .= "<div class='small-12 columns'>";
+        $shortcodeOutput .= "<input type='submit' class='button' value='Purchase gift certificates'/>";
+        $shortcodeOutput .= "</div>";
+        $shortcodeOutput .= "</form>";
+        $shortcodeOutput .= "</div>";
+    }
+    else if (intval($remaining) > 0)
     {
         $shortcodeOutput .= "<div class='row add-to-cart'>";
         $shortcodeOutput .= "<form class='custom-add-to-cart' method='post' action='".site_url('cart')."'>";
