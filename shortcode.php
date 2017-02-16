@@ -67,12 +67,12 @@ function austeve_add_to_cart($atts, $content) {
         $shortcodeOutput .= "<form class='custom-add-to-cart' method='post' action='".site_url('cart')."'>";
 
         $shortcodeOutput .= "<div class='small-12 columns'>";
-        $shortcodeOutput .= "Gift now: <input type='number' min='1' name='quantity' value='1'/>";
+        $shortcodeOutput .= "Quantity: <input type='number' min='1' name='quantity' value='1'/>";
         $shortcodeOutput .= "<input type='hidden' name='add-to-cart' value='$id'/>";
         $shortcodeOutput .= "</div>";
 
         $shortcodeOutput .= "<div class='small-12 columns'>";
-        $shortcodeOutput .= "<input type='submit' class='button' value='Purchase gift certificates'/>";
+        $shortcodeOutput .= "<input type='submit' class='button' value='Add to cart'/>";
         $shortcodeOutput .= "</div>";
         $shortcodeOutput .= "</form>";
         $shortcodeOutput .= "</div>";
@@ -98,12 +98,12 @@ function austeve_add_to_cart($atts, $content) {
         }
 
         $shortcodeOutput .= "<div class='small-12 columns'>";
-        $shortcodeOutput .= "Purchase tickets: <input type='number' min='1' max='".$remaining."' name='quantity' value='1'/>";
+        $shortcodeOutput .= "Quantity: <input type='number' min='1' max='".$remaining."' name='quantity' value='1'/>";
         $shortcodeOutput .= "<input type='hidden' name='add-to-cart' value='$id'/>";
         $shortcodeOutput .= "</div>";
 
         $shortcodeOutput .= "<div class='small-12 columns'>";
-        $shortcodeOutput .= "<input type='submit' class='button' value='Purchase tickets'/>";
+        $shortcodeOutput .= "<input type='submit' class='button' value='Add to cart'/>";
         $shortcodeOutput .= "</div>";
         $shortcodeOutput .= "</form>";
         $shortcodeOutput .= "</div>";
