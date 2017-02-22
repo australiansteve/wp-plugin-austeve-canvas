@@ -80,6 +80,7 @@ function austeve_create_venues_post_type() {
 		'labels'              => $taxonomyLabels,
 		'show_admin_column'	=> false,
 		'hierarchical' 		=> true,
+		'meta_box_cb'       => false,
 		'rewrite'           => array( 'slug' => 'territories' ),
 		'capabilities'		=> array(
 							    'manage_terms' => 'edit_users',
@@ -142,6 +143,6 @@ function venue_filter_archive_title( $title ) {
 
 }
 
-//add_filter( 'get_the_archive_title', 'venue_filter_archive_title');
+add_filter( 'get_the_archive_title', 'venue_filter_archive_title');
 
 ?>

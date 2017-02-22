@@ -76,7 +76,7 @@ function austeve_create_paintings_post_type() {
 		'show_admin_column'	=> false,
 		'hierarchical' 		=> false,
 		'show_ui'			=> true,
-		'rewrite'           => array( 'slug' => 'painting_tags' ),
+		'rewrite'           => array( 'slug' => 'painting-tags' ),
 		'capabilities'		=> array(
 							    'manage_terms' => 'edit_paintings',
 							    'edit_terms' => 'edit_paintings',
@@ -116,4 +116,22 @@ function painting_include_template_function( $template_path ) {
 }
 add_filter( 'template_include', 'painting_include_template_function', 1 );
 
+function painting_filter_archive_title( $title ) {
+
+    if( is_tax('austeve_painting_tags' ) ) {
+
+        $title = 'Paintings tagged: ' . single_cat_title( '', false );
+
+    }
+    else if ( is_post_type_archive('austeve-paintings') ) {
+
+        $title = post_type_archive_title( '', false );
+
+    }
+
+    return $title;
+
+}
+
+add_filter( 'get_the_archive_title', 'painting_filter_archive_title');
 ?>

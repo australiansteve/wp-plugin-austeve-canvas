@@ -83,4 +83,17 @@ function profile_include_template_function( $template_path ) {
 }
 add_filter( 'template_include', 'profile_include_template_function', 1 );
 
+function profile_filter_archive_title( $title ) {
+
+	if ( is_post_type_archive('austeve-profiles') ) {
+
+        $title = post_type_archive_title( '', false );
+
+    }
+
+    return $title;
+
+}
+
+add_filter( 'get_the_archive_title', 'profile_filter_archive_title');
 ?>

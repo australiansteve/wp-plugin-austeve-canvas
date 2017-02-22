@@ -124,26 +124,6 @@ function event_include_template_function( $template_path ) {
 }
 add_filter( 'template_include', 'event_include_template_function', 1 );
 
-function event_filter_archive_title( $title ) {
-
-    if( is_tax('austeve_event_types' ) ) {
-
-        $title = single_cat_title( '', false ) . ' events';
-
-    }
-    else if ( is_post_type_archive('austeve-events') ) {
-
-        $title = post_type_archive_title( '', false );
-
-    }
-
-    return $title;
-
-}
-
-//add_filter( 'get_the_archive_title', 'event_filter_archive_title');
-
-
 function austeve_update_wc_product( $post_id ) {
 
 	$event_post = get_post($post_id);
@@ -288,4 +268,17 @@ function austeve_pre_get_posts_order_events( $query ) {
 
 add_action('pre_get_posts', 'austeve_pre_get_posts_order_events');
 
+function event_filter_archive_title( $title ) {
+
+	if ( is_post_type_archive('austeve-events') ) {
+
+        $title = post_type_archive_title( '', false );
+
+    }
+
+    return $title;
+
+}
+
+add_filter( 'get_the_archive_title', 'event_filter_archive_title');
 ?>
