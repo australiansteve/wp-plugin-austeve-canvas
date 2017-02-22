@@ -109,13 +109,28 @@
 
 		<div class="small-12 medium-3 columns">
 			<?php
-			if (get_field('wc_product') && get_field('price'))
-			{
-				echo do_shortcode('[canvas_to_cart id="'.get_field('wc_product').'"]');
+
+		    // find date time now
+		    $date_now = date('Y-m-d H:i:s');
+	    	$event_start = get_field('start_time');
+
+	    	error_log($date_now." vs ".$event_start);
+
+	    	if ($event_start > $date_now)
+	    	{
+
+				if (get_field('wc_product') && get_field('price'))
+				{
+					echo do_shortcode('[canvas_to_cart id="'.get_field('wc_product').'"]');
+				}
+				else 
+				{
+					echo "Cannot add to cart";
+				}
 			}
 			else 
 			{
-				echo "Cannot add to cart";
+				echo "<div class='past-event'>This event has passed</div>";
 			}
 			?>
 		</div>

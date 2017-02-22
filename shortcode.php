@@ -97,7 +97,7 @@ function austeve_events_upcoming($atts){
 ?>
 		<div class="row archive-container">
 		  	<div class="col-xs-12">
-		  		<em>No upcoming events found.</em>
+		  		<em>No events found.</em>
 		  	</div>
 	  	</div>
 <?php	
