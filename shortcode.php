@@ -30,29 +30,30 @@ function austeve_events_upcoming($atts){
 
     );
 
-    if ($past_events === 'true' && $future_events === 'true') //all posts
+    $meta_query = array('relation' => 'OR');
+
+    if ($past_events === 'true') //past events
     {
-        error_log("Both are true");
-        //nothing needed?
-    }
-    else if ($past_events === 'true') //past posts only
-    {
-        $args['meta_query'] = array(
+        $past_events_query = array(
             'key'           => 'start_time',
             'compare'       => '<=',
             'value'         => $date_now,
             'type'          => 'DATETIME',
         );
+        $meta_query[] = $past_events_query;
     }
-    else //future posts only
+    if ($future_events === 'true') //future events
     {
-        $args['meta_query'] = array(
+        $future_events_query = array(
             'key'           => 'start_time',
             'compare'       => '>=',
             'value'         => $date_now,
             'type'          => 'DATETIME',
         );
+        $meta_query[] = $future_events_query;
     }
+
+    $args['meta_query'] = $meta_query;
 
     error_log('Past events:'.print_r($past_events, true));
     error_log('Future events:'.print_r($future_events, true));
