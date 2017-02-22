@@ -233,7 +233,7 @@ add_action('acf/save_post', 'austeve_update_wc_product', 20);
 function austeve_pre_get_posts_order_events( $query ) {
 	
 	// do not modify queries in the admin
-	if( is_admin() ) {
+	if( is_admin() || array_key_exists('from_shortcode', $query->query) ) {
 		
 		return $query;
 		
@@ -244,8 +244,6 @@ function austeve_pre_get_posts_order_events( $query ) {
 		
 		// find date time now
 		$date_now = date('Y-m-d H:i:s');
-
-		error_log("Querying events for front end with: ".print_r($query, true));
 
 		//Find the next events
 		$query->set('posts_per_page', isset($query->query_vars['posts_per_page']) ? $query->query_vars['posts_per_page'] : -1);	
@@ -259,6 +257,8 @@ function austeve_pre_get_posts_order_events( $query ) {
 	        'value'			=> $date_now,
 	        'type'			=> 'DATETIME',
 	    ));
+
+		error_log("Getting future events: ".print_r($query, true));
 	}
 
 	// return

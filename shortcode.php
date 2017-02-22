@@ -1,14 +1,62 @@
 <?php
 /* Shortcode file */
 
-function austeve_events_upcoming(){
+function austeve_events_upcoming($atts){
+
+    // find date time now
+    $date_now = date('Y-m-d H:i:s');
+
+    $atts = shortcode_atts( array(
+        'number_of_posts' => -1,
+        'future_events' => 'true',
+        'past_events' => 'false',
+        'order' => 'ASC',
+
+    ), $atts );
+    
+    extract( $atts );
+
 	ob_start();
 
     $args = array(
+        'from_shortcode' => true,
         'post_type' => 'austeve-events',
         'post_status' => array('publish'),
-        'posts_per_page' => 4,
+        'posts_per_page' => $number_of_posts,
+        'orderby' => 'meta_value',
+        'order' => $order,
+        'meta_key' => 'start_time',
+        'meta_type' => 'DATETIME',
+
     );
+
+    if ($past_events === 'true' && $future_events === 'true') //all posts
+    {
+        error_log("Both are true");
+        //nothing needed?
+    }
+    else if ($past_events === 'true') //past posts only
+    {
+        $args['meta_query'] = array(
+            'key'           => 'start_time',
+            'compare'       => '<=',
+            'value'         => $date_now,
+            'type'          => 'DATETIME',
+        );
+    }
+    else //future posts only
+    {
+        $args['meta_query'] = array(
+            'key'           => 'start_time',
+            'compare'       => '>=',
+            'value'         => $date_now,
+            'type'          => 'DATETIME',
+        );
+    }
+
+    error_log('Past events:'.print_r($past_events, true));
+    error_log('Future events:'.print_r($future_events, true));
+    error_log('Args:'.print_r($args, true));
     $query = new WP_Query( $args );
 	
     if( $query->have_posts() ){
@@ -41,7 +89,7 @@ function austeve_events_upcoming(){
     return ob_get_clean();
 }
 
-add_shortcode( 'upcoming_events', 'austeve_events_upcoming' );
+add_shortcode( 'show_events', 'austeve_events_upcoming' );
 
 // Enable shortcodes in text widgets
 add_filter('widget_text','do_shortcode');
