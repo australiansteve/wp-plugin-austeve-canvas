@@ -11,6 +11,7 @@ function austeve_events_upcoming($atts){
         'future_events' => 'true',
         'past_events' => 'false',
         'order' => 'ASC',
+        'painting_id' => -1,
 
     ), $atts );
     
@@ -30,8 +31,10 @@ function austeve_events_upcoming($atts){
 
     );
 
-    $meta_query = array('relation' => 'OR');
+    $meta_query = array('relation' => 'AND');
 
+    //Setup date query
+    $date_query = array('relation' => 'OR');
     if ($past_events === 'true') //past events
     {
         $past_events_query = array(
@@ -51,6 +54,20 @@ function austeve_events_upcoming($atts){
             'type'          => 'DATETIME',
         );
         $meta_query[] = $future_events_query;
+    }
+
+    //Setup painting query
+    if ($painting_id >= 0)
+    {
+        error_log("Specific painting query!");
+
+        $painting_query = array(
+            'key'           => 'painting',
+            'compare'       => '=',
+            'value'         => $painting_id,
+            'type'          => 'NUMERIC',
+        );
+        $meta_query[] = $painting_query;
     }
 
     $args['meta_query'] = $meta_query;

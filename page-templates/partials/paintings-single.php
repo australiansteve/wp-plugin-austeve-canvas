@@ -65,30 +65,6 @@
 		
 		</div>
 
-		<div class="row">
-			
-			<div class="small-12 columns">
-
-				<span class="painting-upcoming-events">
-					List of upcoming events to use this painting
-				</span>
-
-			</div>
-		
-		</div>
-
-		<div class="row">
-			
-			<div class="small-12 columns">
-
-				<span class="painting-upcoming-events">
-					List of previous events that have used this painting
-				</span>
-
-			</div>
-		
-		</div>
-
 	</div><!-- .entry-content -->
 
 </article><!-- #post-## -->

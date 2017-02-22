@@ -30,6 +30,30 @@ get_header(); ?>
 
 				?>
 				
+
+				<div class="row"><!-- .row start -->
+
+					<div class="small-12 columns"><!-- .columns start -->
+						<h3>Upcoming events</h3>
+
+						<?php echo do_shortcode("[show_events painting_id=".get_the_ID()."]"); ?>
+
+					</div>
+
+				</div>
+
+
+				<div class="row"><!-- .row start -->
+
+					<div class="small-12 columns"><!-- .columns start -->
+						<h3>Past events</h3>
+
+						<?php echo do_shortcode("[show_events painting_id=".get_the_ID()." past_events=true future_events=false order='DESC']"); ?>
+
+					</div>
+
+				</div>
+
 			<?php endwhile; // end of the loop. ?>
 
 			</main><!-- #main -->
