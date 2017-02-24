@@ -46,6 +46,11 @@ header.page-header {
 
 	text-align: center;
 
+	.cart-price {
+		font-size: 1.5em;
+		margin-bottom: 0.25em;
+	}
+
 	input[type=submit] {
 	    background: $button-color-primary;
 	}

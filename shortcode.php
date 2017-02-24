@@ -116,7 +116,8 @@ add_filter('widget_text','do_shortcode');
 function austeve_add_to_cart($atts, $content) {
 
     $atts = shortcode_atts( array(
-        'id' => -1
+        'id' => -1,
+        'include_price' => false,
     ), $atts );
     
     extract( $atts );
@@ -130,6 +131,12 @@ function austeve_add_to_cart($atts, $content) {
     if ($product->post_type == 'product_variation' && has_term( 'gift-certificate', 'product_cat', $product->post_parent ))
     {
         $shortcodeOutput .= "<div class='row add-to-cart'>";
+        if ($include_price == 'true')
+        {
+            $shortcodeOutput .= "<div class='small-12 columns'>";
+            $shortcodeOutput .= "<div class='cart-price'>$".wc_get_product($id)->get_price()."</div>";
+            $shortcodeOutput .= "</div>";
+        }
         $shortcodeOutput .= "<form class='custom-add-to-cart' method='post' action='".site_url('cart')."'>";
 
         $shortcodeOutput .= "<div class='small-12 columns'>";
@@ -146,6 +153,12 @@ function austeve_add_to_cart($atts, $content) {
     else if (intval($remaining) > 0)
     {
         $shortcodeOutput .= "<div class='row add-to-cart'>";
+        if ($include_price == 'true')
+        {
+            $shortcodeOutput .= "<div class='small-12 columns'>";
+            $shortcodeOutput .= "<div class='cart-price'>$".get_field('price')."</div>";
+            $shortcodeOutput .= "</div>";
+        }
         $shortcodeOutput .= "<form class='custom-add-to-cart' method='post' action='".site_url('cart')."'>";
 
         if (get_field('custom_capacity'))
