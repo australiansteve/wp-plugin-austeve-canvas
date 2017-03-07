@@ -77,7 +77,7 @@
 				<span class="event-cart">
 				<?php 
 
-					echo do_shortcode('[canvas_to_cart id="'.get_field('wc_product').'"]');
+					echo do_shortcode('[canvas_to_cart id="'.get_field('wc_product').'" include_price=true]');
 					
 				?>
 				</span>
