@@ -1,8 +1,7 @@
 <?php
 /* Shortcode file */
-
-function austeve_events_upcoming($atts){
-
+function austeve_event_query_args($atts)
+{
     // find date time now
     $date_now = date('Y-m-d H:i:s');
 
@@ -12,12 +11,9 @@ function austeve_events_upcoming($atts){
         'past_events' => 'false',
         'order' => 'ASC',
         'painting_id' => -1,
-
     ), $atts );
-    
-    extract( $atts );
 
-	ob_start();
+    extract( $atts );
 
     $args = array(
         'from_shortcode' => true,
@@ -75,6 +71,15 @@ function austeve_events_upcoming($atts){
     error_log('Past events:'.print_r($past_events, true));
     error_log('Future events:'.print_r($future_events, true));
     error_log('Args:'.print_r($args, true));
+
+    return $args;
+}
+
+function austeve_events_upcoming($atts){
+    
+    $args = austeve_event_query_args($atts);
+
+    ob_start();
     $query = new WP_Query( $args );
 	
     if( $query->have_posts() ){
