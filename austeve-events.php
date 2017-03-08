@@ -161,6 +161,9 @@ function austeve_update_wc_product( $post_id ) {
 			error_log(get_field('painting'));
 			error_log(print_r(get_field('painting', get_field('painting')), true));
 			update_post_meta( $product_id, '_thumbnail_id',  get_field('painting', get_field('painting'))['ID']); //Media ID
+
+			//Update expiry
+			update_post_meta( $product_id, '_expiration_date', get_field('start_time')); //Event date
 		}
 		else 
 		{
@@ -193,6 +196,7 @@ function austeve_update_wc_product( $post_id ) {
 		update_post_meta( $new_product_id, '_price', get_field('price') );
 		update_post_meta( $new_product_id, '_regular_price', get_field('price') );
 		update_post_meta( $new_product_id, '_thumbnail_id',  get_field('painting', get_field('painting'))['ID']); //Media ID
+		update_post_meta( $new_product_id, '_expiration_date', get_field('start_time')); //Event date
 
 		if (get_field('custom_capacity'))
 		{
@@ -232,13 +236,14 @@ add_action('acf/save_post', 'austeve_update_wc_product', 20);
 
 function austeve_pre_get_posts_order_events( $query ) {
 	
-	// do not modify queries in the admin
-	if( is_admin() || array_key_exists('from_shortcode', $query->query) ) {
+	// do not modify queries in the admin, or if viewing a single event page, or if being displayed from shortcode
+	if( is_admin() || is_single() || array_key_exists('from_shortcode', $query->query) ) {
 		
 		return $query;
 		
 	}
 
+	//If here we are basically just modifying the archive page of events 
 	// only modify queries for 'event' post type
 	if( isset($query->query_vars['post_type']) && $query->query_vars['post_type'] == 'austeve-events' ) {
 		

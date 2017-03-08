@@ -80,28 +80,30 @@ get_header(); ?>
 						error_log("Item Sales: ".print_r($item_sales, true));
 
 						$sales = array();
-						foreach($item_sales as $id=>$sale)
-						{	
-							$sales[$id]['order_id'] = $sale->order_id;
-							$sales[$id]['qty'] = $sale_qtys[$id]->qty;
+						if (count($item_sales) > 0)
+						{
+							foreach($item_sales as $id=>$sale)
+							{	
+								$sales[$id]['order_id'] = $sale->order_id;
+								$sales[$id]['qty'] = $sale_qtys[$id]->qty;
 
-							$userdata = get_userdata( get_field('_customer_user', $sale->order_id));
-							$sales[$id]['customer_id'] = $userdata->ID;
-							$sales[$id]['customer_name'] = $userdata->first_name." ".$userdata->last_name;
-							$sales[$id]['customer_email'] = $userdata->user_email;
+								$userdata = get_userdata( get_field('_customer_user', $sale->order_id));
+								$sales[$id]['customer_id'] = $userdata->ID;
+								$sales[$id]['customer_name'] = $userdata->first_name." ".$userdata->last_name;
+								$sales[$id]['customer_email'] = $userdata->user_email;
+							}
+
+							error_log("Merged array: ".print_r($sales, true));
+
+							// Obtain a list of columns
+							foreach ($sales as $key => $row) {
+							    $customer_name[$key]  = $row['customer_name'];
+							}
+
+							// Sort the data with volume descending, edition ascending
+							// Add $data as the last parameter, to sort by the common key
+							array_multisort($customer_name, SORT_ASC, $sales);
 						}
-
-						error_log("Merged array: ".print_r($sales, true));
-
-						// Obtain a list of columns
-						foreach ($sales as $key => $row) {
-						    $customer_name[$key]  = $row['customer_name'];
-						}
-
-						// Sort the data with volume descending, edition ascending
-						// Add $data as the last parameter, to sort by the common key
-						array_multisort($customer_name, SORT_ASC, $sales);
-
 						return $sales;
 					}
 

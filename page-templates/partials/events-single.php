@@ -77,6 +77,9 @@
 				<span class="event-cart">
 				<?php 
 
+					$wc_expiry = get_field('_expiration_date', get_field('wc_product'));
+					echo "Expires:".$wc_expiry;
+					
 					echo do_shortcode('[canvas_to_cart id="'.get_field('wc_product').'" include_price=true]');
 					
 				?>
