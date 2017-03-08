@@ -1,0 +1,47 @@
+.upcoming-event {
+	margin-bottom: 1rem;
+
+	.head div , .body div {
+		display: inline-block;
+	}
+
+	.head {
+		font-weight: 700;
+	}
+
+	.date {
+		width: 25%;
+	}
+
+	.title {
+		width: 45%;
+	}
+
+	.edit-event {
+		width: 12%;
+	}
+
+	.time {
+		width: 15%;
+	}
+
+	.venue {
+		margin-top: 0.25rem;
+	}
+
+	.good-sales {
+		color: green;
+	}
+
+	.ok-sales {
+		color: orange;
+	}
+
+	.bad-sales {
+		color: red;
+	}
+
+	.spacer-25 {
+		width: 25%;
+	}
+}

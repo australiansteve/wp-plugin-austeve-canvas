@@ -29,6 +29,24 @@ gulp.task('styles', function() {
 		.pipe(notify({
 			message: "Styles task complete!"
 		}));
+
+		gulp.src('./style-admin.scss')
+		.pipe(sass({
+			style: 'expanded',
+			sourceComments: true
+		})
+		.on('error', notify.onError(function(error) {
+			return "Error: " + error.message;
+		}))
+		)
+		.pipe(autoprefixer({
+			browsers: ['last 2 versions', 'ie >= 8']
+		})) // our autoprefixer - add and remove vendor prefixes using caniuse.com
+		.pipe(gulp.dest('.')) // Location of our style.css file
+		.pipe(notify({
+			message: "Admin styles task complete!"
+		}));
+
 });
 
 //Our 'deploy' task which deploys on a local dev environment
