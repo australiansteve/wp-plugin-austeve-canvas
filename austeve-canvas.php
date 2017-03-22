@@ -16,7 +16,7 @@ include( plugin_dir_path( __FILE__ ) . 'austeve-events.php');
 include( plugin_dir_path( __FILE__ ) . 'austeve-venues.php');
 include( plugin_dir_path( __FILE__ ) . 'austeve-paintings.php');
 include( plugin_dir_path( __FILE__ ) . 'austeve-profiles.php');
-
+include( plugin_dir_path( __FILE__ ) . 'woo-endpoint-myaccount-reviews.php');
 
 register_activation_hook( __FILE__, 'austeve_add_roles_on_plugin_activation' );
 
@@ -47,4 +47,9 @@ function austeve_canvas_enqueue_admin_style() {
 }
 
 add_action( 'admin_enqueue_scripts', 'austeve_canvas_enqueue_admin_style' );
+
+// Flushes rewrite rules on plugin activation.
+register_activation_hook( __FILE__, array( 'AUSteve_My_Account_Reviews', 'install' ) );
+
+
 ?>

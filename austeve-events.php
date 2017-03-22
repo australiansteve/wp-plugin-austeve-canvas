@@ -237,7 +237,7 @@ add_action('acf/save_post', 'austeve_update_wc_product', 20);
 function austeve_pre_get_posts_order_events( $query ) {
 	
 	// do not modify queries in the admin, or if viewing a single event page, or if being displayed from shortcode
-	if( is_admin() || is_single() || array_key_exists('from_shortcode', $query->query) ) {
+	if( is_admin() || is_single() || array_key_exists('from_shortcode', $query->query) || array_key_exists('do_not_filter', $query->query) ) {
 		
 		return $query;
 		

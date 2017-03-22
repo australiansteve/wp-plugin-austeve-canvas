@@ -156,7 +156,7 @@ get_header(); ?>
 						foreach($guestlist as $guest)
 						{
 							error_log( "Order: ".$guest['order_id']);
-							$checkedInAlready = array_key_exists($guest['order_id'], $checklist) ? $checklist[$guest['order_id']] : 0;
+							$checkedInAlready = array_key_exists($guest['order_id'], $checklist) ? $checklist[$guest['order_id']]['present'] : 0;
 							$buttonClass = $checkedInAlready > 0 ? ($checkedInAlready >= $guest['qty'] ? 'all-present' : 'semi-present') : '';
 
 							echo "<div class='row'>";
@@ -164,7 +164,7 @@ get_header(); ?>
 							echo "<div class='row'><div class='small-12 medium-6 columns'>".$guest['customer_name']."</div><div class='small-12 medium-6 columns'><em>".$guest['customer_email']."</em></div></div>";
 							echo "</div>";
 							echo "<div class='small-6 medium-4 columns'>";
-							echo "<input type='number' value='$checkedInAlready' class='event-check-in' data-order-id='".$guest['order_id']."' min='0' max='".$guest['qty']."' />";
+							echo "<input type='number' value='$checkedInAlready' class='event-check-in' data-order-id='".$guest['order_id']."' data-user='".$guest['customer_id']."' min='0' max='".$guest['qty']."' />";
 							echo " of ".$guest['qty'];
 							echo " <input type='button' class='update-guest-list ".$buttonClass."' value='Check In' />";
 							echo "</div>";
@@ -198,10 +198,14 @@ get_header(); ?>
 					    
 					    var updatedCheckIn = {};
 					    jQuery('.event-check-in').each(function() {
-					    	var index = jQuery(this).attr('data-order-id');					    	
-					    	updatedCheckIn[index] = jQuery(this).val();
+					    	var index = jQuery(this).attr('data-order-id');	
+					    	var data = {};
+					    	data.user = jQuery(this).attr('data-user');
+					    	data.present = jQuery(this).val();
+					    	updatedCheckIn[index] = data;
 					    });
-					
+						console.log(JSON.stringify(updatedCheckIn));
+
 						jQuery('.acf-field[data-name=guest_list] input').val(JSON.stringify(updatedCheckIn)); 
 						jQuery( ".acf-form" ).submit();
 
