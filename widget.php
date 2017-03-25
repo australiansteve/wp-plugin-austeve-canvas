@@ -105,8 +105,10 @@ function austeve_admin_upcoming_events() {
 		$capacity = get_field('custom_capacity', $event->ID);
 		if (!$capacity)
 		{
-			get_field('custom_capacity', $event->ID);
-			$capacity = get_field('capacity', $venue->ID);
+			if (get_field('capacity', $venue->ID))
+				$capacity = get_field('capacity', $venue->ID);
+			else
+				$capacity = 'SET VENUE CAPACITY!';
 		}
 
 		//Get ticket sales information
@@ -139,11 +141,11 @@ function austeve_admin_upcoming_events() {
 		}
 
 		$salesClass = 'bad-sales';
-		if ($ticketSales / $capacity > 0.8)
+		if (intval($capacity) > 0 && $ticketSales / $capacity > 0.8)
 		{
 			$salesClass = 'good-sales';
 		}
-		else if ($ticketSales / $capacity > 0.5)
+		else if (intval($capacity) > 0 && $ticketSales / $capacity > 0.5)
 		{
 			$salesClass = 'ok-sales';
 		}
