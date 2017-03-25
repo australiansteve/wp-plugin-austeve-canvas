@@ -28,10 +28,10 @@
 					}
 					else 
 					{
-						$the_creation = get_field('creation');
+						$the_creation_image = get_field('image');
 					?>
 					
-					<img class="event-creation" src="<?php echo $the_creation['sizes']['medium'];?>" width="<?php echo $the_creation['sizes']['medium-width'];?>" height="<?php echo $the_creation['sizes']['medium-height'];?>"/>	
+					<img class="event-creation" src="<?php echo $the_creation_image['sizes']['medium'];?>" width="<?php echo $the_creation_image['sizes']['medium-width'];?>" height="<?php echo $the_creation_image['sizes']['medium-height'];?>"/>	
 
 					<?php
 					}

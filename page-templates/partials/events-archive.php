@@ -24,10 +24,10 @@
 			else 
 			{
 
-			$the_creation = get_field('creation', $creationId);
+			$the_creation_image = get_field('image', $creationId);
 			?>
 
-			<img src="<?php echo $the_creation['sizes']['thumbnail'];?>" width="<?php echo $the_creation['sizes']['thumbnail-width'];?>" height="<?php echo $the_creation['sizes']['thumbnail-height'];?>"/>
+			<img src="<?php echo $the_creation_image['sizes']['thumbnail'];?>" width="<?php echo $the_creation_image['sizes']['thumbnail-width'];?>" height="<?php echo $the_creation_image['sizes']['thumbnail-height'];?>"/>
 			<?php
 			}
 			?>
