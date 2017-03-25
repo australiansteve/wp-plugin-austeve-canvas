@@ -508,15 +508,29 @@ function austeve_filter_objects_for_admins( $query ) {
 					$venue_ids[] = $venue->ID;
 				}
 				
-				$meta_query = array(
-					array(
+				//Preserve the existing meta_query if it exists
+				if (array_key_exists('meta_query', $query->query) && count($query->query['meta_query']) > 0)
+				{
+					error_log("Existing meta_query: ".print_r($query->query['meta_query'], true));
+					$meta_query = $query->query['meta_query'];
+					array_push($meta_query, array(
 						'key'     => 'venue',
 						'value'   => (count($venue_ids) > 1) ? implode(",", $venue_ids) : $venue_ids[0],
 						'compare' => 'IN',
 						'type'    => 'NUMERIC',
-					),
-				);
-
+					));
+				}
+				else
+				{
+					$meta_query = array(
+						array(
+							'key'     => 'venue',
+							'value'   => (count($venue_ids) > 1) ? implode(",", $venue_ids) : $venue_ids[0],
+							'compare' => 'IN',
+							'type'    => 'NUMERIC',
+						),
+					);
+				}
 				$query->set( 'meta_query', $meta_query );
 			}
 		}
