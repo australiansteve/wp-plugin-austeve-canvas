@@ -55,6 +55,39 @@ function austeve_create_creations_post_type() {
 	);
 	register_post_type( 'austeve-creations', $args );
 
+	// Add new taxonomy, make it hierarchical (like categories)
+	$categoryLabels = array(
+		'name'              => _x( 'Categories', 'taxonomy general name', 'austeve-canvas' ),
+		'singular_name'     => _x( 'Category', 'taxonomy singular name', 'austeve-canvas' ),
+		'search_items'      => __( 'Search Categories', 'austeve-canvas' ),
+		'all_items'         => __( 'All Categories', 'austeve-canvas' ),
+		'parent_item'       => __( 'Parent Category', 'austeve-canvas' ),
+		'parent_item_colon' => __( 'Parent Category:', 'austeve-canvas' ),
+		'edit_item'         => __( 'Edit Category', 'austeve-canvas' ),
+		'update_item'       => __( 'Update Category', 'austeve-canvas' ),
+		'add_new_item'      => __( 'Add New Category', 'austeve-canvas' ),
+		'new_item_name'     => __( 'New Category Name', 'austeve-canvas' ),
+		'menu_name'         => __( 'Categories', 'austeve-canvas' ),
+	);
+
+	$categoryArgs = array(
+		'hierarchical'      => true,
+		'label'               => __( 'austeve_creation_categories', 'austeve-canvas' ),
+		'labels'            => $categoryLabels,
+		'show_ui'           => true,
+		'show_admin_column' => true,
+		'query_var'         => true,
+		'rewrite'           => array( 'slug' => 'creation-categories' ),
+		'capabilities'		=> array(
+							    'manage_terms' => 'edit_users',
+							    'edit_terms' => 'edit_users',
+							    'delete_terms' => 'edit_users',
+							    'assign_terms' => 'edit_creations'
+							 )
+	);
+
+	register_taxonomy( 'austeve_creation_categories', array( 'austeve-creations' ), $categoryArgs );
+
 	$taxonomyLabels = array(
 		'name'              => _x( 'Tags', 'taxonomy general name' ),
 		'singular_name'     => _x( 'Tag', 'taxonomy singular name' ),
@@ -78,9 +111,9 @@ function austeve_create_creations_post_type() {
 		'show_ui'			=> true,
 		'rewrite'           => array( 'slug' => 'creation-tags' ),
 		'capabilities'		=> array(
-							    'manage_terms' => 'edit_creations',
-							    'edit_terms' => 'edit_creations',
-							    'delete_terms' => 'edit_creations',
+							    'manage_terms' => 'edit_users',
+							    'edit_terms' => 'edit_users',
+							    'delete_terms' => 'edit_users',
 							    'assign_terms' => 'edit_creations'
 							 )
 		);
