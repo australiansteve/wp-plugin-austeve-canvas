@@ -1,6 +1,6 @@
 <?php
 /**
- * Template part for displaying single paintings.
+ * Template part for displaying single creations.
  *
  * @link https://codex.wordpress.org/Template_Hierarchy
  * 
@@ -15,7 +15,7 @@
 			
 			<div class="small-12 columns">
 
-					<h2 class="painting-title">
+					<h2 class="creation-title">
 						<?php echo get_the_title(); ?>
 					</h2>
 
@@ -29,11 +29,11 @@
 		
 				<?php
 				$artist = get_field('artist');
-				$the_painting = get_field('painting');
+				$the_creation_image = get_field('image');
 				?>
 
 				<a href="<?php echo get_permalink()?>">
-					<img class="event-painting" src="<?php echo $the_painting['sizes']['medium'];?>" width="<?php echo $the_painting['sizes']['medium-width'];?>" height="<?php echo $the_painting['sizes']['medium-height'];?>"/>
+					<img class="event-creation" src="<?php echo $the_creation_image['sizes']['medium'];?>" width="<?php echo $the_creation_image['sizes']['medium-width'];?>" height="<?php echo $the_creation_image['sizes']['medium-height'];?>"/>
 					
 				</a>				
 
@@ -45,7 +45,7 @@
 			
 			<div class="small-12 columns">
 
-				<span class="painting-artist">
+				<span class="creation-artist">
 					<a href="<?php echo get_permalink($artist)?>"><?php echo $artist->post_title; ?></a>
 				</span>
 
@@ -57,7 +57,7 @@
 			
 			<div class="small-12 columns">
 
-				<span class="painting-description">
+				<span class="creation-description">
 					<?php echo get_field('description'); ?>
 				</span>
 

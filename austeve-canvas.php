@@ -14,7 +14,7 @@ include( plugin_dir_path( __FILE__ ) . 'shortcode.php');
 include( plugin_dir_path( __FILE__ ) . 'widget.php');
 include( plugin_dir_path( __FILE__ ) . 'austeve-events.php');
 include( plugin_dir_path( __FILE__ ) . 'austeve-venues.php');
-include( plugin_dir_path( __FILE__ ) . 'austeve-paintings.php');
+include( plugin_dir_path( __FILE__ ) . 'austeve-creations.php');
 include( plugin_dir_path( __FILE__ ) . 'austeve-profiles.php');
 include( plugin_dir_path( __FILE__ ) . 'woo-endpoint-myaccount-reviews.php');
 

@@ -40,17 +40,17 @@ function austeve_add_roles_on_plugin_activation() {
 			'delete_private_events'   => true,
 			'delete_published_events'   => true,
 
-			'read_paintings'   => true,					//Painting permissions
-			'read_private_paintings'   => true,
-			'edit_paintings'   => true,
-			'edit_others_paintings'   => true,
-			'edit_private_paintings'   => true,
-			'edit_published_paintings'   => true,
-			'publish_paintings'   => true,
-			'delete_paintings'   => true,
-			'delete_others_paintings'   => true,
-			'delete_private_paintings'   => true,
-			'delete_published_paintings'   => true,
+			'read_creations'   => true,					//Creation permissions
+			'read_private_creations'   => true,
+			'edit_creations'   => true,
+			'edit_others_creations'   => true,
+			'edit_private_creations'   => true,
+			'edit_published_creations'   => true,
+			'publish_creations'   => true,
+			'delete_creations'   => true,
+			'delete_others_creations'   => true,
+			'delete_private_creations'   => true,
+			'delete_published_creations'   => true,
 
 			'read_profiles'   => true,					//Profile permissions
 			'read_private_profiles'   => true,
@@ -124,18 +124,18 @@ function austeve_add_roles_on_plugin_activation() {
     $role->add_cap( 'delete_private_events' ); 
     $role->add_cap( 'delete_published_events' ); 
 
-    //Paintings
-    $role->add_cap( 'read_paintings' ); 
-    $role->add_cap( 'read_private_paintings' ); 
-    $role->add_cap( 'edit_paintings' ); 
-    $role->add_cap( 'edit_others_paintings' ); 
-    $role->add_cap( 'edit_private_paintings' ); 
-    $role->add_cap( 'edit_published_paintings' ); 
-    $role->add_cap( 'publish_paintings' ); 
-    $role->add_cap( 'delete_paintings' ); 
-    $role->add_cap( 'delete_others_paintings' ); 
-    $role->add_cap( 'delete_private_paintings' ); 
-    $role->add_cap( 'delete_published_paintings' ); 
+    //Creations
+    $role->add_cap( 'read_creations' ); 
+    $role->add_cap( 'read_private_creations' ); 
+    $role->add_cap( 'edit_creations' ); 
+    $role->add_cap( 'edit_others_creations' ); 
+    $role->add_cap( 'edit_private_creations' ); 
+    $role->add_cap( 'edit_published_creations' ); 
+    $role->add_cap( 'publish_creations' ); 
+    $role->add_cap( 'delete_creations' ); 
+    $role->add_cap( 'delete_others_creations' ); 
+    $role->add_cap( 'delete_private_creations' ); 
+    $role->add_cap( 'delete_published_creations' ); 
 
     //Profiles
     $role->add_cap( 'read_profiles' ); 
@@ -322,12 +322,12 @@ function austeve_events_columns_content($column_name, $post_ID) {
 }
 add_action('manage_austeve-events_posts_custom_column', 'austeve_events_columns_content', 10, 2);
 
-/* Paintings */
-function austeve_paintings_columns_head($defaults) {
+/* Creations */
+function austeve_creations_columns_head($defaults) {
 
 	$res = array_slice($defaults, 0, 2, true) +
 	    array("artist" => "Artist") +
-	    array("painting_tags" => "Tags") +
+	    array("creation_tags" => "Tags") +
 	    array_slice($defaults, 2, count($defaults) - 1, true) ;
 
 	$defaults = $res;
@@ -337,9 +337,9 @@ function austeve_paintings_columns_head($defaults) {
 
     return $defaults;
 }
-add_filter('manage_austeve-paintings_posts_columns', 'austeve_paintings_columns_head');
+add_filter('manage_austeve-creations_posts_columns', 'austeve_creations_columns_head');
 
-function austeve_paintings_columns_content($column_name, $post_ID) {
+function austeve_creations_columns_content($column_name, $post_ID) {
 
     if ($column_name == 'artist') {
 
@@ -349,16 +349,16 @@ function austeve_paintings_columns_content($column_name, $post_ID) {
 			echo $artist->post_title;
 
     }
-    else if ($column_name == 'painting_tags') {
+    else if ($column_name == 'creation_tags') {
 
-    	$taxonomy_name = 'austeve_painting_tags';
+    	$taxonomy_name = 'austeve_creation_tags';
     	$tags_args = array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'names');
-		$painting_tags = wp_get_object_terms( $post_ID,  $taxonomy_name, $tags_args );
-		echo implode(', ', $painting_tags);
+		$creation_tags = wp_get_object_terms( $post_ID,  $taxonomy_name, $tags_args );
+		echo implode(', ', $creation_tags);
 
     }
 }
-add_action('manage_austeve-paintings_posts_custom_column', 'austeve_paintings_columns_content', 10, 2);
+add_action('manage_austeve-creations_posts_custom_column', 'austeve_creations_columns_content', 10, 2);
 
 /* Users */
 function austeve_users_columns_head($defaults) {

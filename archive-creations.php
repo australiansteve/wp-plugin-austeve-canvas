@@ -28,31 +28,31 @@ get_header(); ?>
 				<div class="row"><!-- .row start -->
 
 					<div class="small-12 columns"><!-- .columns start -->
-						Search for a painting here
+						Search for a creation here
 					</div>
 
 				</div>
 
-				<div class="row small-up-1 medium-up-2 large-up-3 align-middle" id="paintings-block-grid">
+				<div class="row small-up-1 medium-up-2 large-up-3 align-middle" id="creations-block-grid">
 
 				<?php /* Start the Loop */ ?>
 				<?php while ( have_posts() ) : the_post(); ?>
 					<div class="column">
 				<?php 
 
-            		if (locate_template('page-templates/partials/paintings-archive.php') != '') {
+            		if (locate_template('page-templates/partials/creations-archive.php') != '') {
 						// yep, load the page template
-						get_template_part('page-templates/partials/paintings', 'archive');
+						get_template_part('page-templates/partials/creations', 'archive');
 					} else {
 						// nope, load the default
-						include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/paintings-archive.php');
+						include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/creations-archive.php');
 					}
 
 				?>
 					</div>
 				<?php endwhile; ?>
 
-				</div> <!-- #paintings-block-grid -->
+				</div> <!-- #creations-block-grid -->
 
 				<?php the_posts_navigation(); ?>
 

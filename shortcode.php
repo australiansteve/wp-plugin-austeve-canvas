@@ -10,7 +10,7 @@ function austeve_event_query_args($atts)
         'future_events' => 'true',
         'past_events' => 'false',
         'order' => 'ASC',
-        'painting_id' => -1,
+        'creation_id' => -1,
     ), $atts );
 
     extract( $atts );
@@ -52,18 +52,18 @@ function austeve_event_query_args($atts)
         $meta_query[] = $future_events_query;
     }
 
-    //Setup painting query
-    if ($painting_id >= 0)
+    //Setup creation query
+    if ($creation_id >= 0)
     {
-        error_log("Specific painting query!");
+        error_log("Specific creation query!");
 
-        $painting_query = array(
-            'key'           => 'painting',
+        $creation_query = array(
+            'key'           => 'creation',
             'compare'       => '=',
-            'value'         => $painting_id,
+            'value'         => $creation_id,
             'type'          => 'NUMERIC',
         );
-        $meta_query[] = $painting_query;
+        $meta_query[] = $creation_query;
     }
 
     $args['meta_query'] = $meta_query;

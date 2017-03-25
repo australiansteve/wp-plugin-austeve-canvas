@@ -1,6 +1,6 @@
 <?php
 /**
- * The template for displaying all single paintings.
+ * The template for displaying all single creations.
  *
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#single-post
  *
@@ -20,12 +20,12 @@ get_header(); ?>
 				
 				<?php 
 
-            		if (locate_template('page-templates/partials/paintings-single.php') != '') {
+            		if (locate_template('page-templates/partials/creations-single.php') != '') {
 						// yep, load the page template
-						get_template_part('page-templates/partials/paintings', 'single');
+						get_template_part('page-templates/partials/creations', 'single');
 					} else {
 						// nope, load the default
-						include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/paintings-single.php');
+						include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/creations-single.php');
 					}
 
 				?>
@@ -36,7 +36,7 @@ get_header(); ?>
 					<div class="small-12 columns"><!-- .columns start -->
 						<h3>Upcoming events</h3>
 
-						<?php echo do_shortcode("[show_events painting_id=".get_the_ID()."]"); ?>
+						<?php echo do_shortcode("[show_events creation_id=".get_the_ID()."]"); ?>
 
 					</div>
 
@@ -48,7 +48,7 @@ get_header(); ?>
 					<div class="small-12 columns"><!-- .columns start -->
 						<h3>Past events</h3>
 
-						<?php echo do_shortcode("[show_events painting_id=".get_the_ID()." past_events=true future_events=false order='DESC']"); ?>
+						<?php echo do_shortcode("[show_events creation_id=".get_the_ID()." past_events=true future_events=false order='DESC']"); ?>
 
 					</div>
 

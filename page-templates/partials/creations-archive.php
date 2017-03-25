@@ -1,6 +1,6 @@
 <?php
 /**
- * Template part for displaying archived paintings.
+ * Template part for displaying archived creations.
  *
  * @link https://codex.wordpress.org/Template_Hierarchy
  * 
@@ -28,10 +28,10 @@
 					}
 					else 
 					{
-						$the_painting = get_field('painting');
+						$the_creation = get_field('creation');
 					?>
 					
-					<img class="event-painting" src="<?php echo $the_painting['sizes']['medium'];?>" width="<?php echo $the_painting['sizes']['medium-width'];?>" height="<?php echo $the_painting['sizes']['medium-height'];?>"/>	
+					<img class="event-creation" src="<?php echo $the_creation['sizes']['medium'];?>" width="<?php echo $the_creation['sizes']['medium-width'];?>" height="<?php echo $the_creation['sizes']['medium-height'];?>"/>	
 
 					<?php
 					}
@@ -44,7 +44,7 @@
 				
 				<div class="small-12 columns">
 
-						<h2 class="painting-title">
+						<h2 class="creation-title">
 							<?php echo get_the_title(); ?>
 						</h2>
 

@@ -158,9 +158,9 @@ function austeve_update_wc_product( $post_id ) {
 			update_post_meta( $product_id, '_stock', ($still_remaining > 0) ? $still_remaining : '0'); //Venue capacity
 
 			//Update thumbnail
-			error_log(get_field('painting'));
-			error_log(print_r(get_field('painting', get_field('painting')), true));
-			update_post_meta( $product_id, '_thumbnail_id',  get_field('painting', get_field('painting'))['ID']); //Media ID
+			error_log(get_field('creation'));
+			error_log(print_r(get_field('image', get_field('creation')), true));
+			update_post_meta( $product_id, '_thumbnail_id',  get_field('image', get_field('creation'))['ID']); //Media ID
 
 			//Update expiry
 			update_post_meta( $product_id, '_expiration_date', get_field('start_time')); //Event date
@@ -195,7 +195,7 @@ function austeve_update_wc_product( $post_id ) {
 		//update metadata for the Product
 		update_post_meta( $new_product_id, '_price', get_field('price') );
 		update_post_meta( $new_product_id, '_regular_price', get_field('price') );
-		update_post_meta( $new_product_id, '_thumbnail_id',  get_field('painting', get_field('painting'))['ID']); //Media ID
+		update_post_meta( $new_product_id, '_thumbnail_id',  get_field('image', get_field('creation'))['ID']); //Media ID
 		update_post_meta( $new_product_id, '_expiration_date', get_field('start_time')); //Event date
 
 		if (get_field('custom_capacity'))

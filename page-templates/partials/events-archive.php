@@ -11,23 +11,23 @@
 
 	<div class="row">
 		
-		<div class="small-12 medium-3 columns event-painting">
+		<div class="small-12 medium-3 columns event-creation">
 			<!-- Image -->
 			
 <a href="<?php echo get_permalink();?>">
 			<?php
-			$paintingId = get_field('painting');
-			if ( has_post_thumbnail( $paintingId ) ) 
+			$creationId = get_field('creation');
+			if ( has_post_thumbnail( $creationId ) ) 
 			{
-				echo get_the_post_thumbnail( $paintingId, array( 300, 300) );
+				echo get_the_post_thumbnail( $creationId, array( 300, 300) );
 			}
 			else 
 			{
 
-			$the_painting = get_field('painting', $paintingId);
+			$the_creation = get_field('creation', $creationId);
 			?>
 
-			<img src="<?php echo $the_painting['sizes']['thumbnail'];?>" width="<?php echo $the_painting['sizes']['thumbnail-width'];?>" height="<?php echo $the_painting['sizes']['thumbnail-height'];?>"/>
+			<img src="<?php echo $the_creation['sizes']['thumbnail'];?>" width="<?php echo $the_creation['sizes']['thumbnail-width'];?>" height="<?php echo $the_creation['sizes']['thumbnail-height'];?>"/>
 			<?php
 			}
 			?>
@@ -83,22 +83,22 @@
 			<p class='event-instructor'>Instructor: <?php echo $host_info['display_name'];?></p>
 
 			<?php
-			$difficultyField = get_field_object('difficulty_level', $paintingId);
+			$difficultyField = get_field_object('difficulty_level', $creationId);
 			$difficultyValue = $difficultyField['value'];
 			$difficultyLabel = $difficultyField['choices'][ $difficultyValue ];
 			?>
 			<p class='event-level'>Difficulty: <?php echo $difficultyLabel; ?></p>
 
-			<p class='event-painting-tags'>Painting tags:
+			<p class='event-creation-tags'>Tags:
 			<?php
-			$painting_terms = wp_get_object_terms( $paintingId,  'austeve_painting_tags' );
+			$creation_terms = wp_get_object_terms( $creationId,  'austeve_creation_tags' );
 			$termOutput = array();
-			//error_log(print_r($painting_terms, true));
-			if ( ! empty( $painting_terms ) ) {
-				if ( ! is_wp_error( $painting_terms ) ) {
-					foreach( $painting_terms as $term ) {
+			//error_log(print_r($creation_terms, true));
+			if ( ! empty( $creation_terms ) ) {
+				if ( ! is_wp_error( $creation_terms ) ) {
+					foreach( $creation_terms as $term ) {
 						//error_log(print_r($term, true));
-						$termOutput[] = '<a href="' . get_term_link( $term->slug, 'austeve_painting_tags' ) . '">' . esc_html( $term->name ) . '</a>'; 
+						$termOutput[] = '<a href="' . get_term_link( $term->slug, 'austeve_creation_tags' ) . '">' . esc_html( $term->name ) . '</a>'; 
 					}
 				}
 			}

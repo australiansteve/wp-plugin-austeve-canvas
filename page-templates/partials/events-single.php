@@ -25,23 +25,23 @@
 			<div class="small-12 medium-3 columns">
 		
 				<?php
-				$event_painting = get_field('painting');
-				$artist = get_field('artist', $event_painting);
-				error_log(print_r($event_painting, true));
-				$the_painting = get_field('painting', $event_painting);
+				$event_creation = get_field('creation');
+				$artist = get_field('artist', $event_creation);
+				error_log(print_r($event_creation, true));
+				$the_creation = get_field('image', $event_creation);
 				?>
 
-				<a href="<?php echo get_permalink($event_painting)?>">
-					<img class="event-painting" src="<?php echo $the_painting['sizes']['medium'];?>" width="<?php echo $the_painting['sizes']['medium-width'];?>" height="<?php echo $the_painting['sizes']['medium-height'];?>"/>
+				<a href="<?php echo get_permalink($event_creation)?>">
+					<img class="event-creation" src="<?php echo $the_creation['sizes']['medium'];?>" width="<?php echo $the_creation['sizes']['medium-width'];?>" height="<?php echo $the_creation['sizes']['medium-height'];?>"/>
 					<br/>
-					<span class="painting-title">
-						<?php echo get_the_title($event_painting); ?>
+					<span class="creation-title">
+						<?php echo get_the_title($event_creation); ?>
 					</span>
 				</a>
 				<br/>
 				by 
 				<br/>
-				<span class="painting-artist">
+				<span class="creation-artist">
 					<a href="<?php echo get_permalink($artist)?>"><?php echo $artist->post_title; ?></a>
 				</span>
 
