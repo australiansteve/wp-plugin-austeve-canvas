@@ -45,3 +45,53 @@
 		width: 25%;
 	}
 }
+
+.recent-event {
+	margin-bottom: 1rem;
+
+	.head div , .body div {
+		display: inline-block;
+	}
+
+	.head {
+		font-weight: 700;
+	}
+
+	.date {
+		width: 25%;
+	}
+
+	.title {
+		width: 47%;
+	}
+
+	.rating {
+		width: 5%;
+		text-align: right;
+	}
+
+	.reviews {
+		width: 20%;
+		text-align: right;
+	}
+
+	.venue {
+		margin-top: 0.25rem;
+	}
+
+	.good-rating {
+		color: green;
+	}
+
+	.ok-rating {
+		color: orange;
+	}
+
+	.bad-rating {
+		color: red;
+	}
+
+	.spacer-25 {
+		width: 25%;
+	}
+}

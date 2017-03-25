@@ -46,11 +46,31 @@ function austeve_admin_recent_events() {
 	{
 		$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time', $event->ID));
 
-		echo "<p>";
-		echo $eventDate->format('d M - H:i');
-		echo "&nbsp;";
-		echo $event->post_title;
-		echo "</p>";
+		$term_args = array('orderby' => 'name', 'order' => 'ASC', 'fields' => 'names');
+    	$term_list = wp_get_post_terms(get_field('venue', $event->ID)->ID, 'austeve_territories', $term_args);
+    	if (count($term_list) > 1)
+			$eventTerritory = implode(",", $term_list);
+		else if (count($term_list) > 0)
+			$eventTerritory = $term_list[0];
+
+		$reviews = json_decode(get_field('reviews', $event->ID), true);
+		$eventRating = 5;
+		$ratingClass = "good";
+		$numReviews = count($reviews);
+
+		echo "<div class='recent-event'>";
+		echo "	<div class='head'>";
+		echo "		<div class='date'>".$eventDate->format('d M Y')."</div>";
+		echo "		<div class='title'><a href='".get_permalink($event->ID)."' target='_blank'>".$event->post_title."</a></div>";
+		echo "		<div class='rating'><span class='$ratingClass'>".$eventRating."/5</span></div>";
+		echo "		<div class='reviews'><a href='#'>[$numReviews reviews]</a></div>";		
+		echo "	</div>"; //END .head
+		echo "	<div class='body'>";
+		echo "		<div class='spacer-25'></div>";
+		echo "		<div class='location'>".get_field('venue', $event->ID)->post_title."<br/>".$eventTerritory."</div>";
+		echo "	</div>"; //END .body
+		echo "</div>"; //END .upcoming-event
+
 	}
 }
 
