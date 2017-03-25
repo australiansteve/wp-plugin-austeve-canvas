@@ -16,6 +16,7 @@ include( plugin_dir_path( __FILE__ ) . 'austeve-events.php');
 include( plugin_dir_path( __FILE__ ) . 'austeve-venues.php');
 include( plugin_dir_path( __FILE__ ) . 'austeve-creations.php');
 include( plugin_dir_path( __FILE__ ) . 'austeve-profiles.php');
+include( plugin_dir_path( __FILE__ ) . 'woocommerce-actions.php');
 include( plugin_dir_path( __FILE__ ) . 'woo-endpoint-myaccount-reviews.php');
 
 register_activation_hook( __FILE__, 'austeve_add_roles_on_plugin_activation' );
