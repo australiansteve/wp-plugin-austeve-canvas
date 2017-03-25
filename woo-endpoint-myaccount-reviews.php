@@ -256,7 +256,7 @@ new AUSteve_My_Account_Reviews();
 
 function austeve_save_review_ajax() {
 	check_ajax_referer( "austevesavereview" );
-	error_log("AJAX SAVE!");
+
 	if( $_POST[ 'eventId' ] )
 	{
 		//If rating is not given, or it's not a number, or it's out of bounds, do not save the review - indicative of tampering with the request
@@ -271,16 +271,14 @@ function austeve_save_review_ajax() {
 		$feedback = $_POST[ 'feedback' ] ? $_POST[ 'feedback' ] : "";
 		$user = get_current_user_id();
 
-		// $_POST[ 'feedback' ]
 		error_log("AJAX save review for event: ".intval($eventId).". Rating: ".$rating.". Feedback: ".$feedback.". User: ".$user);
 
 		//Get the guest list for the event
 		$guest_list = json_decode(get_field('guest_list', $eventId));
 
-		error_log(print_r($guest_list, true));
+		//error_log(print_r($guest_list, true));
 		foreach($guest_list as $order)
 		{
-			error_log(print_r($order, true));
 			if ($order->user == $user)
 			{
 				//User is allowed to leave a review since they placed an order for the event
@@ -288,7 +286,6 @@ function austeve_save_review_ajax() {
 
 				//So, get the existing reviews
 				$reviewsJSON = get_field('reviews', $eventId);
-				error_log("Existing Reviews: ".print_r($reviewsJSON, true));
 				$reviews = $reviewsJSON ? json_decode($reviewsJSON) : [];
 				error_log("Reviews array: ".print_r($reviews, true));
 

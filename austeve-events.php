@@ -286,4 +286,197 @@ function event_filter_archive_title( $title ) {
 }
 
 add_filter( 'get_the_archive_title', 'event_filter_archive_title');
+
+
+function austeve_save_attendance_ajax() {
+	check_ajax_referer( "austevesaveattendance" );
+
+	if( $_POST[ 'eventId' ] && $_POST[ 'orderId' ]  && $_POST[ 'userId' ] )
+	{
+
+		$eventId = $_POST[ 'eventId' ];
+		$orderId = $_POST[ 'orderId' ];
+		$userId = $_POST[ 'userId' ];
+		$increaseAttendance = $_POST[ 'increase' ] == 'true';
+		error_log("Increase:".$_POST[ 'increase' ].":".$increaseAttendance);
+
+		$user = get_current_user_id();
+
+		error_log("AJAX save attendance for event: ".intval($eventId).". Order: ".$orderId.". userId: ".$userId.". User: ".$user. " - ".($increaseAttendance ? "UP" : "DOWN"));
+
+		//Establish if the current user has permission to update this event
+
+		$event_host = get_field('host', $eventId);
+		error_log("Current user ID: ".print_r($user , true));
+		error_log("Event host ID: ".print_r($event_host['ID'] , true));
+
+		$venue = get_field('venue', $eventId);
+		$event_territory = get_field('territory', $venue->ID);
+		$event_territories = get_ancestors( $event_territory, 'austeve_territories', 'taxonomy' );
+		array_push($event_territories, $event_territory);
+		error_log("Event territory: ".$event_territory);
+		error_log("Territories: ".print_r($event_territories, true));
+
+		//Get current user territories	
+		$ut_args = array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'ids');
+		$user_territories = wp_get_object_terms( $user, 'austeve_territories', $ut_args );
+		error_log("User terms:".print_r($user_territories, true));
+
+		//If user is event host, or user is admin, or user can edit events in the event territory
+		if ( $user == $event_host['ID'] || 
+				current_user_can('edit_users') || 
+				( current_user_can('edit_events', get_the_ID()) && count(array_intersect($event_territories, $user_territories)) >= 1 ) 
+			) {
+
+			//Get the guest list for the event
+			$checked_in_guest_list = json_decode(get_field('guest_list', $eventId), true);
+			error_log("Guest list before update: ".print_r($checked_in_guest_list, true));
+
+			$guestlist = AUSteve_EventHelper::get_sorted_event_guestlist($eventId);
+			error_log("Sorted guestlist [attendance]: ".print_r($guestlist, true));
+
+			$currentNum = array_key_exists($orderId, $checked_in_guest_list) ? intval($checked_in_guest_list[$orderId]) : 0;
+
+			if ($increaseAttendance && $currentNum >= $guestlist[$orderId]['qty'])
+			{
+				//echo "Already all checked in";
+				echo $guestlist[$orderId]['qty'];
+				die();
+			}
+			else if (!$increaseAttendance && $currentNum <= 0)
+			{
+				//echo "Already nobody checked in";
+				echo 0;
+				die();
+			}
+			else if ($increaseAttendance)
+			{
+				$checked_in_guest_list[$orderId] = $currentNum + 1;
+				if (update_field('guest_list', json_encode($checked_in_guest_list), $eventId))
+					echo $checked_in_guest_list[$orderId];
+				else
+					echo "#error#";
+				
+				die();
+			}
+			else if (!$increaseAttendance)
+			{
+				$checked_in_guest_list[$orderId] = $currentNum - 1;
+				if (update_field('guest_list', json_encode($checked_in_guest_list), $eventId))
+					echo $checked_in_guest_list[$orderId];
+				else
+					echo "#error#";
+				
+				die();
+			}
+			echo "Incomplete";
+			die();
+
+		}
+		else
+		{
+			echo "No permission on event";
+			die();
+		}
+	}
+	echo "Incorrect paramters";
+	die();
+}
+add_action( 'wp_ajax_save_attendance', 'austeve_save_attendance_ajax' );
+
+
+class AUSteve_EventHelper {
+		/**
+	 * Plugin actions.
+	 */
+	public function __construct() {
+		
+	}
+
+	public static function get_sorted_event_guestlist($eventID) {
+
+		//Display guest list if user is admin or host
+		error_log("Finding guests for event ".$eventID);
+		error_log("WC product ".get_field('wc_product', $eventID));
+
+		global $post, $wpdb;
+		$post_id = get_field('wc_product', $eventID);
+
+		// Get qty for each order
+		$sale_qtys = $wpdb->get_results( $wpdb->prepare(
+			"SELECT oim.order_item_id as order_item_id, oim.meta_value as qty 
+				FROM {$wpdb->prefix}woocommerce_order_itemmeta oim 
+				WHERE oim.meta_key = '_qty' AND oim.order_item_id IN(SELECT oi.order_item_id FROM
+			{$wpdb->prefix}woocommerce_order_itemmeta oim
+			INNER JOIN {$wpdb->prefix}woocommerce_order_items oi
+			ON oim.order_item_id = oi.order_item_id
+			INNER JOIN {$wpdb->prefix}posts o
+			ON oi.order_id = o.ID
+			WHERE oim.meta_key = '_product_id'
+			AND oim.meta_value IN ( %s )
+			AND o.post_status IN ( %s )
+			ORDER BY o.ID DESC)",
+			get_field('wc_product', $eventID),
+			'wc-completed'), OBJECT_K
+		);
+
+		error_log("Qty Sales: ".print_r($sale_qtys, true));
+
+    	//Reset back to the main loop
+		wp_reset_postdata();
+
+		// Query the orders related to the WC product
+		$item_sales = $wpdb->get_results( $wpdb->prepare(
+			"SELECT oi.order_item_id, o.ID as order_id  FROM
+			{$wpdb->prefix}woocommerce_order_itemmeta oim
+			INNER JOIN {$wpdb->prefix}woocommerce_order_items oi
+			ON oim.order_item_id = oi.order_item_id
+			INNER JOIN {$wpdb->prefix}posts o
+			ON oi.order_id = o.ID
+			WHERE oim.meta_key = '_product_id'
+			AND oim.meta_value IN ( %s )
+			AND o.post_status IN ( %s )
+			ORDER BY o.ID DESC",
+			get_field('wc_product', $eventID),
+			'wc-completed'
+		), OBJECT_K );
+
+		error_log("Item Sales: ".print_r($item_sales, true));
+
+		$sales = array();
+		if (count($item_sales) > 0)
+		{
+			foreach($item_sales as $id=>$sale)
+			{	
+				$sales[$id]['order_id'] = $sale->order_id;
+				$sales[$id]['qty'] = $sale_qtys[$id]->qty;
+
+				$userdata = get_userdata( get_field('_customer_user', $sale->order_id));
+				$sales[$id]['customer_id'] = $userdata->ID;
+				$sales[$id]['customer_name'] = $userdata->first_name." ".$userdata->last_name;
+				$sales[$id]['customer_email'] = $userdata->user_email;
+			}
+
+			error_log("Merged array: ".print_r($sales, true));
+
+			// Obtain a list of columns
+			foreach ($sales as $key => $row) {
+			    $customer_name[$key] = $row['customer_name'];
+			}
+
+			// Add $data as the last parameter, to sort by the common key
+			array_multisort($customer_name, SORT_ASC, $sales);
+
+			foreach($sales as $sale)
+			{
+				$returnArray[$sale['order_id']] = $sale;
+			}
+			return $returnArray;
+		}
+		return $sales;
+	}
+
+}
+new AUSteve_EventHelper();
+
 ?>
