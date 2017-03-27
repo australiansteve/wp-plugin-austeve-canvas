@@ -82,7 +82,7 @@ function austeve_admin_recent_events() {
 		echo "		<div class='title'><a href='".get_permalink($event->ID)."' target='_blank'>".$event->post_title."</a></div>";
 		if ($numReviews > 0) {
 			echo "		<div class='rating'><span class='$ratingClass'>".$eventRating."/5</span></div>";
-			echo "		<div class='reviews'><a href='#'>[$numReviews reviews]</a></div>";		
+			echo "		<div class='reviews'><a href='".admin_url('edit.php?post_type=austeve-events&page=austeve-event-reviews&event_id='.$event->ID)."'>[$numReviews reviews]</a></div>";		
 		}
 		else {
 			echo "		<div class='reviews'>No reviews</div>";		

@@ -95,3 +95,37 @@
 		width: 25%;
 	}
 }
+
+.event-reviews {
+	margin-top: 1rem;
+}
+
+.event-review {
+
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid grey;
+
+	div {
+		display: inline-block;
+	}
+
+	.user {
+		width: 35%;
+	}
+
+	.rating {
+		width: 10%;
+	}
+
+	.feedback {
+		width: 40%;
+	}
+}
+
+.event-review.header {
+	font-weight: 700;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid grey;
+}

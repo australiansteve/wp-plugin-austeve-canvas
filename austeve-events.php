@@ -476,7 +476,107 @@ class AUSteve_EventHelper {
 		return $sales;
 	}
 
+	public static function current_user_is_admin($eventId) {
+		//If event host is viewing
+		$current_user = wp_get_current_user();
+		$event_host = get_field('host', $eventId);
+		error_log("Current user ID: ".print_r($current_user->ID , true));
+		error_log("Event host ID: ".print_r($event_host['ID'] , true));
+
+		$event_territory = get_field('territory', get_field('venue', $eventId)->ID);
+		$event_territories = get_ancestors( $event_territory, 'austeve_territories', 'taxonomy' );
+		array_push($event_territories, $event_territory);
+
+		error_log("Event territory: ".$event_territory);
+		error_log("Territories: ".print_r($event_territories, true));
+
+		//Get current user territories	
+		$ut_args = array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'ids');
+		$user_territories = wp_get_object_terms( $current_user->ID,  'austeve_territories', $ut_args );
+
+		error_log("User terms:".print_r($user_territories, true));
+
+		return ($current_user->ID == $event_host['ID'] || 
+			current_user_can('edit_users') || 
+			( current_user_can('edit_events', $eventId) && count(array_intersect($event_territories, $user_territories)) >= 1 ));	
+	}
+
 }
 new AUSteve_EventHelper();
+
+add_action( 'admin_menu', 'austeve_event_reviews_menu' );
+
+function austeve_event_reviews_menu() {
+	add_submenu_page('edit.php?post_type=austeve-events', 'Reviews', 'Reviews', 'edit_events', 'austeve-event-reviews', 'austeve_display_reviews' );
+}
+
+function austeve_display_reviews() {
+	if ( !current_user_can( 'edit_events' ) )  {
+		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+	}
+	echo '<div class="wrap">';
+	echo '<h1>Event Reviews</h1>';
+
+	//Get all previous events
+	$args = austeve_event_query_args(
+		array('number_of_posts' => 5,
+	        'future_events' => 'false',
+	        'past_events' => 'true',
+	        'order' => 'DESC'
+	    )
+    );
+
+    $posts_array = get_posts( $args );
+    $event_id = isset($_GET['event_id']) ? $_GET['event_id']: 0;
+	
+    //Display dropdown to select event
+    echo "<select>";
+    echo "<option value='0' ".(($event_id == 0) ? "selected" : "").">Select an event</option>";
+	foreach($posts_array as $event)
+	{
+		$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time', $event->ID));
+
+		echo "<option value='".$event->ID."' ".(($event_id == $event->ID) ? "selected" : "").">".$event->post_title.", ".get_field('venue', $event->ID)->post_title." (".$eventDate->format('d M Y').")</option>";
+
+	}
+	echo "</select>";
+	echo '<div class="event-reviews">';
+	if ($event_id > 0)
+	{
+		if (!AUSteve_EventHelper::current_user_is_admin($event_id))
+		{
+			echo "<p>You do not have access to view this events reviews.</p>";
+		}
+		else if (get_field('reviews', $event_id))
+		{
+			$reviews = json_decode(get_field('reviews', $event_id), true);
+			echo "<div class='event-review header'>";
+			echo "<div class='user'>User</div>";
+			echo "<div class='rating'>Rating</div>";
+			echo "<div class='feedback'>Feedback</div>";
+			echo "</div>";
+
+			foreach($reviews as $user_id=>$review)
+			{
+				$userdata = get_userdata($user_id);
+				echo "<div class='event-review'>";
+				echo "<div class='user'>".$userdata->first_name." ".$userdata->last_name." (<a href='mailto:".$userdata->user_email."' target='_blank'>".$userdata->user_email."</a>)</div>";
+				echo "<div class='rating'>".$review['rating']."/5</div>";
+				echo "<div class='feedback'>".$review['feedback']."</div>";
+				echo "</div>";
+			}
+		}
+		else 
+		{
+			echo "There are no reviews on this event";
+		}
+	}
+	else
+	{
+		echo "Select an event to view reviews"; 
+	}
+	echo '</div>';
+	echo '</div>';
+}
 
 ?>
