@@ -147,7 +147,7 @@ function austeve_update_wc_product( $post_id ) {
 			update_post_meta( $product_id, '_price', get_field('price') );
 			update_post_meta( $product_id, '_regular_price', get_field('price') );
 
-			//Update stock - impacted bu if there has been a change of venue
+			//Update stock - impacted bu if there has been a change of venue or a change in custom capacity
 			if (get_field('custom_capacity'))
 				$new_capacity = intval(get_field('custom_capacity'));
 			else

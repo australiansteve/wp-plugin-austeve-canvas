@@ -145,4 +145,54 @@ function venue_filter_archive_title( $title ) {
 
 add_filter( 'get_the_archive_title', 'venue_filter_archive_title');
 
+
+function austeve_update_wc_product_stock( $post_id ) {
+
+	$venue_post = get_post($post_id);
+	$venue_capacity = get_field('capacity');
+
+    // If this isn't a 'venue' post, don't update anything.
+    if ( "austeve-venues" != $venue_post->post_type ) return;
+
+    //We only want to update future event capcities...
+    $args = austeve_event_query_args(
+		array('number_of_posts' => -1,
+	        'future_events' => 'true',
+	        'past_events' => 'false',
+	        'order' => 'ASC'
+    	)
+    );
+
+    ob_start();
+    $query = new WP_Query( $args );
+	
+    if( $query->have_posts() ){
+
+		//loop over EVENT query results
+        while( $query->have_posts() ){
+            $query->the_post();
+            
+            //If the event is at the venue being edited, and the event does NOT have a custom capacity
+            if (get_field('venue')->ID == $post_id && !get_field('custom_capacity', get_the_ID()))
+            {
+            	//Get the WC product from the event
+    			$product_id = get_field('wc_product', get_the_ID());
+
+    			//Find how many tickets have been sold
+            	$sold_so_far = get_post_meta($product_id, 'total_sales', true);
+				error_log("Stock: ".print_r($sold_so_far, true)." vs ".$venue_capacity);
+				$still_remaining = $venue_capacity - $sold_so_far;
+				update_post_meta( $product_id, '_stock', ($still_remaining > 0) ? $still_remaining : '0'); //Update the WC product stock count
+            }
+            //If the event does have a custom capacity the stock level will be managed by the austeve_update_wc_product() function
+        }
+    }
+    
+    wp_reset_postdata();
+    return ob_get_clean();
+
+}
+add_action('acf/save_post', 'austeve_update_wc_product_stock', 20);
+
+
 ?>
