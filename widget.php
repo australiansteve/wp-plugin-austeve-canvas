@@ -53,17 +53,40 @@ function austeve_admin_recent_events() {
 		else if (count($term_list) > 0)
 			$eventTerritory = $term_list[0];
 
-		$reviews = json_decode(get_field('reviews', $event->ID), true);
-		$eventRating = 5;
-		$ratingClass = "good";
-		$numReviews = count($reviews);
+		$ratingClass = "bad-rating";
+		$numReviews = 0;
+		if (get_field('reviews', $event->ID))
+		{
+			$reviews = json_decode(get_field('reviews', $event->ID), true);
+			$numReviews = count($reviews);
+			$ratingTotal = 0;
+			foreach($reviews as $user_id=>$review)
+			{
+				$ratingTotal += $review['rating'];
+			}
+			$eventRating = round($ratingTotal / $numReviews, 2);
+			if (intval($eventRating) >= 4)
+			{
+				$ratingClass = 'good-rating';
+			}
+			else if (intval($eventRating) > 2.5)
+			{
+				$ratingClass = 'ok-rating';
+			}
+
+		}
 
 		echo "<div class='recent-event'>";
 		echo "	<div class='head'>";
 		echo "		<div class='date'>".$eventDate->format('d M Y')."</div>";
 		echo "		<div class='title'><a href='".get_permalink($event->ID)."' target='_blank'>".$event->post_title."</a></div>";
-		echo "		<div class='rating'><span class='$ratingClass'>".$eventRating."/5</span></div>";
-		echo "		<div class='reviews'><a href='#'>[$numReviews reviews]</a></div>";		
+		if ($numReviews > 0) {
+			echo "		<div class='rating'><span class='$ratingClass'>".$eventRating."/5</span></div>";
+			echo "		<div class='reviews'><a href='#'>[$numReviews reviews]</a></div>";		
+		}
+		else {
+			echo "		<div class='reviews'>No reviews</div>";		
+		}
 		echo "	</div>"; //END .head
 		echo "	<div class='body'>";
 		echo "		<div class='spacer-25'></div>";
