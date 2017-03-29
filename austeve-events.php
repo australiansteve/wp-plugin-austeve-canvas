@@ -335,7 +335,7 @@ function austeve_save_attendance_ajax() {
 			$guestlist = AUSteve_EventHelper::get_sorted_event_guestlist($eventId);
 			error_log("Sorted guestlist [attendance]: ".print_r($guestlist, true));
 
-			$currentNum = array_key_exists($orderId, $checked_in_guest_list) ? intval($checked_in_guest_list[$orderId]) : 0;
+			$currentNum = array_key_exists($orderId, $checked_in_guest_list) ? intval($checked_in_guest_list[$orderId]['qty']) : 0;
 
 			if ($increaseAttendance && $currentNum >= $guestlist[$orderId]['qty'])
 			{
@@ -351,9 +351,10 @@ function austeve_save_attendance_ajax() {
 			}
 			else if ($increaseAttendance)
 			{
-				$checked_in_guest_list[$orderId] = $currentNum + 1;
+				$checked_in_guest_list[$orderId]['qty'] = $currentNum + 1;
+				$checked_in_guest_list[$orderId]['customer_id'] = $guestlist[$orderId]['customer_id'];
 				if (update_field('guest_list', json_encode($checked_in_guest_list), $eventId))
-					echo $checked_in_guest_list[$orderId];
+					echo $checked_in_guest_list[$orderId]['qty'];
 				else
 					echo "#error#";
 				
@@ -361,9 +362,10 @@ function austeve_save_attendance_ajax() {
 			}
 			else if (!$increaseAttendance)
 			{
-				$checked_in_guest_list[$orderId] = $currentNum - 1;
+				$checked_in_guest_list[$orderId]['qty'] = $currentNum - 1;
+				$checked_in_guest_list[$orderId]['customer_id'] = $guestlist[$orderId]['customer_id'];
 				if (update_field('guest_list', json_encode($checked_in_guest_list), $eventId))
-					echo $checked_in_guest_list[$orderId];
+					echo $checked_in_guest_list[$orderId]['qty'];
 				else
 					echo "#error#";
 				

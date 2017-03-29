@@ -56,7 +56,7 @@ get_header(); ?>
 						foreach($guestlist as $orderId=>$guest)
 						{
 							error_log( "Order: ".$orderId);
-							$checkedInAlready = array_key_exists($orderId, $checklist) ? $checklist[$orderId] : 0;
+							$checkedInAlready = array_key_exists($orderId, $checklist) ? $checklist[$orderId]['qty'] : 0;
 							$buttonClass = $checkedInAlready > 0 ? ($checkedInAlready >= $guest['qty'] ? 'all-present' : 'semi-present') : '';
 
 							echo "<div class='row'>";

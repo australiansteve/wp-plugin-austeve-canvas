@@ -94,11 +94,11 @@ class AUSteve_My_Account_Reviews {
 		<div class='event' data-event='<?php echo $eventID; ?>'>
 			<label>How would you rate the host of the event?</label>
 			<select class='host-rating'>
-				<option value='5'>Great</option>
-				<option value='4'>Good</option>
-				<option value='3'>OK</option>
-				<option value='2'>Bad</option>
-				<option value='1'>Terrible</option>
+				<option value='5'>5 - Great</option>
+				<option value='4'>4 - Good</option>
+				<option value='3'>3 - OK</option>
+				<option value='2'>2 - Bad</option>
+				<option value='1'>1 - Terrible</option>
 			</select>
 
 			<label>Feedback</label>
@@ -274,15 +274,14 @@ function austeve_save_review_ajax() {
 		error_log("AJAX save review for event: ".intval($eventId).". Rating: ".$rating.". Feedback: ".$feedback.". User: ".$user);
 
 		//Get the guest list for the event
-		$guest_list = json_decode(get_field('guest_list', $eventId));
+		$guest_list = json_decode(get_field('guest_list', $eventId), true);
 
-		//error_log(print_r($guest_list, true));
-		foreach($guest_list as $order)
+		error_log(print_r($guest_list, true));
+		foreach($guest_list as $order_id=>$info)
 		{
-			if ($order->user == $user)
+			if ($info['customer_id'] == $user)
 			{
-				//User is allowed to leave a review since they placed an order for the event
-				//This means they can leave a review even if they didn't attend
+				//User is allowed to leave a review since they attended the event
 
 				//So, get the existing reviews
 				$reviewsJSON = get_field('reviews', $eventId);
@@ -299,7 +298,7 @@ function austeve_save_review_ajax() {
 				$user_review['rating'] = $rating;
 				$user_review['feedback'] = $feedback;
 
-				$reviews->$user = $user_review;
+				$reviews[$user] = $user_review;
 
 				error_log("Reviews to save: ".print_r($reviews, true));
 
