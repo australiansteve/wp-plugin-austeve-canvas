@@ -31,19 +31,28 @@
 		
 				<?php
 				$picture = get_field('picture');
+				if ($picture){
 				?>
 				
 				<img class="venue-picture" src="<?php echo $picture['sizes']['medium'];?>" width="<?php echo $picture['sizes']['medium-width'];?>" height="<?php echo $picture['sizes']['medium-height'];?>"/>	
 
+				<?php 
+				}
+				$location = get_field('address');
+
+				if( !empty($location) ) {
+				?>
+					<p class='venue-address'><?php echo $location['address']; ?> <br/> <a href='https://www.google.ca/maps/place/<?php echo urlencode($location['address']);?>' target='_blank'>Get Directions</a></p>
+				<?php
+				}
+				?>
 			</div>
 		
 			<div class="small-9 columns">
 				
 				<span class="venue-address">
 
-					<?php 
-					$location = get_field('address');
-
+				<?php
 					if( !empty($location) ) {
 					?>
 					<div class="acf-map single">
