@@ -52,5 +52,10 @@ add_action( 'admin_enqueue_scripts', 'austeve_canvas_enqueue_admin_style' );
 // Flushes rewrite rules on plugin activation.
 register_activation_hook( __FILE__, array( 'AUSteve_My_Account_Reviews', 'install' ) );
 
+function austeve_acf_init() {
+	
+	acf_update_setting('google_api_key', 'AIzaSyCfoi49FhApNMu5BPu2YHItmdCxp6LWbVs');
+}
 
+add_action('acf/init', 'austeve_acf_init');
 ?>

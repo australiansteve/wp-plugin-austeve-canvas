@@ -97,6 +97,8 @@ function austeve_events_upcoming($atts){
 
     	echo '</div>';
 
+        include( plugin_dir_path( __FILE__ ) . 'google-map.php');
+
     }
     else {
 ?>

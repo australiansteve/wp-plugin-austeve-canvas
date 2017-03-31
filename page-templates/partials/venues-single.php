@@ -41,8 +41,16 @@
 				
 				<span class="venue-address">
 
-					<?php echo get_field('address'); ?>
+					<?php 
+					$location = get_field('address');
+
+					if( !empty($location) ) {
+					?>
+					<div class="acf-map single">
+						<div class="marker" data-lat="<?php echo $location['lat']; ?>" data-lng="<?php echo $location['lng']; ?>"></div>
+					</div>
 					
+					<?php } ?>					
 				</span>
 
 			</div>

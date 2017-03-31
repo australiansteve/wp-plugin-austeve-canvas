@@ -39,4 +39,8 @@ get_header(); ?>
 
 </div><!-- .row end -->
 
+
+<?php 
+    include( plugin_dir_path( __FILE__ ) . 'google-map.php');
+?>
 <?php get_footer(); ?>

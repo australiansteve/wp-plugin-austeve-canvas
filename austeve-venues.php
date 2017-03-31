@@ -194,5 +194,4 @@ function austeve_update_wc_product_stock( $post_id ) {
 }
 add_action('acf/save_post', 'austeve_update_wc_product_stock', 20);
 
-
 ?>

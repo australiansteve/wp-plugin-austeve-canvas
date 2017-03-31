@@ -52,7 +52,7 @@
 			?>
 
 			<h3 class='event-name'><a href="<?php echo get_permalink();?>"><?php echo the_title(); ?></a></h3>
-			
+
 			<p class='event-venue'>
 
 				<a data-open="mapModal<?php echo $venue->ID; ?>">
@@ -65,22 +65,77 @@
 				<?php
 				if (get_field('accessible', $venue->ID)) 
 				{
-					echo "<i class='fa fa-wheelchair' aria-hidden='true' title='This venue is accessible'></i>";
+					echo "<i class='fa fa-wheelchair has-tooltip' aria-hidden='true' title='This venue is accessible'></i>";
 				}
 
 				?>
-				<div class="reveal" id="mapModal<?php echo $venue->ID; ?>" data-reveal>
+				<div class="reveal" id="mapModal<?php echo $venue->ID; ?>" data-reveal style="min-height: 400px" data-venue-id="<?php echo $venue->ID;?>">
 				  <h3><?php echo $venue->post_title; ?></h3>
-				  <p> Map goes here</p>
+				  <?php 
+					$location = get_field('address', $venue->ID);
+
+					if( !empty($location) ) {
+						//echo print_r($location, true);
+					?>
+					<p><?php echo $location['address']; ?> <br/> <a href='https://www.google.ca/maps/place/<?php echo urlencode($location['address']);?>' target='_blank'>Get Directions</a></p>
+					<div class="acf-map">
+						<div class="marker" data-lat="<?php echo $location['lat']; ?>" data-lng="<?php echo $location['lng']; ?>"></div>
+					</div>
+					<?php } ?>				  
 				</div>
 
 			</p>
 
 			<?php 
+			//Get Categories
+			$terms = get_the_terms( $creationId, 'austeve_creation_categories' );
+			$termString = '';
+                         
+			if ( $terms && ! is_wp_error( $terms ) )
+			{
+				$term = $terms[0];
+
+				// The $term is an object, so we don't need to specify the $taxonomy.
+			    $term_link = get_term_link( $term );
+			    
+			    // If there was an error, continue to the next term.
+			    if ( is_wp_error( $term_link ) ) {
+			        continue;
+			    }
+			 
+			    // We successfully got a link. Print it out.
+			    $termString = '<a href="' . esc_url( $term_link ) . '">' . $term->name . '</a>';
+
+			    $parent = $term->parent;
+			    while ($parent != 0)
+			    {
+			    	$term = get_term($parent, 'austeve_creation_categories');
+					//echo print_r($term, true);
+					if ( $term && ! is_wp_error( $term ) )
+					{
+						$term_link = get_term_link( $term );
+				    	if ( is_wp_error( $term_link ) ) {
+					        continue;
+					    }
+					    $termString = "<a href='". esc_url( $term_link ) ."'>".$term->name."</a> / ".$termString; 
+
+					    $parent = $term->parent;
+					}
+					else
+					{
+						continue; //emergency break
+					}
+			    }
+			}
+			?>
+			<p class='category'><?php echo $termString; ?></p>
+
+
+			<?php 
 			$host_info = get_field('host');
 			?>
 
-			<p class='event-instructor'>Instructor: <?php echo $host_info['display_name'];?></p>
+			<p class='event-instructor' data-id='<?php echo $host_info['ID']; ?>' data-url='<?php echo admin_url('admin-ajax.php');?>'>Instructor: <span class='has-tooltip' title="Fancy word for a beetle."><?php echo $host_info['display_name'];?></span></p>
 
 			<?php
 			$difficultyField = get_field_object('difficulty_level', $creationId);

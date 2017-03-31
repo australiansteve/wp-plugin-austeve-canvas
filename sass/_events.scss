@@ -19,6 +19,15 @@ header.page-header {
     .fa-wheelchair {
     	margin-left: 0.5rem;
     }
+
+    .event-venue {
+    	margin-bottom: 0.5rem;
+    }
+
+    .has-tooltip  {
+	    border-bottom: 1px dotted black;
+	    cursor: help;
+	}
 }
 
 #event-guest-list {
