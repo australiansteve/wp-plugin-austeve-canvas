@@ -46,7 +46,25 @@ function austeve_save_attendance_ajax() {
 			$guestlist = AUSteve_EventHelper::get_sorted_event_guestlist($eventId);
 			error_log("Sorted guestlist [attendance]: ".print_r($guestlist, true));
 
-			$currentNum = array_key_exists($orderId, $checked_in_guest_list) ? intval($checked_in_guest_list[$orderId]['qty']) : 0;
+			$currentNum = 0;
+
+			if (array_key_exists($orderId, $checked_in_guest_list))
+			{
+				if (array_key_exists('qty', $checked_in_guest_list[$orderId]))
+				{
+					$currentNum = intval($checked_in_guest_list[$orderId]['qty']);
+				}
+				else if (array_key_exists('present', $checked_in_guest_list[$orderId])) 
+				{
+					//The 'present' key was used in an early implementation. Added for backwards compatibility
+					$currentNum = intval($checked_in_guest_list[$orderId]['present']);
+					unset($checked_in_guest_list[$orderId]['present']);
+					if (array_key_exists('user', $checked_in_guest_list[$orderId])) 
+					{
+						unset($checked_in_guest_list[$orderId]['user']);
+					}
+				}
+			}
 
 			if ($increaseAttendance && $currentNum >= $guestlist[$orderId]['qty'])
 			{

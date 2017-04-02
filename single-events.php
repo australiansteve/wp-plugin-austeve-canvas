@@ -56,7 +56,20 @@ get_header(); ?>
 						foreach($guestlist as $orderId=>$guest)
 						{
 							error_log( "Order: ".$orderId);
-							$checkedInAlready = array_key_exists($orderId, $checklist) ? $checklist[$orderId]['qty'] : 0;
+							$checkedInAlready = 0;
+							if (array_key_exists($orderId, $checklist))
+							{
+								if (array_key_exists('qty', $checklist[$orderId]))
+								{
+									$checkedInAlready = $checklist[$orderId]['qty'];
+								}
+								else if (array_key_exists('present', $checklist[$orderId]))
+								{
+									//early implementation used 'present' to store qty of guests present for each order. Added for backward compatibility
+									$checkedInAlready = $checklist[$orderId]['present'];
+								}
+							} 
+
 							$buttonClass = $checkedInAlready > 0 ? ($checkedInAlready >= $guest['qty'] ? 'all-present' : 'semi-present') : '';
 
 							echo "<div class='row'>";
