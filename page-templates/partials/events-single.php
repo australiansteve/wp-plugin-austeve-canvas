@@ -77,10 +77,21 @@
 				<span class="event-cart">
 				<?php 
 
+					$now = new DateTime();
 					$wc_expiry = get_field('_expiration_date', get_field('wc_product'));
-					echo "Expires:".$wc_expiry;
-					
-					echo do_shortcode('[canvas_to_cart id="'.get_field('wc_product').'" include_price=true]');
+					//echo "Now: ".date('Y-m-d H:i:s');
+					//echo "<br/>Expires:".$wc_expiry->format('Y-m-d H:i:s');
+					$untilExpiry = $wc_expiry->diff($now);
+					//echo "<br/>".$untilExpiry->format('%Y-%m-%d %H:%i:%s');
+
+					if ($wc_expiry > $now)
+					{
+						echo do_shortcode('[canvas_to_cart id="'.get_field('wc_product').'" include_price=true]');
+					}
+					else
+					{
+						echo "Event has expired.";
+					}
 					
 				?>
 				</span>

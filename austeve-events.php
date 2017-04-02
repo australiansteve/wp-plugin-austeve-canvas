@@ -162,8 +162,15 @@ function austeve_update_wc_product( $post_id ) {
 			error_log(print_r(get_field('image', get_field('creation')), true));
 			update_post_meta( $product_id, '_thumbnail_id',  get_field('image', get_field('creation'))['ID']); //Media ID
 
-			//Update expiry
-			update_post_meta( $product_id, '_expiration_date', get_field('start_time')); //Event date
+			//Update expiry - consider timezone
+			$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time'));
+			$timezone = floatval(get_field('timezone'));
+			$timezoneAdjust = ($timezone == 0) ? '+0 hours' : (($timezone < 0) ? '+'.strval($timezone * -60).' minutes' : '-'.strval($timezone*60).' minutes');
+			$utcExpiry = $eventDate->modify($timezoneAdjust);
+			error_log("timezone: ".print_r($timezone, true));
+			error_log("timezoneAdjust: ".print_r($timezoneAdjust, true));
+			error_log("utcExpiry: ".print_r($utcExpiry, true));
+			update_post_meta( $product_id, '_expiration_date', $utcExpiry); //Event date
 		}
 		else 
 		{
@@ -196,7 +203,17 @@ function austeve_update_wc_product( $post_id ) {
 		update_post_meta( $new_product_id, '_price', get_field('price') );
 		update_post_meta( $new_product_id, '_regular_price', get_field('price') );
 		update_post_meta( $new_product_id, '_thumbnail_id',  get_field('image', get_field('creation'))['ID']); //Media ID
-		update_post_meta( $new_product_id, '_expiration_date', get_field('start_time')); //Event date
+
+		//Update expiry - consider timezone
+		$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time'));
+		$timezone = floatval(get_field('timezone'));
+		$timezoneAdjust = ($timezone == 0) ? '+0 hours' : (($timezone < 0) ? '+'.strval($timezone * -60).' minutes' : '-'.strval($timezone*60).' minutes');
+		$utcExpiry = $eventDate->modify($timezoneAdjust);
+		error_log("timezone: ".print_r($timezone, true));
+		error_log("timezoneAdjust: ".print_r($timezoneAdjust, true));
+		error_log("utcExpiry: ".print_r($utcExpiry, true));
+		update_post_meta( $product_id, '_expiration_date', $utcExpiry); //Event date
+
 
 		if (get_field('custom_capacity'))
 		{
