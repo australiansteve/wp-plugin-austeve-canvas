@@ -81,16 +81,14 @@
 					$wc_expiry = get_field('_expiration_date', get_field('wc_product'));
 					//echo "Now: ".date('Y-m-d H:i:s');
 					//echo "<br/>Expires:".$wc_expiry->format('Y-m-d H:i:s');
-					$untilExpiry = $wc_expiry->diff($now);
-					//echo "<br/>".$untilExpiry->format('%Y-%m-%d %H:%i:%s');
 
-					if ($wc_expiry > $now)
+					if ($wc_expiry && $wc_expiry > $now)
 					{
 						echo do_shortcode('[canvas_to_cart id="'.get_field('wc_product').'" include_price=true]');
 					}
 					else
 					{
-						echo "Event has expired.";
+						echo "<div class='past-event'>Event has expired.</div>";
 					}
 					
 				?>

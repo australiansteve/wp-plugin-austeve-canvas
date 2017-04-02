@@ -185,7 +185,7 @@
 			}
 			else 
 			{
-				echo "<div class='past-event'>This event has passed</div>";
+				echo "<div class='past-event'>Event has expired.</div>";
 			}
 			?>
 		</div>
