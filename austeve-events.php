@@ -353,10 +353,26 @@ class AUSteve_EventHelper {
 				$sales[$id]['order_id'] = $sale->order_id;
 				$sales[$id]['qty'] = $sale_qtys[$id]->qty;
 
-				$userdata = get_userdata( get_field('_customer_user', $sale->order_id));
-				$sales[$id]['customer_id'] = $userdata->ID;
-				$sales[$id]['customer_name'] = $userdata->first_name." ".$userdata->last_name;
-				$sales[$id]['customer_email'] = $userdata->user_email;
+				$customer = get_field('_customer_user', $sale->order_id);
+				error_log("Customer: ".print_r($customer, true));
+
+				if ($customer > 0)
+				{
+					//Customer has account
+					$userdata = get_userdata($customer);
+
+					$sales[$id]['customer_id'] = $userdata->ID;
+					$sales[$id]['customer_name'] = $userdata->first_name." ".$userdata->last_name;
+					$sales[$id]['customer_email'] = $userdata->user_email;
+				}
+				else
+				{
+					//Customer made purchase as guest
+
+					$sales[$id]['customer_id'] = 0;
+					$sales[$id]['customer_name'] = get_field('_billing_first_name', $sale->order_id)." ".get_field('_billing_last_name', $sale->order_id);
+					$sales[$id]['customer_email'] = get_field('_billing_email', $sale->order_id);
+				}
 			}
 
 			error_log("Merged array: ".print_r($sales, true));
