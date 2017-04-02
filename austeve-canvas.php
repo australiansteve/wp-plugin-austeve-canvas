@@ -10,6 +10,7 @@
  */
 
 include( plugin_dir_path( __FILE__ ) . 'admin.php');
+include( plugin_dir_path( __FILE__ ) . 'ajax-actions.php');
 include( plugin_dir_path( __FILE__ ) . 'shortcode.php');
 include( plugin_dir_path( __FILE__ ) . 'widget.php');
 include( plugin_dir_path( __FILE__ ) . 'austeve-events.php');
