@@ -133,19 +133,58 @@ add_action( 'wp_ajax_get_instructor_rating', 'austeve_get_instructor_rating_ajax
 function austeve_get_location_events_ajax() {
 	check_ajax_referer( "austevegetlocationevents" );
 
-	if( $_POST[ 'locationId' ] && $_POST[ 'pastEvents' ] && $_POST[ 'futureEvents' ] && $_POST[ 'order' ] )
+	if( $_POST[ 'locationId' ] !== undefined && $_POST[ 'pastEvents' ] && $_POST[ 'futureEvents' ] && $_POST[ 'order' ] )
 	{
 		$locationId = $_POST[ 'locationId' ];
 		$pastEvents = ($_POST[ 'pastEvents' ] == 'true') ? 'true' : 'false';
 		$futureEvents = ($_POST[ 'futureEvents' ] == 'true') ? 'true' : 'false';
 		$order = $_POST[ 'order' ];
 
-		echo do_shortcode("[show_events show_filters='false' past_events='".$pastEvents."' future_events='".$futureEvents."' order='$order' territory_id='$locationId']");
+		echo do_shortcode("[show_events show_filters='false' past_events='".$pastEvents."' future_events='".$futureEvents."' order='$order' ".($_POST[ 'locationId' ] > 0 ? "territory_id='$locationId']" : "")."]");
 		die();
 	}
-	echo "Invalid location";
+	echo "ERROR: There was a problem retrieving events";
 	die();
 }
 add_action( 'wp_ajax_get_location_events', 'austeve_get_location_events_ajax' );
+
+function austeve_get_location_venue_options_ajax() {
+	check_ajax_referer( "austevegetlocationvenueoptions" );
+
+	if( $_POST[ 'locationId' ] !== undefined )
+	{
+		$args = array(
+	        'posts_per_page' => -1,
+	        'post_type' => 'austeve-venues',
+	        'post_status' => array('publish'),
+	        'orderby' => 'name',
+	        'order' => 'ASC'
+	    );
+
+	    if ($_POST[ 'locationId' ] > 0)
+	    {
+	        $args['tax_query'] = array( 
+	                array(
+	                'taxonomy'         => 'austeve_territories',
+	                'terms'            => $_POST[ 'locationId' ],
+	                'field'            => 'term_id',
+	                'operator'         => 'IN',
+	                'include_children' => true,
+	            )
+	        );
+	    }
+	    $venue_posts = get_posts( $args );
+
+	    foreach($venue_posts as $venue)
+	    {
+	        echo '<option value="' . $venue->ID . '">' .$venue->post_title . '</option>'; 
+	    }
+
+		die();
+	}
+	echo "ERROR: There was a problem retrieving venues";
+	die();
+}
+add_action( 'wp_ajax_get_location_venue_options', 'austeve_get_location_venue_options_ajax' );
 
 ?>

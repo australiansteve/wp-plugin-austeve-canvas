@@ -135,9 +135,39 @@ function location_dropdown_options($parentId, $selectedId = 0)
         for($p = 0; $p < $level; $p++) { $prefix .= "&nbsp;"; }
         if ($level > 0)
             $prefix.="- ";
-        echo '<option value="' . $term->term_id . '" '.(($selectedId == $term->term_id) ? 'selected' : '').'>' . $prefix.$term->name . '</option>',"\n"; 
+        echo '<option value="' . $term->term_id . '" '.(($selectedId == $term->term_id) ? 'selected' : '').'>' . $prefix.$term->name . '</option>'; 
 
         location_dropdown_options($term->term_id);
+    }
+}
+
+function venue_dropdown_options($territoryId)
+{
+    $args = array(
+        'posts_per_page' => -1,
+        'post_type' => 'austeve-venues',
+        'post_status' => array('publish'),
+        'orderby' => 'name',
+        'order' => 'ASC'
+    );
+
+    if ($territoryId > 0)
+    {
+        $args['tax_query'] = array( 
+                array(
+                'taxonomy'         => 'austeve_territories',
+                'terms'            => $territoryId,
+                'field'            => 'term_id',
+                'operator'         => 'IN',
+                'include_children' => true,
+            )
+        );
+    }
+    $venue_posts = get_posts( $args );
+
+    foreach($venue_posts as $venue)
+    {
+        echo '<option value="' . $venue->ID . '">' .$venue->post_title . '</option>'; 
     }
 }
 
@@ -159,10 +189,20 @@ function austeve_events_upcoming($atts){
         <div class='row'>
             <div class='small-12 medium-4 columns'>
                 <select id='event-location' title='Select a location'>
-                    <option value="" <?php ($eventLocation == '') ? "selected": ""; ?> >Select a location:</option>
+                    <option value="0" <?php ($eventLocation == '') ? "selected": ""; ?> >Select a location:</option>
                     <?php
 
                         location_dropdown_options(0, $eventLocation);
+
+                    ?>
+                </select>
+            </div>
+            <div class='small-12 medium-4 columns'>
+                <select id='event-venue' title='Select a venue'>
+                    <option value="0" <?php ($eventLocation == '') ? "selected": ""; ?> class='default' >Select a venue:</option>
+                    <?php
+
+                        venue_dropdown_options(0);
 
                     ?>
                 </select>
@@ -171,6 +211,7 @@ function austeve_events_upcoming($atts){
 
         <?php
         $nonce = wp_create_nonce( 'austevegetlocationevents' );
+        $nonce_venues = wp_create_nonce( 'austevegetlocationvenueoptions' );
         ?>
 
         <script type='text/javascript'>
@@ -201,12 +242,32 @@ function austeve_events_upcoming($atts){
                     }
                 }); //close jQuery.ajax(
             }
+
+            function get_venue_list( locationId ) {
+                console.log("Get venues for location: " + locationId);
+                jQuery.ajax({
+                    type: "post", 
+                    url: '<?php echo admin_url("admin-ajax.php"); ?>', 
+                    data: { 
+                        action: 'get_location_venue_options', 
+                        locationId: locationId, 
+                        _ajax_nonce: '<?php echo $nonce_venues; ?>' 
+                    },
+                    beforeSend: function() {
+                        jQuery("#event-venue option:not(.default)").remove();
+                    },
+                    success: function(html){ //so, if data is retrieved, store it in html
+                        console.log("Venue options: " + html);
+                        jQuery("#event-venue").append(html);
+                    }
+                }); //close jQuery.ajax(
+            }
             // When the document loads do everything inside here ...
             jQuery("#event-location").on('change', function() {
                 var locationId = jQuery(this).attr("value");
 
-                if (locationId > 0)
-                    get_event_list( locationId );
+                get_event_list( locationId );
+                get_venue_list( locationId );
             });
 
             -->
