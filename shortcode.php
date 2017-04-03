@@ -11,6 +11,8 @@ function austeve_event_query_args($atts)
         'past_events' => 'false',
         'order' => 'ASC',
         'creation_id' => -1,
+        'territory_id' => -1,
+        'show_filters' => 'false',
     ), $atts );
 
     extract( $atts );
@@ -24,7 +26,7 @@ function austeve_event_query_args($atts)
         'order' => $order,
         'meta_key' => 'start_time',
         'meta_type' => 'DATETIME',
-
+        'show_filters' => $show_filters,
     );
 
     $meta_query = array('relation' => 'AND');
@@ -66,6 +68,50 @@ function austeve_event_query_args($atts)
         $meta_query[] = $creation_query;
     }
 
+    //Setup territory query
+    if ($territory_id >= 0)
+    {
+        error_log("Specific territory query!");
+
+        //Get all territories under the specified territory_id
+        //$all_territories = get_term_children( $territory_id, 'austeve_territories' );
+        //array_push($all_territories, $territory_id);
+        
+        //error_log("Territories: ".print_r($all_territories, true));
+
+        $venue_posts = get_posts(
+            array(
+                'posts_per_page' => -1,
+                'post_type' => 'austeve-venues',
+                'tax_query' => array(
+                    array(
+                        'taxonomy'         => 'austeve_territories',
+                        'terms'            => $territory_id,
+                        'field'            => 'term_id',
+                        'operator'         => 'IN',
+                        'include_children' => true,
+                    )
+                )
+            )
+        );
+        error_log("Venue Posts: ".print_r($venue_posts, true));
+
+        $venues = array();
+        foreach($venue_posts as $venue)
+        {
+            $venues[] = $venue->ID;
+        }
+        error_log("Venues: ".print_r($venues, true));
+
+        $territory_query = array(
+            'key'           => 'venue',
+            'compare'       => 'IN',
+            'value'         => implode(",", $venues),
+            'type'          => 'NUMERIC',
+        );
+        $meta_query[] = $territory_query;
+    }
+
     $args['meta_query'] = $meta_query;
 
     error_log('Past events:'.print_r($past_events, true));
@@ -75,13 +121,101 @@ function austeve_event_query_args($atts)
     return $args;
 }
 
+
+function location_dropdown_options($parentId, $selectedId = 0)
+{
+    $taxterms = get_terms( array(
+        'taxonomy' => 'austeve_territories',
+        'parent' => $parentId,
+    ) );
+
+    foreach ( $taxterms as $term ) { 
+        $level = count(get_ancestors($term->term_id, 'austeve_territories', 'taxonomy'));
+        $prefix = "";
+        for($p = 0; $p < $level; $p++) { $prefix .= "&nbsp;"; }
+        if ($level > 0)
+            $prefix.="- ";
+        echo '<option value="' . $term->term_id . '" '.(($selectedId == $term->term_id) ? 'selected' : '').'>' . $prefix.$term->name . '</option>',"\n"; 
+
+        location_dropdown_options($term->term_id);
+    }
+}
+
 function austeve_events_upcoming($atts){
     
     $args = austeve_event_query_args($atts);
 
     ob_start();
     $query = new WP_Query( $args );
-	
+
+    $eventLocation = isset($_GET['location']) ? $_GET['location'] : 0;
+    
+    error_log("Show filters: ".$args['show_filters']);
+
+    if(array_key_exists('show_filters', $args) && $args['show_filters'] === 'true')
+    {
+?>
+    <div id='events-filters'>
+        <div class='row'>
+            <div class='small-12 medium-4 columns'>
+                <select id='event-location' title='Select a location'>
+                    <option value="" <?php ($eventLocation == '') ? "selected": ""; ?> >Select a location:</option>
+                    <?php
+
+                        location_dropdown_options(0, $eventLocation);
+
+                    ?>
+                </select>
+            </div>
+        </div>
+
+        <?php
+        $nonce = wp_create_nonce( 'austevegetlocationevents' );
+        ?>
+
+        <script type='text/javascript'>
+            <!--
+            function get_event_list( locationId ) {
+                console.log("Get events for location: " + locationId);
+                jQuery.ajax({
+                    type: "post", 
+                    url: '<?php echo admin_url("admin-ajax.php"); ?>', 
+                    data: { 
+                        action: 'get_location_events', 
+                        locationId: locationId, 
+                        numberOfPosts: '<?php echo $args['posts_per_page']; ?>', 
+                        showFilters: 'false', 
+                        pastEvents: "<?php echo isset($atts['past_events']) ? $atts['past_events'] : 'false'; ?>", 
+                        futureEvents: "<?php echo isset($atts['future_events']) ? $atts['future_events'] : 'true'; ?>", 
+                        order: '<?php echo $args['order']; ?>', 
+                        _ajax_nonce: '<?php echo $nonce; ?>' 
+                    },
+                    beforeSend: function() {
+                        jQuery("#upcoming-events").html("<i class='fa fa-spinner fa-pulse fa-fw'></i>");
+                    },
+                    success: function(html){ //so, if data is retrieved, store it in html
+                        jQuery(".reveal-overlay").remove(); //remove all reveal overlays before inserting the new content
+                        jQuery("#upcoming-events").html(html);
+                        jQuery(document).foundation();
+                        //Foundation.reInit('reveal');
+                    }
+                }); //close jQuery.ajax(
+            }
+            // When the document loads do everything inside here ...
+            jQuery("#event-location").on('change', function() {
+                var locationId = jQuery(this).attr("value");
+
+                if (locationId > 0)
+                    get_event_list( locationId );
+            });
+
+            -->
+        </script>
+
+    </div>
+<?php	
+    } //END show_filters
+
     if( $query->have_posts() ){
 
 		echo "<div id='upcoming-events'>";
@@ -95,14 +229,14 @@ function austeve_events_upcoming($atts){
             echo '</div>';
         }
 
-    	echo '</div>';
-
         include( plugin_dir_path( __FILE__ ) . 'google-map.php');
+
+    	echo '</div>';
 
     }
     else {
 ?>
-		<div class="row archive-container">
+		<div id='upcoming-events'>
 		  	<div class="col-xs-12">
 		  		<em>No events found.</em>
 		  	</div>

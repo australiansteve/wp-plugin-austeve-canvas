@@ -130,5 +130,22 @@ function austeve_get_instructor_rating_ajax() {
 }
 add_action( 'wp_ajax_get_instructor_rating', 'austeve_get_instructor_rating_ajax' );
 
+function austeve_get_location_events_ajax() {
+	check_ajax_referer( "austevegetlocationevents" );
+
+	if( $_POST[ 'locationId' ] && $_POST[ 'pastEvents' ] && $_POST[ 'futureEvents' ] && $_POST[ 'order' ] )
+	{
+		$locationId = $_POST[ 'locationId' ];
+		$pastEvents = ($_POST[ 'pastEvents' ] == 'true') ? 'true' : 'false';
+		$futureEvents = ($_POST[ 'futureEvents' ] == 'true') ? 'true' : 'false';
+		$order = $_POST[ 'order' ];
+
+		echo do_shortcode("[show_events show_filters='false' past_events='".$pastEvents."' future_events='".$futureEvents."' order='$order' territory_id='$locationId']");
+		die();
+	}
+	echo "Invalid location";
+	die();
+}
+add_action( 'wp_ajax_get_location_events', 'austeve_get_location_events_ajax' );
 
 ?>

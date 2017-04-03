@@ -73,7 +73,7 @@
 				  <h3><?php echo $venue->post_title; ?></h3>
 				  <?php 
 					$location = get_field('address', $venue->ID);
-
+					error_log("Location:".print_r($location, true));
 					if( !empty($location) ) {
 						//echo print_r($location, true);
 					?>
