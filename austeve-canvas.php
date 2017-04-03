@@ -59,4 +59,22 @@ function austeve_acf_init() {
 }
 
 add_action('acf/init', 'austeve_acf_init');
+
+/**
+ * Remove WooCommerce products from default WP search
+ *
+ */
+function austeve_remove_wc_from_search() {
+	global $wp_post_types;
+ 
+	if ( post_type_exists( 'product' ) ) {
+ 
+		// exclude from search results
+		$wp_post_types['product']->exclude_from_search = true;
+	}
+}
+add_action( 'init', 'austeve_remove_wc_from_search', 99 );
+ 
+
+
 ?>
