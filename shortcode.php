@@ -12,6 +12,7 @@ function austeve_event_query_args($atts)
         'order' => 'ASC',
         'creation_id' => -1,
         'territory_id' => -1,
+        'venue_id' => -1,
         'show_filters' => 'false',
     ), $atts );
 
@@ -73,12 +74,7 @@ function austeve_event_query_args($atts)
     {
         error_log("Specific territory query!");
 
-        //Get all territories under the specified territory_id
-        //$all_territories = get_term_children( $territory_id, 'austeve_territories' );
-        //array_push($all_territories, $territory_id);
-        
-        //error_log("Territories: ".print_r($all_territories, true));
-
+        //Get all venues in the territory (including child territories)
         $venue_posts = get_posts(
             array(
                 'posts_per_page' => -1,
@@ -110,6 +106,20 @@ function austeve_event_query_args($atts)
             'type'          => 'NUMERIC',
         );
         $meta_query[] = $territory_query;
+    }
+
+    //Setup venue query
+    if ($venue_id >= 0)
+    {
+        error_log("Specific venue query!");
+
+        $venue_query = array(
+            'key'           => 'venue',
+            'compare'       => '=',
+            'value'         => $venue_id,
+            'type'          => 'NUMERIC',
+        );
+        $meta_query[] = $venue_query;
     }
 
     $args['meta_query'] = $meta_query;
@@ -212,11 +222,12 @@ function austeve_events_upcoming($atts){
         <?php
         $nonce = wp_create_nonce( 'austevegetlocationevents' );
         $nonce_venues = wp_create_nonce( 'austevegetlocationvenueoptions' );
+        $nonce_venue = wp_create_nonce( 'austevegetvenueevents' );
         ?>
 
         <script type='text/javascript'>
             <!--
-            function get_event_list( locationId ) {
+            function get_territory_events( locationId ) {
                 console.log("Get events for location: " + locationId);
                 jQuery.ajax({
                     type: "post", 
@@ -238,7 +249,6 @@ function austeve_events_upcoming($atts){
                         jQuery(".reveal-overlay").remove(); //remove all reveal overlays before inserting the new content
                         jQuery("#upcoming-events").html(html);
                         jQuery(document).foundation();
-                        //Foundation.reInit('reveal');
                     }
                 }); //close jQuery.ajax(
             }
@@ -262,12 +272,48 @@ function austeve_events_upcoming($atts){
                     }
                 }); //close jQuery.ajax(
             }
+
+            function get_venue_events( venueId, locationId ) {
+                console.log("Get events for venue: " + venueId);
+                jQuery.ajax({
+                    type: "post", 
+                    url: '<?php echo admin_url("admin-ajax.php"); ?>', 
+                    data: { 
+                        action: 'get_venue_events', 
+                        venueId: venueId, 
+                        locationId: locationId, 
+                        numberOfPosts: '<?php echo $args['posts_per_page']; ?>', 
+                        showFilters: 'false', 
+                        pastEvents: "<?php echo isset($atts['past_events']) ? $atts['past_events'] : 'false'; ?>", 
+                        futureEvents: "<?php echo isset($atts['future_events']) ? $atts['future_events'] : 'true'; ?>", 
+                        order: '<?php echo $args['order']; ?>', 
+                        _ajax_nonce: '<?php echo $nonce_venue; ?>' 
+                    },
+                    beforeSend: function() {
+                        jQuery("#upcoming-events").html("<i class='fa fa-spinner fa-pulse fa-fw'></i>");
+                    },
+                    success: function(html){ //so, if data is retrieved, store it in html
+                        jQuery(".reveal-overlay").remove(); //remove all reveal overlays before inserting the new content
+                        jQuery("#upcoming-events").html(html);
+                        jQuery(document).foundation();
+                    }
+                }); //close jQuery.ajax(
+            }
+
             // When the document loads do everything inside here ...
             jQuery("#event-location").on('change', function() {
                 var locationId = jQuery(this).attr("value");
 
-                get_event_list( locationId );
+                get_territory_events( locationId );
                 get_venue_list( locationId );
+            });
+
+            // When the document loads do everything inside here ...
+            jQuery("#event-venue").on('change', function() {
+                var venueId = jQuery(this).attr("value");
+                var locationId = jQuery("#event-location").attr("value");
+
+                get_venue_events( venueId , locationId );
             });
 
             -->

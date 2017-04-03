@@ -133,14 +133,14 @@ add_action( 'wp_ajax_get_instructor_rating', 'austeve_get_instructor_rating_ajax
 function austeve_get_location_events_ajax() {
 	check_ajax_referer( "austevegetlocationevents" );
 
-	if( $_POST[ 'locationId' ] !== undefined && $_POST[ 'pastEvents' ] && $_POST[ 'futureEvents' ] && $_POST[ 'order' ] )
+	if( $_POST[ 'locationId' ] !== 'undefined' && $_POST[ 'pastEvents' ] && $_POST[ 'futureEvents' ] && $_POST[ 'order' ] )
 	{
 		$locationId = $_POST[ 'locationId' ];
 		$pastEvents = ($_POST[ 'pastEvents' ] == 'true') ? 'true' : 'false';
 		$futureEvents = ($_POST[ 'futureEvents' ] == 'true') ? 'true' : 'false';
 		$order = $_POST[ 'order' ];
 
-		echo do_shortcode("[show_events show_filters='false' past_events='".$pastEvents."' future_events='".$futureEvents."' order='$order' ".($_POST[ 'locationId' ] > 0 ? "territory_id='$locationId']" : "")."]");
+		echo do_shortcode("[show_events show_filters='false' past_events='".$pastEvents."' future_events='".$futureEvents."' order='$order' ".($_POST[ 'locationId' ] > 0 ? "territory_id='$locationId'" : "")."]");
 		die();
 	}
 	echo "ERROR: There was a problem retrieving events";
@@ -151,7 +151,7 @@ add_action( 'wp_ajax_get_location_events', 'austeve_get_location_events_ajax' );
 function austeve_get_location_venue_options_ajax() {
 	check_ajax_referer( "austevegetlocationvenueoptions" );
 
-	if( $_POST[ 'locationId' ] !== undefined )
+	if( $_POST[ 'locationId' ] !== 'undefined' )
 	{
 		$args = array(
 	        'posts_per_page' => -1,
@@ -186,5 +186,24 @@ function austeve_get_location_venue_options_ajax() {
 	die();
 }
 add_action( 'wp_ajax_get_location_venue_options', 'austeve_get_location_venue_options_ajax' );
+
+function austeve_get_venue_events_ajax() {
+	check_ajax_referer( "austevegetvenueevents" );
+
+	if( $_POST[ 'venueId' ] !== 'undefined' && $_POST[ 'locationId' ] !== 'undefined' && $_POST[ 'pastEvents' ] && $_POST[ 'futureEvents' ] && $_POST[ 'order' ] )
+	{
+		$venueId = $_POST[ 'venueId' ];
+		$locationId = $_POST[ 'locationId' ];
+		$pastEvents = ($_POST[ 'pastEvents' ] == 'true') ? 'true' : 'false';
+		$futureEvents = ($_POST[ 'futureEvents' ] == 'true') ? 'true' : 'false';
+		$order = $_POST[ 'order' ];
+
+		echo do_shortcode("[show_events show_filters='false' past_events='".$pastEvents."' future_events='".$futureEvents."' order='$order' ".($_POST[ 'venueId' ] > 0 ? "venue_id='$venueId'" : "")." ".($_POST[ 'locationId' ] > 0 ? "territory_id='$locationId'" : "")."]");
+		die();
+	}
+	echo "ERROR: There was a problem retrieving events";
+	die();
+}
+add_action( 'wp_ajax_get_venue_events', 'austeve_get_venue_events_ajax' );
 
 ?>
