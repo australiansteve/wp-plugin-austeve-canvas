@@ -303,6 +303,14 @@ function austeve_save_review_ajax() {
 				error_log("Reviews to save: ".print_r($reviews, true));
 
 				echo update_field('reviews', json_encode($reviews), $eventId);
+
+				//Update the overall host_rating field for the event
+				$reviewTotal = 0;
+				foreach($reviews as $review)
+				{
+					$reviewTotal += $review['rating'];
+				}
+				update_field('host_rating', round($reviewTotal/count($reviews), 2), $eventId);
 				die();
 			}
 		}
