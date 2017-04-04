@@ -115,21 +115,6 @@ function austeve_save_attendance_ajax() {
 }
 add_action( 'wp_ajax_save_attendance', 'austeve_save_attendance_ajax' );
 
-
-function austeve_get_instructor_rating_ajax() {
-	check_ajax_referer( "austevegetinstructorrating" );
-
-	if( $_POST[ 'userId' ] )
-	{
-		$userId = $_POST[ 'userId' ];
-		echo "5";
-		die();
-	}
-	echo "Incorrect paramters";
-	die();
-}
-add_action( 'wp_ajax_get_instructor_rating', 'austeve_get_instructor_rating_ajax' );
-
 function austeve_get_location_events_ajax() {
 	check_ajax_referer( "austevegetlocationevents" );
 
@@ -147,6 +132,7 @@ function austeve_get_location_events_ajax() {
 	die();
 }
 add_action( 'wp_ajax_get_location_events', 'austeve_get_location_events_ajax' );
+add_action( 'wp_ajax_nopriv_get_location_events', 'austeve_get_location_events_ajax' );
 
 function austeve_get_location_venue_options_ajax() {
 	check_ajax_referer( "austevegetlocationvenueoptions" );
@@ -186,6 +172,7 @@ function austeve_get_location_venue_options_ajax() {
 	die();
 }
 add_action( 'wp_ajax_get_location_venue_options', 'austeve_get_location_venue_options_ajax' );
+add_action( 'wp_ajax_nopriv_get_location_venue_options', 'austeve_get_location_venue_options_ajax' );
 
 function austeve_get_venue_events_ajax() {
 	check_ajax_referer( "austevegetvenueevents" );
@@ -205,5 +192,6 @@ function austeve_get_venue_events_ajax() {
 	die();
 }
 add_action( 'wp_ajax_get_venue_events', 'austeve_get_venue_events_ajax' );
+add_action( 'wp_ajax_nopriv_get_venue_events', 'austeve_get_venue_events_ajax' );
 
 ?>
