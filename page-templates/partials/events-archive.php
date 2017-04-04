@@ -133,9 +133,57 @@
 
 			<?php 
 			$host_info = get_field('host');
+			error_log("HOST:".print_r($host_info, true));
+			
+			//Get all host events to calculate rating
+			$args = array(
+		        'posts_per_page' => -1,
+		        'post_type' => 'austeve-events',
+		        'post_status' => array('publish'),
+		        'orderby' => 'name',
+		        'order' => 'ASC',
+		        'do_not_filter' => 'true',
+		    );
+
+    		$meta_query = array('relation' => 'AND');
+
+			$past_events_query = array(
+	            'key'           => 'start_time',
+	            'compare'       => '<=',
+	            'value'         => date('Y-m-d H:i:s'),
+	            'type'          => 'DATETIME',
+	        );
+	        $meta_query[] = $past_events_query;
+		
+		    $host_query = array(
+	            'key'           => 'host',
+	            'compare'       => '=',
+	            'value'         => $host_info['ID'],
+	            'type'          => 'NUMERIC',
+            );
+	        $meta_query[] = $host_query;
+
+	        $args['meta_query'] = $meta_query;
+		    $hosts_events = get_posts( $args );
+
+		    $eventsWithRatingsCount = 0;
+		    $hostRatingTotal = 0;
+		    foreach($hosts_events as $event)
+		    {
+		        error_log("Host".$host_info['ID']." event:".$event->post_title);
+		        $hostEventRating = get_field('host_rating', $event->ID);
+
+		        if($hostEventRating && $hostEventRating >= 0)
+		        {
+		        	$hostRatingTotal += floatval($hostEventRating);
+	        		$eventsWithRatingsCount++;
+		        }
+		    }
+		    $hostRating = ($hostRatingTotal > 0 && $eventsWithRatingsCount > 0) ? "Average rating: ".round(($hostRatingTotal / $eventsWithRatingsCount), 2)."/5" : 'No ratings';
+
 			?>
 
-			<p class='event-instructor' data-id='<?php echo $host_info['ID']; ?>' data-url='<?php echo admin_url('admin-ajax.php');?>'>Instructor: <span class='has-tooltip' title="Fancy word for a beetle."><?php echo $host_info['display_name'];?></span></p>
+			<p class='event-instructor' data-id='<?php echo $host_info['ID']; ?>'>Instructor: <span class='has-tooltip' title="<?php echo $hostRating;?> from <?php echo count($hosts_events);?> event<?php echo count($hosts_events) != 1 ? "s": "";?>"><?php echo $host_info['display_name'];?></span></p>
 
 			<?php
 			$difficultyField = get_field_object('difficulty_level', $creationId);
