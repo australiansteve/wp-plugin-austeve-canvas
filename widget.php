@@ -186,7 +186,7 @@ function austeve_admin_upcoming_events() {
 		echo "	</div>"; //END .body
 		echo "	<div class='body'>";
 		echo "		<div class='spacer-25'></div>";
-		echo "		<div class='venue'>$venue->post_title<br/>$address</div>";
+		echo "		<div class='venue'>$venue->post_title<br/>".$address['address']."</div>";
 		echo "	</div>"; //END .body
 		echo "</div>"; //END .upcoming-event
 	}
