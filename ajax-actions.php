@@ -194,4 +194,53 @@ function austeve_get_venue_events_ajax() {
 add_action( 'wp_ajax_get_venue_events', 'austeve_get_venue_events_ajax' );
 add_action( 'wp_ajax_nopriv_get_venue_events', 'austeve_get_venue_events_ajax' );
 
+
+function austeve_get_creations_ajax() {
+	error_log("Get creations - pre check".print_r($_REQUEST, true));
+	//check_ajax_referer( 'austevegetcreations', '_ajax_nonce' );
+
+	error_log("Get creations");
+
+	if( $_POST[ 'nextPage' ] !== 'undefined' )
+	{
+		$args = array(
+	        'posts_per_page' => 12,
+	        'post_type' => 'austeve-creations',
+	        'post_status' => array('publish'),
+	        'paged' => $_POST[ 'nextPage' ]
+	    );
+		error_log("Next page: ".$_POST[ 'nextPage' ]);
+	    // the query
+		$the_query = new WP_Query( $args );
+		
+		if ( $the_query->have_posts() )
+	    {
+	    	
+			while ( $the_query->have_posts() ) : $the_query->the_post();
+
+			echo "<div class='column'>";
+
+			if (locate_template('page-templates/partials/creations-archive.php') != '') 
+			{
+				// yep, load the page template
+				get_template_part('page-templates/partials/creations', 'archive');
+			} 
+			else 
+			{
+				// nope, load the default
+				include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/creations-archive.php');
+			}
+						
+			echo "</div>";
+
+			endwhile;
+		}
+
+		wp_reset_postdata();
+	}
+	die();
+
+}
+add_action( 'wp_ajax_get_creations', 'austeve_get_creations_ajax' );
+add_action( 'wp_ajax_nopriv_get_creations', 'austeve_get_creations_ajax' );
 ?>

@@ -31,7 +31,7 @@
 						$the_creation_image = get_field('image');
 					?>
 					
-					<img class="event-creation" src="<?php echo $the_creation_image['sizes']['medium'];?>" width="<?php echo $the_creation_image['sizes']['medium-width'];?>" height="<?php echo $the_creation_image['sizes']['medium-height'];?>"/>	
+					<img class="event-creation" src="<?php echo $the_creation_image['sizes']['thumbnail'];?>" width="<?php echo $the_creation_image['sizes']['thumbnail-width'];?>" height="<?php echo $the_creation_image['sizes']['thumbnail-height'];?>"/>	
 
 					<?php
 					}
@@ -44,9 +44,9 @@
 				
 				<div class="small-12 columns">
 
-						<h2 class="creation-title">
+						<h3 class="creation-title">
 							<?php echo get_the_title(); ?>
-						</h2>
+						</h3>
 
 				</div>
 			

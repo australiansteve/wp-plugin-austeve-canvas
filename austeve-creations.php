@@ -162,4 +162,26 @@ function creation_filter_archive_title( $title ) {
 }
 
 add_filter( 'get_the_archive_title', 'creation_filter_archive_title');
+
+function austeve_filter_objects_creations( $query ) {
+    
+	if ( is_admin() )
+	{
+		return $query;
+	}
+
+	//If we get here we are on the front end
+
+	if (isset($query->query_vars['post_type']))
+	{
+		if ( $query->query_vars['post_type'] == 'austeve-creations' )
+		{
+			//Always get 12 creations at a time
+			$query->set( 'posts_per_page', 12 );
+		}
+	}
+}
+
+add_action( 'pre_get_posts', 'austeve_filter_objects_creations' , 10, 1 );
+
 ?>
