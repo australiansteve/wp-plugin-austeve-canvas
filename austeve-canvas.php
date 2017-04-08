@@ -74,7 +74,5 @@ function austeve_remove_wc_from_search() {
 	}
 }
 add_action( 'init', 'austeve_remove_wc_from_search', 99 );
- 
-
 
 ?>

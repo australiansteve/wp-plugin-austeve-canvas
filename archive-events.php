@@ -25,24 +25,27 @@ get_header(); ?>
 					?>
 				</header><!-- .page-header -->
 
+				<?php
+					echo do_shortcode("[show_events show_events='false' show_filters='true']");					
+				?>
 
 				<div id='upcoming-events'>
 				<?php /* Start the Loop */ ?>
 				<?php while ( have_posts() ) : the_post(); ?>
 
-       			<div class='upcoming-event'>
-				<?php 
+	       			<div class='upcoming-event'>
+					<?php 
 
-            		if (locate_template('page-templates/partials/events-archive.php') != '') {
-						// yep, load the page template
-						get_template_part('page-templates/partials/events', 'archive');
-					} else {
-						// nope, load the default
-						include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/events-archive.php');
-					}
+	            		if (locate_template('page-templates/partials/events-archive.php') != '') {
+							// yep, load the page template
+							get_template_part('page-templates/partials/events', 'archive');
+						} else {
+							// nope, load the default
+							include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/events-archive.php');
+						}
 
-				?>
-				</div>
+					?>
+					</div>
 					
 				<?php endwhile; ?>
 
