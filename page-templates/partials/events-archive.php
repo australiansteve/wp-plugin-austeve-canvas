@@ -37,21 +37,23 @@
 
 		<div class="small-12 medium-6 columns event-details">
 
-			<!-- Date -->
-			<?php 
-			if (get_field('start_time'))
-			{
-				$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time'));
-				echo $eventDate->format('d M Y'); 
-			}
-			?>
-
 			<!-- Event -->
 			<?php 
 			$venue = get_field('venue'); 
 			?>
 
 			<h3 class='event-name'><a href="<?php echo get_permalink();?>"><?php echo the_title(); ?></a></h3>
+
+			<p class='event-date'>
+			<!-- Date -->
+			<?php 
+			if (get_field('start_time'))
+			{
+				$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time'));
+				echo $eventDate->format('F jS Y @g:ia'); 
+			}
+			?>
+			</p>
 
 			<p class='event-venue'>
 
