@@ -449,7 +449,8 @@ add_filter( 'get_terms_args', 'austeve_filter_territories_for_admins' , 10, 2 );
 function austeve_filter_objects_for_admins( $query ) {
     
 	if ( !is_admin() ||  //Not in admin screens 
-		current_user_can('edit_users') ) //User has access to all territories/venues
+		current_user_can('edit_users') || //User has access to all territories/venues
+		wp_doing_ajax() ) //It's an ajax request, which means it's coming from the front end
 	{
 		return $query;
 	}

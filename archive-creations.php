@@ -62,8 +62,12 @@ get_header(); ?>
 		                    },
 		                    beforeSend: function() {
 		                        jQuery("#creations-block-grid").append("<div class='column loading'><i class='fa fa-spinner fa-pulse fa-fw'></i></div>");
-		                        jQuery("#more_posts").prop('disabled', true);
+		                        jQuery("#more_posts").attr('disabled', true);
 		                    },
+			                error: function( jqXHR, textStatus, errorThrown) {
+			                    jQuery("#creations-block-grid .column.loading").html("Error retreiving more creations.");
+		                    	jQuery("#more_posts").attr('disabled', false);
+			                },
 		                    success: function(html){ //so, if data is retrieved, store it in html
 		                    	console.log("More creations response: " + html);
 		                        if (html != '')
@@ -77,7 +81,7 @@ get_header(); ?>
 			                        jQuery("#creations-block-grid .column.loading").html("That's it! That's all of them!"); //remove loading column
 			                        jQuery("#more_posts").toggle();
 		                    	}
-		                    	jQuery("#more_posts").prop('disabled', false);
+		                    	jQuery("#more_posts").attr('disabled', false);
 		                    }
 		                }); //close jQuery.ajax(
 
@@ -85,7 +89,7 @@ get_header(); ?>
 
 		            // When the document loads do everything inside here ...
 		            jQuery("#more_posts").on('click', function() {
-		                get_more_creations( jQuery(this).attr('data-next'));
+		            	get_more_creations( jQuery(this).attr('data-next'))
 		            });
 
 		            -->

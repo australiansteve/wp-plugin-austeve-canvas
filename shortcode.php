@@ -12,6 +12,7 @@ function austeve_event_query_args($atts)
         'past_events' => 'false',
         'order' => 'ASC',
         'creation_id' => -1,
+        'category_id' => -1,
         'territory_id' => -1,
         'venue_id' => -1,
         'show_filters' => 'false',
@@ -124,6 +125,45 @@ function austeve_event_query_args($atts)
         $meta_query[] = $venue_query;
     }
 
+    //Setup category query
+    if ($category_id >= 0)
+    {
+        error_log("Specific category query!");
+
+        //Get all creations in the category (including child categories)
+        $creation_posts = get_posts(
+            array(
+                'posts_per_page' => -1,
+                'post_type' => 'austeve-creations',
+                'tax_query' => array(
+                    array(
+                        'taxonomy'         => 'austeve_creation_categories',
+                        'terms'            => $category_id,
+                        'field'            => 'term_id',
+                        'operator'         => 'IN',
+                        'include_children' => true,
+                    )
+                )
+            )
+        );
+        error_log("Creation Posts: ".print_r($creation_posts, true));
+
+        $creations = array();
+        foreach($creation_posts as $creation)
+        {
+            $creations[] = $creation->ID;
+        }
+        error_log("Creations: ".print_r($creations, true));
+
+        $category_query = array(
+            'key'           => 'creation',
+            'compare'       => 'IN',
+            'value'         => implode(",", $creations),
+            'type'          => 'NUMERIC',
+        );
+        $meta_query[] = $category_query;
+    }
+
     $args['meta_query'] = $meta_query;
 
     error_log('Past events:'.print_r($past_events, true));
@@ -183,6 +223,25 @@ function venue_dropdown_options($territoryId)
     }
 }
 
+function creation_category_options($parentId, $selectedId = 0)
+{
+    $taxterms = get_terms( array(
+        'taxonomy' => 'austeve_creation_categories',
+        'parent' => $parentId,
+    ) );
+
+    foreach ( $taxterms as $term ) { 
+        $level = count(get_ancestors($term->term_id, 'austeve_creation_categories', 'taxonomy'));
+        $prefix = "";
+        for($p = 0; $p < $level; $p++) { $prefix .= "&nbsp;"; }
+        if ($level > 0)
+            $prefix.="- ";
+        echo '<option value="' . $term->term_id . '" '.(($selectedId == $term->term_id) ? 'selected' : '').'>' . $prefix.$term->name . '</option>'; 
+
+        creation_category_options($term->term_id);
+    }
+}
+
 function austeve_events_upcoming($atts){
     
     $args = austeve_event_query_args($atts);
@@ -193,7 +252,7 @@ function austeve_events_upcoming($atts){
     error_log("Show events: ".$args['show_events']);
 
     ob_start();
-    
+
     if(array_key_exists('show_filters', $args) && $args['show_filters'] === 'true')
     {
         echo "<div id='upcoming-events-filters'>";

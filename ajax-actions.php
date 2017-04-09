@@ -118,14 +118,15 @@ add_action( 'wp_ajax_save_attendance', 'austeve_save_attendance_ajax' );
 function austeve_get_location_events_ajax() {
 	check_ajax_referer( "austevegetlocationevents" );
 
-	if( $_POST[ 'locationId' ] !== 'undefined' && $_POST[ 'pastEvents' ] && $_POST[ 'futureEvents' ] && $_POST[ 'order' ] )
+	if( $_POST[ 'locationId' ] !== 'undefined' && $_POST[ 'pastEvents' ] && $_POST[ 'categoryId' ] !== 'undefined' && $_POST[ 'futureEvents' ] && $_POST[ 'order' ] )
 	{
 		$locationId = $_POST[ 'locationId' ];
+		$categoryId = $_POST[ 'categoryId' ];
 		$pastEvents = ($_POST[ 'pastEvents' ] == 'true') ? 'true' : 'false';
 		$futureEvents = ($_POST[ 'futureEvents' ] == 'true') ? 'true' : 'false';
 		$order = $_POST[ 'order' ];
 
-		echo do_shortcode("[show_events show_filters='false' past_events='".$pastEvents."' future_events='".$futureEvents."' order='$order' ".($_POST[ 'locationId' ] > 0 ? "territory_id='$locationId'" : "")."]");
+		echo do_shortcode("[show_events show_filters='false' past_events='".$pastEvents."' future_events='".$futureEvents."' order='$order' ".($locationId > 0 ? "territory_id='$locationId'" : "")." ".($categoryId > 0 ? "category_id='$categoryId'" : "")."]");
 		die();
 	}
 	echo "ERROR: There was a problem retrieving events";
@@ -177,15 +178,16 @@ add_action( 'wp_ajax_nopriv_get_location_venue_options', 'austeve_get_location_v
 function austeve_get_venue_events_ajax() {
 	check_ajax_referer( "austevegetvenueevents" );
 
-	if( $_POST[ 'venueId' ] !== 'undefined' && $_POST[ 'locationId' ] !== 'undefined' && $_POST[ 'pastEvents' ] && $_POST[ 'futureEvents' ] && $_POST[ 'order' ] )
+	if( $_POST[ 'venueId' ] !== 'undefined' && $_POST[ 'locationId' ] !== 'undefined' && $_POST[ 'categoryId' ] !== 'undefined' && $_POST[ 'pastEvents' ] && $_POST[ 'futureEvents' ] && $_POST[ 'order' ] )
 	{
 		$venueId = $_POST[ 'venueId' ];
 		$locationId = $_POST[ 'locationId' ];
+		$categoryId = $_POST[ 'categoryId' ];
 		$pastEvents = ($_POST[ 'pastEvents' ] == 'true') ? 'true' : 'false';
 		$futureEvents = ($_POST[ 'futureEvents' ] == 'true') ? 'true' : 'false';
 		$order = $_POST[ 'order' ];
 
-		echo do_shortcode("[show_events show_filters='false' past_events='".$pastEvents."' future_events='".$futureEvents."' order='$order' ".($_POST[ 'venueId' ] > 0 ? "venue_id='$venueId'" : "")." ".($_POST[ 'locationId' ] > 0 ? "territory_id='$locationId'" : "")."]");
+		echo do_shortcode("[show_events show_filters='false' past_events='".$pastEvents."' future_events='".$futureEvents."' order='$order' ".($_POST[ 'venueId' ] > 0 ? "venue_id='$venueId'" : "")." ".($_POST[ 'locationId' ] > 0 ? "territory_id='$locationId'" : "")." ".($_POST[ 'categoryId' ] > 0 ? "category_id='$categoryId'" : "")."]");
 		die();
 	}
 	echo "ERROR: There was a problem retrieving events";
@@ -194,12 +196,27 @@ function austeve_get_venue_events_ajax() {
 add_action( 'wp_ajax_get_venue_events', 'austeve_get_venue_events_ajax' );
 add_action( 'wp_ajax_nopriv_get_venue_events', 'austeve_get_venue_events_ajax' );
 
+function austeve_get_category_events_ajax() {
+	check_ajax_referer( "austevegetcategoryevents" );
+
+	if( $_POST[ 'categoryId' ] !== 'undefined' && $_POST[ 'venueId' ] !== 'undefined' && $_POST[ 'locationId' ] !== 'undefined' )
+	{
+		$categoryId = $_POST[ 'categoryId' ];
+		$venueId = $_POST[ 'venueId' ];
+		$locationId = $_POST[ 'locationId' ];
+
+		echo do_shortcode("[show_events show_filters='false' past_events='false' future_events='true' ".($categoryId > 0 ? "category_id='$categoryId'" : "")." ".($venueId > 0 ? "venue_id='$venueId'" : "")." ".($locationId > 0 ? "territory_id='$locationId'" : "")."]");
+		die();
+	}
+	echo "ERROR: There was a problem retrieving events";
+	die();
+}
+add_action( 'wp_ajax_get_category_events', 'austeve_get_category_events_ajax' );
+add_action( 'wp_ajax_nopriv_get_category_events', 'austeve_get_category_events_ajax' );
 
 function austeve_get_creations_ajax() {
-	error_log("Get creations - pre check".print_r($_REQUEST, true));
+	//Not really sure why but checking the referrer here always gives a 403 error. Removing since it's a front get function anyway, and only gets public data
 	//check_ajax_referer( 'austevegetcreations', '_ajax_nonce' );
-
-	error_log("Get creations");
 
 	if( $_POST[ 'nextPage' ] !== 'undefined' )
 	{
@@ -239,8 +256,8 @@ function austeve_get_creations_ajax() {
 		wp_reset_postdata();
 	}
 	die();
-
 }
 add_action( 'wp_ajax_get_creations', 'austeve_get_creations_ajax' );
 add_action( 'wp_ajax_nopriv_get_creations', 'austeve_get_creations_ajax' );
+
 ?>
