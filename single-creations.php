@@ -14,7 +14,7 @@ get_header(); ?>
 	<div class="small-12 columns"><!-- .columns start -->
 
 		<div id="primary" class="content-area">
-			<main id="main" class="site-main" role="main">
+			<main id="main" class="site-main single-creation" role="main">
 
 			<?php while ( have_posts() ) : the_post(); ?>
 				
@@ -28,13 +28,12 @@ get_header(); ?>
 						include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/creations-single.php');
 					}
 
-				?>
-				
+				?>				
 
 				<div class="row"><!-- .row start -->
 
 					<div class="small-12 columns"><!-- .columns start -->
-						<h3>Upcoming events</h3>
+						<h3 class='events'>Upcoming events featuring this creation:</h3>
 
 						<?php echo do_shortcode("[show_events creation_id=".get_the_ID()."]"); ?>
 
@@ -46,7 +45,7 @@ get_header(); ?>
 				<div class="row"><!-- .row start -->
 
 					<div class="small-12 columns"><!-- .columns start -->
-						<h3>Past events</h3>
+						<h3 class='events'>Past events featuring this creation:</h3>
 
 						<?php echo do_shortcode("[show_events creation_id=".get_the_ID()." past_events=true future_events=false order='DESC']"); ?>
 

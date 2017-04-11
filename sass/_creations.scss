@@ -4,3 +4,34 @@
 		margin-bottom: 2rem;
 	}
 }
+
+.single-creation {
+	
+	margin-bottom: 3rem;
+	
+	.creation-artist {
+		font-size: 1.2rem;
+		margin-bottom: 1rem;
+	}
+
+	.creation-description {
+		margin-top: 1rem;
+	}
+
+	.events {
+		margin-top: 3rem;
+	}
+	
+}
+
+
+/* Medium and up */
+@media screen and (min-width: 40em) {
+
+	.single-creation {
+		
+		margin-bottom: 6rem;
+		
+	}
+
+}
