@@ -6,6 +6,17 @@ header.page-header {
 	text-align: center;
 }
 
+.single-event {
+	
+	.event-venue {
+		margin-bottom: 1rem;
+	}	
+
+	.event-level {
+		margin-bottom: 1rem;
+	}	
+}
+
 .upcoming-event {   
 	border: 2px solid $general-color-primary;
     padding: 1rem;
