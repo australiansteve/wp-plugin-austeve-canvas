@@ -218,8 +218,9 @@
 
 					$now = new DateTime();
 					$wc_expiry = get_field('_expiration_date', get_field('wc_product'));
-					//echo "Now: ".date('Y-m-d H:i:s');
-					//echo "<br/>Expires:".$wc_expiry->format('Y-m-d H:i:s');
+					error_log("Now: ".date('Y-m-d H:i:s'));
+					error_log(get_the_ID(). "expires (raw):".print_r($wc_expiry, true));
+					error_log(get_the_ID(). "expires:".$wc_expiry->format('Y-m-d H:i:s'));
 
 					if ($wc_expiry && $wc_expiry > $now)
 					{

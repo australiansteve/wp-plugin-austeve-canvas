@@ -212,7 +212,7 @@ function austeve_update_wc_product( $post_id ) {
 		error_log("timezone: ".print_r($timezone, true));
 		error_log("timezoneAdjust: ".print_r($timezoneAdjust, true));
 		error_log("utcExpiry: ".print_r($utcExpiry, true));
-		update_post_meta( $product_id, '_expiration_date', $utcExpiry); //Event date
+		update_post_meta( $new_product_id, '_expiration_date', $utcExpiry); //Event date
 
 
 		if (get_field('custom_capacity'))
