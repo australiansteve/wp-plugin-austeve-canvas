@@ -47,7 +47,10 @@ get_header(); ?>
 					?>
 					</div>
 					
-				<?php endwhile; ?>
+				<?php endwhile; 
+				
+			    include( plugin_dir_path( __FILE__ ) . 'google-map.php');
+			    ?>
 
 				</div>
 

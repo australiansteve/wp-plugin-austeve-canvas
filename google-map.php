@@ -17,18 +17,7 @@
 
 </style>
 
-<script>
-/* Only append the Google Maps API script if it hasn't been included already */
-jQuery(function(){
-if(!window.google||!window.google.maps){
-  var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCfoi49FhApNMu5BPu2YHItmdCxp6LWbVs';
-    document.body.appendChild(script);
-}
-});
-</script>
-
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfoi49FhApNMu5BPu2YHItmdCxp6LWbVs"></script>
 <script type="text/javascript">
 (function($) {
 

@@ -6,6 +6,21 @@ header.page-header {
 	margin: 20px 0;
 }
 
+.single-venue {
+
+	.fa {
+	    margin-right: 0.5rem;
+	}
+
+	p.venue-website, p.venue-phone {
+		margin-bottom: 0;
+	}
+
+	.venue-description {
+		margin-top: 1rem;
+	}
+}
+
 #venues-block-grid div {
 	text-align: center;
 	margin: auto; //Gets vertical alignment to be 'middle'

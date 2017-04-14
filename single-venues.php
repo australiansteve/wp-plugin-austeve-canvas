@@ -14,7 +14,7 @@ get_header(); ?>
 	<div class="small-12 columns"><!-- .columns start -->
 
 		<div id="primary" class="content-area">
-			<main id="main" class="site-main" role="main">
+			<main id="main" class="site-main single-venue" role="main">
 
 			<?php while ( have_posts() ) : the_post(); ?>
 				
