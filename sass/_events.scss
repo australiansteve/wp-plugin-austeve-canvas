@@ -37,11 +37,42 @@ header.page-header {
     	a {
     		text-decoration: none;
     	}
+
     }
 
     .has-tooltip  {
 	    border-bottom: 1px dotted black;
 	    cursor: help;
+	}
+}
+
+.event-venue-modal {
+	
+	.fa {
+		margin-right: 0.5rem;
+	}
+
+	.venue-contact {
+		margin-bottom: 0.75rem;
+
+		.columns {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+
+	.venue-link{
+		
+		text-align: right;
+
+		a {
+			text-decoration: underline;
+		}
+
+		.fa {
+			margin-left: 0.5rem;
+		}
+
 	}
 }
 

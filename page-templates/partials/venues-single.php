@@ -42,23 +42,24 @@
 
 				if( !empty($location) ) {
 				?>
-					<p class='venue-address'><?php echo $location['address']; ?> <br/> <a href='https://www.google.ca/maps/place/<?php echo urlencode($location['address']);?>' target='_blank' title='Directions'><i class="fa fa-car" aria-hidden="true"></i>Get Directions</a></p>
+					<div class='venue-location'><i class="fa fa-map-marker" aria-hidden="true"></i><?php echo $location['address']; ?></div>
+					<div class='venue-directions'><a href='https://www.google.ca/maps/place/<?php echo urlencode($location['address']);?>' target='_blank' title='Directions'><i class="fa fa-car" aria-hidden="true"></i>Get Directions</a></div>
 				<?php
 				}
 
 				$website = get_field('website');
-
-				if( !empty($website) ) {
-				?>
-					<p class='venue-website'><a href='<?php echo $website; ?>' target='_blank' title='Visit website'><i class="fa fa-globe" aria-hidden="true"></i>Visit website</a></p>
-				<?php
-				}
-
 				$phone = get_field('phone_number');
 
-				if( !empty($phone) ) {
+				if ($website || $phone){
 				?>
-					<p class='venue-phone'>Phone: <a href='tel:<?php echo $phone; ?>' title='Telephone'><?php echo $phone; ?></a></p>
+				<div class='row venue-contact'>
+					<?php if ($website) :?>
+						<div class='small-12 medium-6 columns'><a href='<?php echo $website; ?>' target='_blank' title='Visit website'><i class="fa fa-globe" aria-hidden="true"></i>Visit website</a></div>
+					<?php endif; ?>
+					<?php if ($phone) :?>
+						<div class='small-12 medium-6 columns'><a href='tel:<?php echo $phone; ?>' title='Telephone'><i class="fa fa-phone" aria-hidden="true"></i><?php echo $phone; ?></a></div>
+					<?php endif; ?>
+				</div>
 				<?php
 				}
 

@@ -78,19 +78,10 @@
 					}
 
 					?>
-					<div class="reveal" id="mapModal<?php echo $venue->ID; ?>" data-reveal style="min-height: 400px" data-venue-id="<?php echo $venue->ID;?>">
-					  <h3><?php echo $venue->post_title; ?></h3>
-					  <?php 
-						$location = get_field('address', $venue->ID);
-						error_log("Location:".print_r($location, true));
-						if( !empty($location) ) {
-							//echo print_r($location, true);
+					<div class="reveal event-venue-modal" id="mapModal<?php echo $venue->ID; ?>" data-reveal style="min-height: 400px" data-venue-id="<?php echo $venue->ID;?>">
+						<?php
+						include(plugin_dir_path( __FILE__ ) . '/event-venue-modal.php');
 						?>
-						<p><?php echo $location['address']; ?> <br/> <a href='https://www.google.ca/maps/place/<?php echo urlencode($location['address']);?>' target='_blank'>Get Directions</a></p>
-						<div class="acf-map">
-							<div class="marker" data-lat="<?php echo $location['lat']; ?>" data-lng="<?php echo $location['lng']; ?>"></div>
-						</div>
-						<?php } ?>				  
 					</div>
 
 				</div>
