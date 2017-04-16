@@ -69,6 +69,48 @@
 				} 
 				?>
 
+				<?php 
+				$mediums = get_field('mediums');
+				$mediumarray = [];
+				if ($mediums)
+				{
+					error_log("Artist mediums".print_r($mediums, true));
+					foreach($mediums as $medium)
+					{
+						$term = get_term($medium, 'austeve_creation_categories');
+						if ($term && !is_wp_error($term))
+						{
+							// The $term is an object, so we don't need to specify the $taxonomy.
+						    $term_link = get_term_link( $term );
+						    
+						    // If there was an error, continue to the next term.
+						    if ( is_wp_error( $term_link ) ) {
+						        continue;
+						    }
+						 
+						    // We successfully got a link. Print it out.
+						    $mediumarray[] = '<a href="' . esc_url( $term_link ) . '">' . $term->name . '</a>';
+
+						}
+					}
+				?>
+				<div class="row">
+				
+					<div class="small-12 columns">
+
+						<p class="profile-mediums">
+						
+							Mediums: <?php echo implode($mediumarray, ', '); ?>
+							
+						</p>
+
+					</div>
+
+				</div>
+				<?php 
+				} 
+				?>
+
 				<div class="row">
 				
 					<div class="small-12 columns">
@@ -103,34 +145,6 @@
 				<?php 
 				} 
 				?>
-
-				<div class="row">
-				
-					<div class="small-12 columns">
-
-						<span class="upcoming-events">
-						
-							Upcoming events where a painting by this artist is used...
-							
-						</span>
-
-					</div>
-
-				</div>
-
-				<div class="row">
-				
-					<div class="small-12 columns">
-
-						<span class="artist-paintings">
-						
-							Gallery of all paintings...
-							
-						</span>
-
-					</div>
-
-				</div>
 
 			</div>
 

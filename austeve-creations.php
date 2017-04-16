@@ -165,20 +165,28 @@ add_filter( 'get_the_archive_title', 'creation_filter_archive_title');
 
 function austeve_filter_objects_creations( $query ) {
     
+    $numCreationPosts = 12;
+
 	if ( is_admin() )
 	{
 		return $query;
 	}
 
 	//If we get here we are on the front end
-
 	if (isset($query->query_vars['post_type']))
 	{
 		if ( $query->query_vars['post_type'] == 'austeve-creations' )
 		{
-			//Always get 12 creations at a time
-			$query->set( 'posts_per_page', 12 );
+			error_log("Get 1 creations!");
+			//Always get $numCreationPosts creations at a time
+			$query->set( 'posts_per_page', $numCreationPosts );
 		}
+	}
+	if (array_key_exists('austeve_creation_categories', $query->query) || array_key_exists('austeve_creation_tags', $query->query))
+	{
+		error_log("Get 1 creations!");
+		//Always get $numCreationPosts creations at a time
+		$query->set( 'posts_per_page', $numCreationPosts );
 	}
 }
 

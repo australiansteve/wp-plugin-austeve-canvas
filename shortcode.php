@@ -12,6 +12,7 @@ function austeve_event_query_args($atts)
         'past_events' => 'false',
         'order' => 'ASC',
         'creation_id' => -1,
+        'creation_artist' => -1,
         'category_id' => -1,
         'territory_id' => -1,
         'venue_id' => -1,
@@ -67,6 +68,46 @@ function austeve_event_query_args($atts)
             'key'           => 'creation',
             'compare'       => '=',
             'value'         => $creation_id,
+            'type'          => 'NUMERIC',
+        );
+        $meta_query[] = $creation_query;
+    }
+
+    //Setup query based on artist
+    if ($creation_artist >= 0)
+    {
+        error_log("Specific artist query!".$creation_artist);
+        $artist_creation_ids = [];
+
+        //Get all creations by the artist
+        $artist_creations = get_posts(
+            array(
+                'posts_per_page' => -1,
+                'post_type' => 'austeve-creations',
+                'meta_query' => array (
+                    array(
+                        'key'           => 'artist',
+                        'compare'       => '=',
+                        'value'         => $creation_artist,
+                        'type'          => 'NUMERIC',
+                    )
+                )
+            )
+        );
+        error_log("Artist creations: ".print_r($artist_creations, true));
+
+        if (count($artist_creations) > 0)
+        {
+            foreach($artist_creations as $creation)
+            {
+                $artist_creation_ids[] = $creation->ID;
+            }
+        }
+
+        $creation_query = array(
+            'key'           => 'creation',
+            'compare'       => 'IN',
+            'value'         => implode($artist_creation_ids, ','),
             'type'          => 'NUMERIC',
         );
         $meta_query[] = $creation_query;

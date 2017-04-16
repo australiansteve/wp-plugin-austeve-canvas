@@ -48,7 +48,15 @@ get_header(); ?>
 
 				<a id="more_posts" class="button" data-next="2"><?php esc_html_e('Load More', 'dessertstorm') ?></a>
 
-				<?php $nonce = 'austevegetcreations'; ?>
+				<?php $nonce = 'austevegetcreations'; 
+				$query_type='post_type';
+				$query_object='austeve-creations';
+				if (is_tax())
+				{
+					$query_type = get_queried_object()->taxonomy;
+					$query_object = get_queried_object()->slug;
+				}
+				?>
 				<script type='text/javascript'>
 		            <!--
 		            function get_more_creations( nextPage ) {
@@ -57,6 +65,8 @@ get_header(); ?>
 		                    url: '<?php echo admin_url("admin-ajax.php"); ?>', 
 		                    data: { 
 		                        action: 'get_creations', 
+		                        queryType: '<?php echo $query_type; ?>',
+		                        queryObject: '<?php echo $query_object; ?>',
 		                        nextPage: nextPage, 
 		                        _ajax_nonce: '<?php echo $nonce; ?>' 
 		                    },

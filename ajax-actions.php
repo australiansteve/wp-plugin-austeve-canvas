@@ -218,15 +218,39 @@ function austeve_get_creations_ajax() {
 	//Not really sure why but checking the referrer here always gives a 403 error. Removing since it's a front get function anyway, and only gets public data
 	//check_ajax_referer( 'austevegetcreations', '_ajax_nonce' );
 
-	if( $_POST[ 'nextPage' ] !== 'undefined' )
+	if( array_key_exists('nextPage', $_POST) && $_POST[ 'nextPage' ] !== 'undefined')
 	{
+		$numCreationPosts = 12;
+		$queryType = 'post_type';
+		$queryObject = 'austeve-creations';		
+
+		if (array_key_exists('queryType', $_POST))
+			$queryType = $_POST[ 'queryType' ];
+		if (array_key_exists('queryObject', $_POST))
+			$queryObject = $_POST[ 'queryObject' ];
+
 		$args = array(
-	        'posts_per_page' => 12,
-	        'post_type' => 'austeve-creations',
+	        'posts_per_page' => $numCreationPosts,
+	        $queryType => $queryObject,
 	        'post_status' => array('publish'),
 	        'paged' => $_POST[ 'nextPage' ]
 	    );
-		error_log("Next page: ".$_POST[ 'nextPage' ]);
+
+		if (array_key_exists('artistId', $_POST) && $_POST['artistId'] !== 'undefined')
+		{
+			error_log("Artist ID: ".$_POST[ 'artistId' ]);
+			$artist_meta = array(
+				array(
+                    'key'           => 'artist',
+                    'compare'       => '=',
+                    'value'         => $_POST['artistId'],
+                    'type'          => 'NUMERIC',
+                )
+			);
+			$args['meta_query'] = $artist_meta;
+		}
+		
+
 	    // the query
 		$the_query = new WP_Query( $args );
 		
