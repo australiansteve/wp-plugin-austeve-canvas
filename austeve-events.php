@@ -171,6 +171,21 @@ function austeve_update_wc_product( $post_id ) {
 			error_log("timezoneAdjust: ".print_r($timezoneAdjust, true));
 			error_log("utcExpiry: ".print_r($utcExpiry, true));
 			update_post_meta( $product_id, '_expiration_date', $utcExpiry); //Event date
+
+			//Add link to Tax Rate taxonomy from the Tax Region of the venue
+			$tax_region = get_field('tax_region', get_field('venue'));
+			if ($tax_region)
+			{
+				error_log("Existing product tax region: ".$tax_region);
+				wp_set_object_terms( $product_id, $tax_region, 'pa_tax-rate', false );
+			}
+			else 
+			{
+				error_log("No tax region set for venue");
+			}
+
+			//Also set the 'event-ticket' category - for backwards compatibility
+			wp_set_object_terms( $product_id, 'event-ticket', 'product_cat', false );
 		}
 		else 
 		{
@@ -245,11 +260,48 @@ function austeve_update_wc_product( $post_id ) {
 		update_post_meta( $new_product_id, '_sold_individually', '' );
 		update_post_meta( $new_product_id, '_manage_stock', 'yes' );
 		update_post_meta( $new_product_id, '_backorders', 'no' );
+
+		//Add link to Tax Rate taxonomy from the Tax Region of the venue
+		$tax_region = get_field('tax_region', get_field('venue'));
+		if ($tax_region)
+		{
+			error_log("New product tax region: ".$tax_region);
+			wp_set_object_terms( $new_product_id, $tax_region, 'pa_tax-rate', false );
+		}
+		else 
+		{
+			error_log("No tax region set for venue");
+		}
+
+		//Also set the 'event-ticket' category
+		wp_set_object_terms( $new_product_id, 'event-ticket', 'product_cat', false );
+
     }
 
 }
 add_action('acf/save_post', 'austeve_update_wc_product', 20);
 
+function austeve_validate_event_venue( $valid, $value, $field, $input ){
+	
+	// bail early if value is already invalid
+	if( !$valid ) {
+		
+		return $valid;
+		
+	}
+	
+	//Get tax region for venue
+	$tax_region = get_field('tax_region', $value);
+	if (!$tax_region)
+	{
+		$valid = "Venue MUST have tax region set before it can be used for an event. Please update the Venue information before updating the event.";
+	}
+		
+	// return
+	return $valid;	
+}
+
+add_filter('acf/validate_value/name=venue', 'austeve_validate_event_venue', 10, 4);
 
 function austeve_pre_get_posts_order_events( $query ) {
 	
