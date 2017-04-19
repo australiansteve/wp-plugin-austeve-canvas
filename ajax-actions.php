@@ -145,7 +145,8 @@ function austeve_get_location_venue_options_ajax() {
 	        'post_type' => 'austeve-venues',
 	        'post_status' => array('publish'),
 	        'orderby' => 'name',
-	        'order' => 'ASC'
+	        'order' => 'ASC',
+	        'do_not_filter' => true,
 	    );
 
 	    if ($_POST[ 'locationId' ] > 0)

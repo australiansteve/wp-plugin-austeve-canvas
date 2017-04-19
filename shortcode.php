@@ -22,7 +22,7 @@ function austeve_event_query_args($atts)
     extract( $atts );
 
     $args = array(
-        'from_shortcode' => true,
+        'do_not_filter' => true,
         'post_type' => 'austeve-events',
         'post_status' => array('publish'),
         'posts_per_page' => $number_of_posts,
@@ -123,6 +123,7 @@ function austeve_event_query_args($atts)
             array(
                 'posts_per_page' => -1,
                 'post_type' => 'austeve-venues',
+                'do_not_filter' => true,
                 'tax_query' => array(
                     array(
                         'taxonomy'         => 'austeve_territories',
@@ -241,7 +242,8 @@ function venue_dropdown_options($territoryId)
         'post_type' => 'austeve-venues',
         'post_status' => array('publish'),
         'orderby' => 'name',
-        'order' => 'ASC'
+        'order' => 'ASC',
+        'do_not_filter' => true,
     );
 
     if ($territoryId > 0)

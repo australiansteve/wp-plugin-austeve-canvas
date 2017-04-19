@@ -448,9 +448,11 @@ add_filter( 'get_terms_args', 'austeve_filter_territories_for_admins' , 10, 2 );
 //Filter the admin call for Territories and Venues based on the current users role(s) - Only display items that the user has access to
 function austeve_filter_objects_for_admins( $query ) {
     
+	//error_log("Query: ".print_r($query, true));
+
 	if ( !is_admin() ||  //Not in admin screens 
 		current_user_can('edit_users') || //User has access to all territories/venues
-		wp_doing_ajax() ) //It's an ajax request, which means it's coming from the front end
+		(wp_doing_ajax() && array_key_exists('do_not_filter', $query->query))) //It's an ajax request coming from within the plugin. Omitting the do_not_filter flag here will result in ACF ajax calls not getting filtered in the backend properly (for territory adminstrators creating events)
 	{
 		return $query;
 	}
@@ -466,6 +468,7 @@ function austeve_filter_objects_for_admins( $query ) {
 			//Get current user territories
 			$ut_args = array('orderby' => 'slug', 'order' => 'ASC', 'fields' => 'slugs');
 			$user_territories = wp_get_object_terms( get_current_user_id(),  'austeve_territories', $ut_args );
+			//error_log("User Territories: ".print_r($user_territories, true));
 
 			if ( ! empty( $user_territories ) ) {
 				if ( ! is_wp_error( $user_territories ) ) {
