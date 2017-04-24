@@ -44,7 +44,7 @@
 
 			<h3 class='event-name'><a href="<?php echo get_permalink();?>"><?php echo the_title(); ?></a></h3>
 
-			<p class='event-date'>
+			<div class='event-date'>
 			<!-- Date -->
 			<?php 
 			if (get_field('start_time'))
@@ -53,9 +53,9 @@
 				echo $eventDate->format('F jS Y @g:ia'); 
 			}
 			?>
-			</p>
+			</div>
 
-			<p class='event-venue'>
+			<div class='event-venue'>
 
 				<a data-open="mapModal<?php echo $venue->ID; ?>">
 
@@ -77,7 +77,7 @@
 					?>
 				</div>
 
-			</p>
+			</div>
 
 			<?php 
 			//Get Categories
@@ -121,7 +121,7 @@
 			    }
 			}
 			?>
-			<p class='category'><?php echo $termString; ?></p>
+			<div class='category'><?php echo $termString; ?></div>
 
 
 			<?php 
@@ -176,16 +176,16 @@
 
 			?>
 
-			<p class='event-instructor' data-id='<?php echo $host_info['ID']; ?>'>Instructor: <span class='has-tooltip' title="<?php echo $hostRating;?> from <?php echo count($hosts_events);?> event<?php echo count($hosts_events) != 1 ? "s": "";?>"><?php echo $host_info['display_name'];?></span></p>
+			<div class='event-instructor' data-id='<?php echo $host_info['ID']; ?>'>Instructor: <span class='has-tooltip' title="<?php echo $hostRating;?> from <?php echo count($hosts_events);?> event<?php echo count($hosts_events) != 1 ? "s": "";?>"><?php echo $host_info['display_name'];?></span></div>
 
 			<?php
 			$difficultyField = get_field_object('difficulty_level', $creationId);
 			$difficultyValue = $difficultyField['value'];
 			$difficultyLabel = $difficultyField['choices'][ $difficultyValue ];
 			?>
-			<p class='event-level'>Difficulty: <?php echo $difficultyLabel; ?></p>
+			<div class='event-level'>Difficulty: <?php echo $difficultyLabel; ?></div>
 
-			<p class='event-creation-tags'>Tags:
+			<div class='event-creation-tags'>Tags:
 			<?php
 			$creation_terms = wp_get_object_terms( $creationId,  'austeve_creation_tags' );
 			$termOutput = array();
@@ -200,7 +200,7 @@
 			}
 			echo implode(", ", $termOutput);
 			?>				
-			</p>
+			</div>
 		</div>
 
 		<div class="small-12 medium-3 columns">
