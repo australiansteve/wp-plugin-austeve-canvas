@@ -82,46 +82,26 @@
 			<?php 
 			//Get Categories
 			$terms = get_the_terms( $creationId, 'austeve_creation_categories' );
-			$termString = '';
+			$termArray = array();
                          
 			if ( $terms && ! is_wp_error( $terms ) )
 			{
-				$term = $terms[0];
-
-				// The $term is an object, so we don't need to specify the $taxonomy.
-			    $term_link = get_term_link( $term );
-			    
-			    // If there was an error, continue to the next term.
-			    if ( is_wp_error( $term_link ) ) {
-			        continue;
-			    }
-			 
-			    // We successfully got a link. Print it out.
-			    $termString = '<a href="' . esc_url( $term_link ) . '">' . $term->name . '</a>';
-
-			    $parent = $term->parent;
-			    while ($parent != 0)
-			    {
-			    	$term = get_term($parent, 'austeve_creation_categories');
-					//echo print_r($term, true);
-					if ( $term && ! is_wp_error( $term ) )
-					{
-						$term_link = get_term_link( $term );
-				    	if ( is_wp_error( $term_link ) ) {
-					        continue;
-					    }
-					    $termString = "<a href='". esc_url( $term_link ) ."'>".$term->name."</a> / ".$termString; 
-
-					    $parent = $term->parent;
-					}
-					else
-					{
-						continue; //emergency break
-					}
-			    }
+				foreach ( $terms as $term ) {
+ 
+				    // The $term is an object, so we don't need to specify the $taxonomy.
+				    $term_link = get_term_link( $term );
+				    
+				    // If there was an error, continue to the next term.
+				    if ( is_wp_error( $term_link ) ) {
+				        continue;
+				    }
+				 
+				    // We successfully got a link. Print it out.
+				    $termArray[] = '<a href="' . esc_url( $term_link ) . '">' . $term->name . '</a>';
+				}
 			}
 			?>
-			<div class='category'><?php echo $termString; ?></div>
+			<div class='category'><?php echo implode($termArray, ", "); ?></div>
 
 
 			<?php 
