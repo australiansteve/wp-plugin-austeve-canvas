@@ -33,6 +33,38 @@ get_header(); ?>
 				<div class="row">
 				
 					<div class="small-12 columns">
+						
+						<h3 class='events'>Upcoming events featuring this artists creations:</h3>
+						
+						<?php echo do_shortcode("[show_events creation_artist=".get_the_ID()."]"); ?>
+							
+					</div>
+
+				</div>
+
+				<?php
+				$host_user = get_field('user');
+				if ($host_user) 
+				{
+					error_log("Host user: ".print_r($host_user, true));
+				?>
+				<div class="row">
+				
+					<div class="small-12 columns">
+						
+						<h3 class='events'>Upcoming events hosted by <?php echo $host_user['user_firstname']; ?>:</h3>
+						
+						<?php echo do_shortcode("[show_events host_id=".$host_user['ID']."]"); ?>
+							
+					</div>
+
+				</div>
+				<?php
+				}
+				?>
+				<div class="row">
+				
+					<div class="small-12 columns">
 
 						<h3 class='creations'>Creations:</h3>
 							
@@ -135,18 +167,6 @@ get_header(); ?>
 				            -->
 				        </script>	
 
-					</div>
-
-				</div>
-
-				<div class="row">
-				
-					<div class="small-12 columns">
-						
-						<h3 class='events'>Upcoming events featuring this artists creations:</h3>
-						
-						<?php echo do_shortcode("[show_events creation_artist=".get_the_ID()."]"); ?>
-							
 					</div>
 
 				</div>

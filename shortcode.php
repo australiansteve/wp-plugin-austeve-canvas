@@ -16,6 +16,7 @@ function austeve_event_query_args($atts)
         'category_id' => -1,
         'territory_id' => -1,
         'venue_id' => -1,
+        'host_id' => -1,
         'show_filters' => 'false',
     ), $atts );
 
@@ -162,6 +163,20 @@ function austeve_event_query_args($atts)
             'key'           => 'venue',
             'compare'       => '=',
             'value'         => $venue_id,
+            'type'          => 'NUMERIC',
+        );
+        $meta_query[] = $venue_query;
+    }
+
+    //Setup host query
+    if ($host_id >= 0)
+    {
+        error_log("Specific host query!");
+
+        $venue_query = array(
+            'key'           => 'host',
+            'compare'       => '=',
+            'value'         => $host_id,
             'type'          => 'NUMERIC',
         );
         $meta_query[] = $venue_query;

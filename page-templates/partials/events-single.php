@@ -89,102 +89,59 @@
 				<?php 
 				//Get Categories
 				$terms = get_the_terms( $creationId, 'austeve_creation_categories' );
-				$termString = '';
+				$termArray = array();
 	                         
 				if ( $terms && ! is_wp_error( $terms ) )
 				{
-					$term = $terms[0];
-
-					// The $term is an object, so we don't need to specify the $taxonomy.
-				    $term_link = get_term_link( $term );
-				    
-				    // If there was an error, continue to the next term.
-				    if ( is_wp_error( $term_link ) ) {
-				        continue;
-				    }
-				 
-				    // We successfully got a link. Print it out.
-				    $termString = '<a href="' . esc_url( $term_link ) . '">' . $term->name . '</a>';
-
-				    $parent = $term->parent;
-				    while ($parent != 0)
-				    {
-				    	$term = get_term($parent, 'austeve_creation_categories');
-						//echo print_r($term, true);
-						if ( $term && ! is_wp_error( $term ) )
-						{
-							$term_link = get_term_link( $term );
-					    	if ( is_wp_error( $term_link ) ) {
-						        continue;
-						    }
-						    $termString = "<a href='". esc_url( $term_link ) ."'>".$term->name."</a> / ".$termString; 
-
-						    $parent = $term->parent;
-						}
-						else
-						{
-							continue; //emergency break
-						}
-				    }
+					foreach ( $terms as $term ) {
+	 
+					    // The $term is an object, so we don't need to specify the $taxonomy.
+					    $term_link = get_term_link( $term );
+					    
+					    // If there was an error, continue to the next term.
+					    if ( is_wp_error( $term_link ) ) {
+					        continue;
+					    }
+					 
+					    // We successfully got a link. Print it out.
+					    $termArray[] = '<a href="' . esc_url( $term_link ) . '">' . $term->name . '</a>';
+					}
 				}
 				?>
-				<div class='category'><?php echo $termString; ?></div>
-
-
+				<div class='category'>Creation category: <?php echo implode($termArray, ", "); ?></div>
 
 				<?php 
 				$host_info = get_field('host');
 				error_log("HOST:".print_r($host_info, true));
 				
-				//Get all host events to calculate rating
-				$args = array(
-			        'posts_per_page' => -1,
-			        'post_type' => 'austeve-events',
-			        'post_status' => array('publish'),
-			        'orderby' => 'name',
-			        'order' => 'ASC',
-			        'do_not_filter' => 'true',
-			    );
+				$hostRating = austeve_calculate_host_rating($host_info['ID']);
+				$hostProfile = austeve_get_host_profile($host_info['ID']);
+		    	$host_event_count = austeve_get_number_host_events($host_info['ID']);
 
-	    		$meta_query = array('relation' => 'AND');
-
-				$past_events_query = array(
-		            'key'           => 'start_time',
-		            'compare'       => '<=',
-		            'value'         => date('Y-m-d H:i:s'),
-		            'type'          => 'DATETIME',
-		        );
-		        $meta_query[] = $past_events_query;
-			
-			    $host_query = array(
-		            'key'           => 'host',
-		            'compare'       => '=',
-		            'value'         => $host_info['ID'],
-		            'type'          => 'NUMERIC',
-	            );
-		        $meta_query[] = $host_query;
-
-		        $args['meta_query'] = $meta_query;
-			    $hosts_events = get_posts( $args );
-
-			    $eventsWithRatingsCount = 0;
-			    $hostRatingTotal = 0;
-			    foreach($hosts_events as $event)
-			    {
-			        error_log("Host".$host_info['ID']." event:".$event->post_title);
-			        $hostEventRating = get_field('host_rating', $event->ID);
-
-			        if($hostEventRating && $hostEventRating >= 0)
-			        {
-			        	$hostRatingTotal += floatval($hostEventRating);
-		        		$eventsWithRatingsCount++;
-			        }
-			    }
-			    $hostRating = ($hostRatingTotal > 0 && $eventsWithRatingsCount > 0) ? "Average rating: ".round(($hostRatingTotal / $eventsWithRatingsCount), 2)."/5" : 'No ratings';
-
+				error_log("HOST PROFILE: ".print_r($hostProfile, true));
 				?>
 
-				<div class='event-instructor' data-id='<?php echo $host_info['ID']; ?>'>Instructor: <span class='has-tooltip' title="<?php echo $hostRating;?> from <?php echo count($hosts_events);?> event<?php echo count($hosts_events) != 1 ? "s": "";?>"><?php echo $host_info['display_name'];?></span></div>
+				<div class='event-instructor' data-id='<?php echo $host_info['ID']; ?>'>Instructor: <span class='has-tooltip' title="<?php echo $hostRating;?> from <?php echo $host_event_count;?> event<?php echo count($host_event_count) != 1 ? "s": "";?>">
+
+				<?php 
+				if ($hostProfile)
+				{
+			    	?>		    	
+			    		<a href='<?php echo get_permalink($hostProfile->ID);?>'>
+
+			    	<?php
+						echo $host_info['display_name'];
+					?>
+						</a>
+				<?php
+				}
+				else {
+					echo $host_info['display_name'];
+				}		
+
+				?>
+					</span>
+				</div> <!-- END .event-instructor -->
 
 				<?php
 				$difficultyField = get_field_object('difficulty_level', $creationId);
