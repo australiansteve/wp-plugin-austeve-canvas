@@ -367,6 +367,11 @@ function austeve_add_to_cart($atts, $content) {
 
     if ($product->post_type == 'product_variation' && has_term( 'gift-certificate', 'product_cat', $product->post_parent ))
     {
+        $product_options = get_post_meta($id, 'attribute_event-type');
+        $variation_name = count($product_options) > 0 ? $product_options[0] : "";
+        error_log("Options: ".print_r($product_options, true));
+        error_log("Name: ".print_r($variation_name, true));
+
         $shortcodeOutput .= "<div class='add-to-cart ".$class."'>";
         $shortcodeOutput .= "<div class='row'>";
         if ($title != '')
@@ -385,7 +390,10 @@ function austeve_add_to_cart($atts, $content) {
 
         $shortcodeOutput .= "<div class='small-12 columns'>";
         $shortcodeOutput .= "Quantity: <input type='number' min='1' name='quantity' value='1'/>";
-        $shortcodeOutput .= "<input type='hidden' name='add-to-cart' value='$id'/>";
+        $shortcodeOutput .= "<input type='hidden' name='add-to-cart' value='$product->post_parent'/>";
+        $shortcodeOutput .= "<input type='hidden' name='product_id' value='$product->post_parent'/>";
+        $shortcodeOutput .= "<input type='hidden' name='variation_id' value='$id'/>";
+        $shortcodeOutput .= "<input type='hidden' name='attribute_event-type' value='$variation_name'/>";
         $shortcodeOutput .= "</div>";
 
         $shortcodeOutput .= "<div class='small-12 columns'>";
