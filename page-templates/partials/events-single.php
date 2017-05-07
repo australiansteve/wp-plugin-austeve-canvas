@@ -121,7 +121,7 @@
 				error_log("HOST PROFILE: ".print_r($hostProfile, true));
 				?>
 
-				<div class='event-instructor' data-id='<?php echo $host_info['ID']; ?>'>Instructor: <span class='has-tooltip' title="<?php echo $hostRating;?> from <?php echo $host_event_count;?> event<?php echo count($host_event_count) != 1 ? "s": "";?>">
+				<div class='event-instructor' data-id='<?php echo $host_info['ID']; ?>'>Host: <span class='has-tooltip' title="<?php echo $hostRating;?> from <?php echo $host_event_count;?> event<?php echo count($host_event_count) != 1 ? "s": "";?>">
 
 				<?php 
 				if ($hostProfile)
