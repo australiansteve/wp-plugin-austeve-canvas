@@ -27,7 +27,7 @@
 
 		<div class="row">
 		
-			<div class="small-3 columns">
+			<div class="small-12 medium-3 columns">
 
 				<div class="profile-picture">
 				
@@ -46,7 +46,7 @@
 
 			</div>
 
-			<div class="small-9 columns">
+			<div class="small-12 medium-9 columns">
 
 				<?php 
 				if (get_field('home_town'))
