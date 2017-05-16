@@ -88,7 +88,7 @@ get_header(); ?>
 		                    	}
 		                    	else
 		                    	{
-			                        jQuery("#creations-block-grid .column.loading").html("That's it! That's all of them!"); //remove loading column
+			                        jQuery("#creations-block-grid .column.loading").html("More coming soon!"); //remove loading column
 			                        jQuery("#more_posts").toggle();
 		                    	}
 		                    	jQuery("#more_posts").attr('disabled', false);

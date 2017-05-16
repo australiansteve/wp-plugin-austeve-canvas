@@ -241,6 +241,8 @@ function austeve_get_creations_ajax() {
 	        'posts_per_page' => $numCreationPosts,
 	        $queryType => $queryObject,
 	        'post_status' => array('publish'),
+			'orderby'=> 'title',	
+			'order' => 'ASC',	 
 	        'paged' => $_POST[ 'nextPage' ]
 	    );
 
@@ -258,7 +260,7 @@ function austeve_get_creations_ajax() {
 			$args['meta_query'] = $artist_meta;
 		}
 		
-
+		error_log("Get creations args: ".print_r($args, true));
 	    // the query
 		$the_query = new WP_Query( $args );
 		

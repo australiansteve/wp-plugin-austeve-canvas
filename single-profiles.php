@@ -52,6 +52,7 @@ get_header(); ?>
 				?>
 
 				<?php
+				$artistProfileId = get_the_ID();
 			    $creation_args = array(
 					'do_not_filter' => true,
 					'post_type' => 'austeve-creations',
@@ -63,7 +64,7 @@ get_header(); ?>
 						array(
 							'key'           => 'artist',
 							'compare'       => '=',
-							'value'         => get_the_ID(),
+							'value'         => $artistProfileId,
 							'type'          => 'NUMERIC',
 						)
 					)
@@ -79,7 +80,7 @@ get_header(); ?>
 							
 							<h3 class='events'>Upcoming events featuring this artists creations:</h3>
 							
-							<?php echo do_shortcode("[show_events creation_artist=".get_the_ID()."]"); ?>
+							<?php echo do_shortcode("[show_events creation_artist=".$artistProfileId."]"); ?>
 								
 						</div>
 
@@ -125,7 +126,7 @@ get_header(); ?>
 					                    data: { 
 					                        action: 'get_creations', 
 					                        nextPage: nextPage, 
-					                        artistId: '<?php echo get_the_ID(); ?>',
+					                        artistId: '<?php echo $artistProfileId; ?>',
 					                        _ajax_nonce: '<?php echo $nonce; ?>' 
 					                    },
 					                    beforeSend: function() {
@@ -146,7 +147,7 @@ get_header(); ?>
 					                    	}
 					                    	else
 					                    	{
-						                        jQuery("#creations-block-grid .column.loading").html("That's it! That's all of them!"); //remove loading column
+						                        jQuery("#creations-block-grid .column.loading").html("More coming soon!"); //remove loading column
 						                        jQuery("#more_posts").toggle();
 					                    	}
 					                    	jQuery("#more_posts").attr('disabled', false);
