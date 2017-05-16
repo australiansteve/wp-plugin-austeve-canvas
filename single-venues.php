@@ -32,6 +32,30 @@ get_header(); ?>
 				
 			<?php endwhile; // end of the loop. ?>
 
+				<div class="row events">
+				
+					<div class="small-12 columns">
+						
+						<h3 class='events'>Upcoming events at this venue:</h3>
+						
+						<?php echo do_shortcode("[show_events venue_id=".get_the_ID()."]"); ?>
+							
+					</div>
+
+				</div>
+
+				<div class="row events">
+				
+					<div class="small-12 columns">
+						
+						<h3 class='events'>Past events at this venue:</h3>
+						
+						<?php echo do_shortcode("[show_events venue_id=".get_the_ID()." future_event='false' past_events='true']"); ?>
+							
+					</div>
+
+				</div>
+
 			</main><!-- #main -->
 		</div><!-- #primary -->
 
