@@ -479,4 +479,82 @@ function austeve_add_to_cart($atts, $content) {
 
 add_shortcode( 'canvas_to_cart', 'austeve_add_to_cart' );
 
+
+function austeve_filterable_venues($atts){
+    
+    $atts = shortcode_atts( array(
+        'locationId' => -1,
+        'style' => 'listitem'
+    ), $atts );
+
+    extract( $atts );
+
+    $args = array(
+        'do_not_filter' => true,
+        'post_type' => 'austeve-venues',
+        'post_status' => array('publish'),
+        'posts_per_page' => -1,
+        'orderby' => 'title',
+        'order' => 'ASC'
+    );
+    if ($locationId > -1)
+    {
+        $args['tax_query'] = array( 
+                array(
+                'taxonomy'         => 'austeve_territories',
+                'terms'            => $locationId,
+                'field'            => 'term_id',
+                'operator'         => 'IN',
+                'include_children' => true,
+            )
+        );
+    }
+
+    ob_start();
+
+    include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/venue-filters.php');
+
+    $query = new WP_Query( $args );
+
+    if( $query->have_posts() ){
+
+?>
+        <div class="row columns">
+            <ul class='venues-list'>
+<?php
+        //loop over query results
+        while( $query->have_posts() ){
+            $query->the_post();
+            if ($style == 'listitem')
+            {
+                include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/venues-archive.php');
+            }
+            else if ($style == 'radio')
+            {
+                include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/venues-archive-radio.php');
+            }
+        }
+
+?>
+            </ul>
+        </div>
+<?php
+
+    }
+    else {
+    ?>
+        <div class='row columns'>
+            <em>No venues found.</em>
+        </div>
+    <?php   
+    }
+
+    wp_reset_postdata();    
+
+    return ob_get_clean();
+}
+
+add_shortcode( 'show_venues', 'austeve_filterable_venues' );
+
+
 ?>
