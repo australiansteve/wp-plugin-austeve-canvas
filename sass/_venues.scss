@@ -29,23 +29,7 @@ header.page-header {
 		margin-top: 0;
 	}
 
-}
-
-#venues-block-grid div {
-	text-align: center;
-	margin: auto; //Gets vertical alignment to be 'middle'
-}
-
-#venues-block-grid article.austeve-venues {
-	position: relative;
-}
-
-#venues-block-grid article.padded {
-	padding: 1rem;
-}
-
-#venues-block-grid .columns {
-    padding-left: 0;
-    padding-right: 0;
-
+	.events {
+		margin-top: 2rem;
+	}
 }

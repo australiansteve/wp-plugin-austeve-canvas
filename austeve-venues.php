@@ -194,4 +194,30 @@ function austeve_update_wc_product_stock( $post_id ) {
 }
 add_action('acf/save_post', 'austeve_update_wc_product_stock', 20);
 
+function austeve_pre_get_posts_order_venues( $query ) {
+	
+	// do not modify queries in the admin, or if viewing a single event page, or if being displayed from shortcode
+	if( is_admin() || is_single() || array_key_exists('do_not_filter', $query->query) ) {
+		
+		return $query;
+		
+	}
+
+	//If here we are basically just modifying the archive page of venues 
+	// only modify queries for 'venue' post type
+	if( isset($query->query_vars['post_type']) && $query->query_vars['post_type'] == 'austeve-venues' ) {
+		
+		//Find the venues, order by title
+		$query->set('posts_per_page', -1);	
+		$query->set('orderby', 'title');	
+		$query->set('order', 'ASC');	 
+
+	}
+
+	// return
+	return $query;
+
+}
+
+add_action('pre_get_posts', 'austeve_pre_get_posts_order_venues');
 ?>
