@@ -165,7 +165,14 @@ function austeve_get_location_venue_options_ajax() {
 
 	    foreach($venue_posts as $venue)
 	    {
-	        echo '<option value="' . $venue->ID . '">' .$venue->post_title . '</option>'; 
+	    	if ($_POST[ 'style' ] !== 'undefined' && $_POST[ 'style' ] == 'listitem')
+	    	{
+	        	echo '<li class="venue"><a href="'.get_permalink($venue->ID).'">'.$venue->post_title.'</a></li>';
+	    	}
+	    	else
+	    	{
+	        	echo '<option value="' . $venue->ID . '">' .$venue->post_title . '</option>'; 
+	    	}
 	    }
 
 		die();

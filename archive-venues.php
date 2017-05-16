@@ -28,30 +28,32 @@ get_header(); ?>
 				<div class="row"><!-- .row start -->
 
 					<div class="small-12 columns"><!-- .columns start -->
-						Search for a venue here
+					<?php
+						include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/venue-filters.php');
+					?>
 					</div>
 
 				</div>
 
-				<div class="row small-up-1 medium-up-2 large-up-3 align-middle" id="venues-block-grid">
+				<div class="row columns">
+					<ul class='venues-list'>
 
-				<?php /* Start the Loop */ ?>
-				<?php while ( have_posts() ) : the_post(); ?>
-					<div class="column">
-				<?php 
+						<?php /* Start the Loop */ ?>
+						<?php while ( have_posts() ) : the_post(); ?>
+						<?php 
 
-            		if (locate_template('page-templates/partials/venues-archive.php') != '') {
-						// yep, load the page template
-						get_template_part('page-templates/partials/venues', 'archive');
-					} else {
-						// nope, load the default
-						include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/venues-archive.php');
-					}
+		            		if (locate_template('page-templates/partials/venues-archive.php') != '') {
+								// yep, load the page template
+								get_template_part('page-templates/partials/venues', 'archive');
+							} else {
+								// nope, load the default
+								include( plugin_dir_path( __FILE__ ) . 'page-templates/partials/venues-archive.php');
+							}
 
-				?>
-					</div>
-				<?php endwhile; ?>
+						?>
+						<?php endwhile; ?>
 
+					</ul>
 				</div> <!-- #venues-block-grid -->
 
 				<?php the_posts_navigation(); ?>
