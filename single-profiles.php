@@ -53,19 +53,21 @@ get_header(); ?>
 
 				<?php
 			    $creation_args = array(
-			        'do_not_filter' => true,
-			        'post_type' => 'austeve-creations',
-			        'post_status' => array('publish'),
-			        'posts_per_page' => '-1',
-			        'meta_query' => array(
-			        	array(
-	                        'key'           => 'artist',
-	                        'compare'       => '=',
-	                        'value'         => get_the_ID(),
-	                        'type'          => 'NUMERIC',
-	                    )
-			        )
-			    );
+					'do_not_filter' => true,
+					'post_type' => 'austeve-creations',
+					'post_status' => array('publish'),
+					'posts_per_page' => '-1',
+					'orderby' => 'title',
+					'order'   => 'ASC',
+					'meta_query' => array(
+						array(
+							'key'           => 'artist',
+							'compare'       => '=',
+							'value'         => get_the_ID(),
+							'type'          => 'NUMERIC',
+						)
+					)
+				);
 		        $creation_query = new WP_Query( $creation_args );
 
 		        if( $creation_query->have_posts() ){
@@ -87,7 +89,7 @@ get_header(); ?>
 					
 						<div class="small-12 columns">
 
-							<h3 class='creations'>Creations:</h3>
+							<h3 class='creations'>Create over Cocktails creations:</h3>
 								
 								<?php
 

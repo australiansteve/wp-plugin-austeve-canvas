@@ -126,20 +126,31 @@
 				</div>
 
 				<?php 
-				if (get_field('url'))
+				$rows = get_field('photos');
+
+				if ($rows)
 				{
 				?>
-				<div class="row">
+				<div class="row columns">
+					<h3>
+				</div>
+				<div class="row small-up-2 medium-up-3 profile-photos">
 				
-					<div class="small-12 columns">
+					<?php
+					foreach($rows as $photo)
+					{
+				        error_log(print_r($photo, true));
+					
+						echo '<div class="column">';
 
-						<p class="profile-link">
+				        // display a sub field value
+				        $image = $photo['image'];
+				        error_log(print_r($image, true));
+				        echo '<img src="'.$image['sizes']['thumbnail'].'" title="'.$image['description'].'" alt="'.$image['alt'].'"/>';
 
-							<a href="<?php echo get_field('url'); ?>" title="Visit website" alt="Visit website" target="blank">Visit website</a>
-
-						</p>
-							
-					</div>
+				        echo '</div>';
+				    }
+					?>
 
 				</div>
 				<?php 
