@@ -155,7 +155,25 @@
 					<?php echo get_field('description');?>
 				</div>		
 				
+				<?php if (get_field('arrival')) : ?>
+					<div class="event-arrival"><strong>Arrival:</strong> <?php echo get_field('arrival'); ?></div>
+				<?php endif; ?>
 
+				<?php if (get_field('seating')) : ?>
+					<div class="event-seating"><strong>Seating:</strong> <?php echo get_field('seating'); ?></div>
+				<?php endif; ?>
+
+				<?php if (get_field('event_duration')) : ?>
+					<div class="event-duration"><strong>Event Length:</strong> <?php echo get_field('event_duration'); ?></div>
+				<?php endif; ?>
+
+				<?php if (get_field('age_requirement')) : ?>
+					<div class="event-age"><strong>Age Requirement:</strong> <?php echo get_field('age_requirement'); ?></div>
+				<?php endif; ?>
+
+				<?php if (get_field('dress_code')) : ?>
+					<div class="event-dress"><strong>Dress code:</strong> <?php echo get_field('dress_code'); ?></div>
+				<?php endif; ?>
 				
 			</div>
 

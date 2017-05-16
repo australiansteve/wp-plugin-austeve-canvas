@@ -18,6 +18,7 @@ function austeve_event_query_args($atts)
         'venue_id' => -1,
         'host_id' => -1,
         'show_filters' => 'false',
+        'include_api' => 'true',
     ), $atts );
 
     extract( $atts );
@@ -336,7 +337,8 @@ function austeve_events_upcoming($atts){
                 echo '</div>';
             }
 
-            include( plugin_dir_path( __FILE__ ) . 'google-map.php');
+            if (array_key_exists('include_api', $args) && $args['include_api'] === 'true')
+                include( plugin_dir_path( __FILE__ ) . 'google-map.php');
 
         	echo '</div>';
 

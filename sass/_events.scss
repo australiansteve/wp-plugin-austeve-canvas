@@ -14,7 +14,15 @@ header.page-header {
 
 	.event-level {
 		margin-bottom: 1rem;
-	}	
+	}
+
+	.event-arrival, .event-seating, .event-duration, .event-age, .event-dress {
+	    margin-bottom: 0.5rem;
+	}
+
+	strong {
+		text-decoration: underline;
+	}
 }
 
 .upcoming-event {   
