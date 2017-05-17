@@ -142,6 +142,18 @@ function austeve_update_wc_product( $post_id ) {
 		if ($product && $product->post_type == 'product')
 		{
 			error_log(print_r($product, true));
+		    
+			$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time'));
+			$new_product_title = array(
+				'ID'           => $product_id,
+				'post_title'   => 'Event ticket: '.$event_post->post_title.', '.get_the_title(get_field('venue')).', '.$eventDate->format('F jS Y'),
+			);
+
+			// Update the post title into the database
+			if ($new_product_title['post_title'] != $product->post_title)
+			{
+				wp_update_post( $new_product_title );
+			}
 
 			//update metadata for the Product
 			update_post_meta( $product_id, '_price', get_field('price') );
@@ -163,7 +175,6 @@ function austeve_update_wc_product( $post_id ) {
 			update_post_meta( $product_id, '_thumbnail_id',  get_field('image', get_field('creation'))['ID']); //Media ID
 
 			//Update expiry - consider timezone
-			$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time'));
 			$timezone = floatval(get_field('timezone'));
 			$timezoneAdjust = ($timezone == 0) ? '+0 hours' : (($timezone < 0) ? '+'.strval($timezone * -60).' minutes' : '-'.strval($timezone*60).' minutes');
 			$utcExpiry = $eventDate->modify($timezoneAdjust);
