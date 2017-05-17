@@ -155,6 +155,10 @@
 					<?php echo get_field('description');?>
 				</div>		
 				
+				<?php if (get_field('price_friendly')) : ?>
+					<div class="event-price-friendly"><strong>Price:</strong> <?php echo get_field('price_friendly'); ?></div>
+				<?php endif; ?>
+
 				<?php if (get_field('arrival')) : ?>
 					<div class="event-arrival"><strong>Arrival:</strong> <?php echo get_field('arrival'); ?></div>
 				<?php endif; ?>
