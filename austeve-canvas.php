@@ -75,4 +75,17 @@ function austeve_remove_wc_from_search() {
 }
 add_action( 'init', 'austeve_remove_wc_from_search', 99 );
 
+
+/**
+ * Replaces unhelpful error message seen when browsers are not up to date with more helpful message. 
+ * Added to help alleviate lost customers from the checkout page
+ */
+
+add_action( 'woocommerce_before_checkout_form', 'austeve_uptodate_browser_message', 10, 0);
+
+function austeve_uptodate_browser_message()
+{
+	echo '<div class="woocommerce-error austeve-checkout-warning">To ensure the checkout process is successful, please use the most up-to-date version of your browser.<br/><a href=\'http://outdatedbrowser.com\' target=\'_blank\' title=\'Update browser\'>Click here</a> to find the most up-to-date version of your browser.</div>';
+}
+
 ?>
