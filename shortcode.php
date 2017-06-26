@@ -3,7 +3,7 @@
 function austeve_event_query_args($atts)
 {
     // find date time now
-    $date_now = date('Y-m-d H:i:s');
+    $date_now = new DateTime(date('Y-m-d H:i:s'));
 
     $atts = shortcode_atts( array(
         'show_events' => 'true',
@@ -45,17 +45,19 @@ function austeve_event_query_args($atts)
         $past_events_query = array(
             'key'           => 'start_time',
             'compare'       => '<=',
-            'value'         => $date_now,
+            'value'         => $date_now->format("Y-m-d H:i:s"),
             'type'          => 'DATETIME',
         );
         $meta_query[] = $past_events_query;
     }
     if ($future_events === 'true') //future events
     {
+        //Start dates are stored in UTC time, and when in negative timezones that means they don't show up hours before the event
+        $date_now->modify("-12 hours");
         $future_events_query = array(
             'key'           => 'start_time',
             'compare'       => '>=',
-            'value'         => $date_now,
+            'value'         => $date_now->format("Y-m-d H:i:s"),
             'type'          => 'DATETIME',
         );
         $meta_query[] = $future_events_query;

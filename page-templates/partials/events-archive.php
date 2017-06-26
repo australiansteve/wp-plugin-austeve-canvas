@@ -165,13 +165,10 @@
 		<div class="small-12 medium-3 columns">
 			<?php
 
-		    // find date time now
-		    $date_now = date('Y-m-d H:i:s');
-	    	$event_start = get_field('start_time');
+			$now = new DateTime();
+			$wc_expiry = get_field('_expiration_date', get_field('wc_product'));
 
-	    	error_log($date_now." vs ".$event_start);
-
-	    	if ($event_start > $date_now)
+			if ($wc_expiry && $wc_expiry > $now)
 	    	{
 
 				if (get_field('wc_product') && get_field('price'))
