@@ -177,11 +177,13 @@ function austeve_update_wc_product( $post_id ) {
 			//Update expiry - consider timezone
 			$timezone = floatval(get_field('timezone'));
 			$timezoneAdjust = ($timezone == 0) ? '+0 hours' : (($timezone < 0) ? '+'.strval($timezone * -60).' minutes' : '-'.strval($timezone*60).' minutes');
-			$utcExpiry = $eventDate->modify($timezoneAdjust);
+			$utcExpiry = clone $eventDate;
+			$utcExpiry->modify($timezoneAdjust);
 			error_log("timezone: ".print_r($timezone, true));
 			error_log("timezoneAdjust: ".print_r($timezoneAdjust, true));
 			error_log("utcExpiry: ".print_r($utcExpiry, true));
-			update_post_meta( $product_id, '_expiration_date', $utcExpiry); //Event date
+			update_post_meta( $product_id, '_expiration_date', $utcExpiry); //WC product expiry date - stored as a DateTime object
+			update_field('start_time_utc', $utcExpiry->format("Y-m-d H:i:s")); //UTC start time of event
 
 			//Add link to Tax Rate taxonomy from the Tax Region of the venue
 			$tax_region = get_field('tax_region', get_field('venue'));
@@ -234,12 +236,13 @@ function austeve_update_wc_product( $post_id ) {
 		$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time'));
 		$timezone = floatval(get_field('timezone'));
 		$timezoneAdjust = ($timezone == 0) ? '+0 hours' : (($timezone < 0) ? '+'.strval($timezone * -60).' minutes' : '-'.strval($timezone*60).' minutes');
-		$utcExpiry = $eventDate->modify($timezoneAdjust);
+		$utcExpiry = clone $eventDate;
+		$utcExpiry->modify($timezoneAdjust);
 		error_log("timezone: ".print_r($timezone, true));
 		error_log("timezoneAdjust: ".print_r($timezoneAdjust, true));
 		error_log("utcExpiry: ".print_r($utcExpiry, true));
-		update_post_meta( $new_product_id, '_expiration_date', $utcExpiry); //Event date
-
+		update_post_meta( $new_product_id, '_expiration_date', $utcExpiry); //WC product expiry date - stored as a DateTime object
+		update_field('start_time_utc', $utcExpiry->format("Y-m-d H:i:s")); //UTC start time of event
 
 		if (get_field('custom_capacity'))
 		{
