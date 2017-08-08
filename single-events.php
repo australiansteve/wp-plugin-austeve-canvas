@@ -52,10 +52,11 @@ get_header(); ?>
 						}
 
 						error_log("Saved checklist: ".print_r($checklist, true));
-
+						$emailList=array();
 						foreach($guestlist as $orderId=>$guest)
 						{
 							error_log( "Order: ".$orderId);
+							$emailList[] = $guest['customer_email'];
 							$checkedInAlready = 0;
 							if (array_key_exists($orderId, $checklist))
 							{
@@ -70,21 +71,52 @@ get_header(); ?>
 								}
 							} 
 
-							$buttonClass = $checkedInAlready > 0 ? ($checkedInAlready >= $guest['qty'] ? 'all-present' : 'semi-present') : '';
+							$colourClass = $checkedInAlready > 0 ? ($checkedInAlready >= $guest['qty'] ? 'all-present' : 'semi-present') : '';
 
-							echo "<div class='row'>";
-							echo "<div class='small-6 medium-8 columns'>";
+							echo "<div class='row guest-order'>";
+							echo "<div class='small-7 medium-8 columns'>";
 							echo "<div class='row'><div class='small-12 medium-6 columns'>".$guest['customer_name']."</div><div class='small-12 medium-6 columns'><em>".$guest['customer_email']."</em></div></div>";
 							echo "</div>";
-							echo "<div class='small-6 medium-4 columns event-attendees-".$orderId."' data-event='".get_the_ID()."' data-user='".$guest['customer_id']."' data-max='".$guest['qty']."'>";
+							echo "<div class='small-5 medium-4 columns event-attendees event-attendees-".$orderId." ".$colourClass."' data-event='".get_the_ID()."' data-user='".$guest['customer_id']."' data-max='".$guest['qty']."'>";
 
-							echo "<a class='update-guest-list down' data-order-id='".$orderId."'><i class='fa fa-minus-circle' aria-hidden='true'></i></a>";				
-							echo "<span class=''><span class='current-attendees'>$checkedInAlready</span>/".$guest['qty']."</span>";
+							echo "<button class='update-guest-list down' data-order-id='".$orderId."'><i class='fa fa-minus-circle' aria-hidden='true'></i></button>";				
+							echo "<span class='attendees'><span class='current-attendees'>$checkedInAlready</span>/".$guest['qty']."</span>";
 							echo "<button class='update-guest-list up' data-order-id='".$orderId."'><i class='fa fa-plus-circle' aria-hidden='true'></i></button>";
 							echo "</div>";
 							echo "</div>";
 						}
 
+						?>
+						<div class="row columns send-guest-emails">
+							<button class='button' data-open='email-guests-1'>Reminder email details</button>
+							<button class='button' data-open='email-guests-2'>Event review follow-up</button>
+						</div>
+
+						<div class="reveal email-guests" id="email-guests-1" data-reveal>
+						  <h1><?php echo the_title(); ?></h1>
+						  <h3><?php echo get_field('venue')->post_title; ?>, <?php 
+								$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time'));
+								echo $eventDate->format('F jS Y @g:ia');?></h3>
+						  <p class="guest-list">Guestlist: <?php echo implode($emailList, '; ');?></p>
+						  <p class="message">We can add more default details here so that you can easily copy & paste into an email. Just need to know exactly what you want to say each time!</p>
+						  <button class="close-button" data-close aria-label="Close modal" type="button">
+						    <span aria-hidden="true">&times;</span>
+						  </button>
+						</div>
+
+						<div class="reveal email-guests" id="email-guests-2" data-reveal>
+						  <h1><?php echo the_title(); ?></h1>
+						  <h3><?php echo get_field('venue')->post_title; ?>, <?php 
+								$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time'));
+								echo $eventDate->format('F jS Y @g:ia');?></h3>
+						  <p class="guest-list">Guestlist: <?php echo implode($emailList, '; ');?></p>
+						  <p class="message">We can add more default details here so that you can easily copy & paste into an email. Just need to know exactly what you want to say each time!</p>
+						  <button class="close-button" data-close aria-label="Close modal" type="button">
+						    <span aria-hidden="true">&times;</span>
+						  </button>
+						</div>
+
+						<?php
 						echo "</div> <!-- END #event-guest-list -->";
 
 				    	//Reset back to the main loop
@@ -92,20 +124,13 @@ get_header(); ?>
 					}
 				?>
 				
-				<!--?php 
-				the_post_navigation(array(
-			        'prev_text'          => '<i class="fa fa-arrow-left"></i> Next',
-			        'next_text'          => 'Previous <i class="fa fa-arrow-right"></i>',
-			        'screen_reader_text' => __( 'More events:' ),
-			    )); ?-->
-
 			<?php endwhile; // end of the loop. 
 			$nonce = wp_create_nonce( 'austevesaveattendance' );
 	    	?>
 
 			<script type='text/javascript'>
 				<!--
-				function save_attendance( eventId, orderId, userId, attendees, maxAttendees, increase ) {
+				function save_attendance( eventId, orderId, userId, maxAttendees, increase ) {
 					console.log("Saving attendance for event " + eventId);
 					jQuery.ajax({
 						type: "post", 
@@ -123,6 +148,24 @@ get_header(); ?>
 							console.log("Response: " + html);
 
 							jQuery(".event-attendees-"+orderId+" .current-attendees").html(html);
+
+							var intResponse = Number.isInteger(parseInt(html));
+
+							if (intResponse && parseInt(html) == maxAttendees)
+							{
+								jQuery(".event-attendees-"+orderId).addClass("all-present");
+								jQuery(".event-attendees-"+orderId).removeClass("semi-present");
+							}
+							else if (intResponse && parseInt(html) == "0" )
+							{
+								jQuery(".event-attendees-"+orderId).removeClass("all-present");
+								jQuery(".event-attendees-"+orderId).removeClass("semi-present");
+							}
+							else if (intResponse)
+							{
+								jQuery(".event-attendees-"+orderId).removeClass("all-present");
+								jQuery(".event-attendees-"+orderId).addClass("semi-present");
+							}
 						}
 					}); //close jQuery.ajax(
 				}
@@ -133,9 +176,8 @@ get_header(); ?>
 					var eventToSave = jQuery(".event-attendees-" + orderId).attr('data-event');
 					var userId = jQuery(".event-attendees-" + orderId).attr('data-user');
 					var maxAttendees = jQuery(".event-attendees-" + orderId).attr('data-max');
-					var attendees = jQuery(".event-attendees-" + orderId).find('current-attendees').html();
 
-					save_attendance( eventToSave, orderId, userId, attendees, maxAttendees, jQuery(this).hasClass('up') );
+					save_attendance( eventToSave, orderId, userId, maxAttendees, jQuery(this).hasClass('up') );
 				});
 
 				-->

@@ -25,7 +25,7 @@ register_activation_hook( __FILE__, 'austeve_add_roles_on_plugin_activation' );
 
 
 function austeve_canvas_enqueue_style() {
-	wp_enqueue_style( 'austeve-canvas', plugin_dir_url( __FILE__ ). '/style.css' , false , '4.6'); 
+	wp_enqueue_style( 'austeve-canvas', plugin_dir_url( __FILE__ ). '/style.css' , false , '4.7'); 
 }
 
 function austeve_canvas_enqueue_script() {
