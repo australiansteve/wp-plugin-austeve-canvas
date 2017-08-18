@@ -48,7 +48,7 @@ function austeve_save_attendance_ajax() {
 
 			$currentNum = 0;
 
-			if (array_key_exists($orderId, $checked_in_guest_list))
+			if (is_array($checked_in_guest_list) && array_key_exists($orderId, $checked_in_guest_list))
 			{
 				if (array_key_exists('qty', $checked_in_guest_list[$orderId]))
 				{

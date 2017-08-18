@@ -128,14 +128,23 @@ class AUSteve_My_Account_Reviews {
 						feedback: feedback, 
 						_ajax_nonce: '<?php echo $nonce; ?>' 
 					},
-					beforeSend: function() {jQuery(".save-review[data-event="+eventId+"]").after("<span class='progress'>Saving...</span>");},
+					beforeSend: function() {
+						jQuery("span.progress").each(function(){jQuery(this).remove()});
+						jQuery(".save-review[data-event="+eventId+"]").after("<span class='progress'>Saving...</span>");
+					},
 					success: function(html){ //so, if data is retrieved, store it in html
 						console.log("Response: " + html);
 
 						if (html == '1')
-							jQuery(".save-review[data-event="+eventId+"] + .progress").html("Saved."); //fadeIn the html inside helloworld div
+						{
+							jQuery(".event[data-event="+eventId+"] select").attr('disabled', 'disabled');
+							jQuery(".event[data-event="+eventId+"] textarea").attr('disabled', 'disabled');
+							jQuery(".save-review[data-event="+eventId+"] + .progress").html("Thankyou for your feedback!").addClass('success');
+						}
 						else
-							jQuery(".save-review[data-event="+eventId+"] + .progress").html("Didn't save."); //fadeIn the html inside helloworld div
+						{
+							jQuery(".save-review[data-event="+eventId+"] + .progress").html(html).addClass('error');
+						}
 					}
 				}); //close jQuery.ajax(
 			}
@@ -166,7 +175,7 @@ class AUSteve_My_Account_Reviews {
 		<?php 
 
 			$orders = self::wc_get_customer_orders();
-			//echo print_r($orders, true);
+			//error_log("Customer orders: ".print_r($orders, true));
 
 			//If the customer has previous orders
 			if (count($orders) > 0)
@@ -178,7 +187,13 @@ class AUSteve_My_Account_Reviews {
 				{
 					$order = new WC_Order( $orderPost->ID );
 					$items = $order->get_items();
-					$product_ids = array_merge($product_ids, current($items)['item_meta']['_product_id']);
+					//error_log("Order ".$orderPost->ID." items: ".print_r($items, true));
+
+					foreach($items as $orderItem)
+					{
+						//error_log("Order ".$orderPost->ID." item data: ".print_r($orderItem->get_data(), true));
+						array_push($product_ids, $orderItem->get_data()['product_id']);
+					}
 				}
 
 				//Find the past events that the user has purchased tickets for from the array of product IDs
@@ -208,18 +223,21 @@ class AUSteve_My_Account_Reviews {
 				foreach($events as $event)
 				{
 					$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time', $event->ID));
-				
+					
+					echo "<div class='event-review'>";				
 					echo "<h4>".$event->post_title." - ".$eventDate->format('d M Y')."</h4>";
 
 					$event_reviews = get_field('reviews', $event->ID);
 
 					if ($event_reviews)
 					{
-						$event_review_array = json_decode($event_reviews);
+						$event_review_array = json_decode($event_reviews, true);
 
-						if (property_exists( $event_review_array, get_current_user_id() ))
+						if (array_key_exists( get_current_user_id(), $event_review_array ))
 						{
-							echo "You've already reviewed this event. Thanks for your feedback";
+							error_log(get_current_user_id()." included? : ". print_r($event_review_array, true));
+							echo "You've already reviewed this event. Thanks for your feedback<br/>";
+							echo "<p>Host rating: ".$event_review_array[get_current_user_id()]['rating']."<br/>Feedback: <em>".$event_review_array[get_current_user_id()]['feedback']."</em></p>";
 						}
 						else 
 						{
@@ -230,6 +248,8 @@ class AUSteve_My_Account_Reviews {
 					{
 						self::review_form($event->ID);
 					}
+
+					echo "</div>";	
 				}
 
 				self::client_side_script();
@@ -276,6 +296,12 @@ function austeve_save_review_ajax() {
 		//Get the guest list for the event
 		$guest_list = json_decode(get_field('guest_list', $eventId), true);
 
+		if (!is_array($guest_list))
+		{
+			echo "There was an error reviewing this event (Event ID: ".$eventId."). Please contact ".get_option('admin_email');
+			die();
+		}
+
 		error_log(print_r($guest_list, true));
 		foreach($guest_list as $order_id=>$info)
 		{
@@ -288,9 +314,9 @@ function austeve_save_review_ajax() {
 				$reviews = $reviewsJSON ? json_decode($reviewsJSON) : [];
 				error_log("Reviews array: ".print_r($reviews, true));
 
-				if( property_exists($reviews, $user) )
+				if( !is_array($reviews) && property_exists($reviews, $user) )
 				{
-					echo "User has already reviewed event";
+					echo "It looks like you've already reviewed this event. You can only leave one review per event, sorry.";
 					die();
 				}
 
@@ -314,7 +340,7 @@ function austeve_save_review_ajax() {
 				die();
 			}
 		}
-		echo "Not Authorized to review event";
+		echo "You are not authorized to review this event";
 
 	}
 	die();

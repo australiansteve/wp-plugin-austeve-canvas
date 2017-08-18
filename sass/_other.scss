@@ -1,3 +1,23 @@
 .austeve-checkout-warning a {
 	text-decoration: underline; 
 }
+
+.woocommerce-MyAccount-reviews {
+
+	.event-review {
+		margin-bottom: 3rem;
+	}
+
+	.progress {
+		margin-left: 1rem;
+	    background-color: inherit;
+	}
+
+	.progress.error {
+		color: red;
+	}
+
+	.progress.success {
+		color: green;
+	}
+}
