@@ -531,7 +531,7 @@ function austeve_display_reviews() {
     $event_id = isset($_GET['event_id']) ? $_GET['event_id']: 0;
 	
     //Display dropdown to select event
-    echo "<select>";
+    echo "<select id='event-id'>";
     echo "<option value='0' ".(($event_id == 0) ? "selected" : "").">Select an event</option>";
 	foreach($posts_array as $event)
 	{
@@ -576,7 +576,44 @@ function austeve_display_reviews() {
 	{
 		echo "Select an event to view reviews"; 
 	}
-	echo '</div>';
+	echo '</div>';  // END .event-reviews
+
+	$nonce = wp_create_nonce( 'austevegeteventreviews' );
+	?>
+
+	<script type='text/javascript'>
+		<!--
+		function get_reviews( eventId ) {
+			console.log("Getting event reviews for event " + eventId);
+			jQuery.ajax({
+				type: "post", 
+				url: '<?php echo admin_url("admin-ajax.php"); ?>', 
+				data: { 
+					action: 'get_event_reviews', 
+					eventId: eventId, 
+					_ajax_nonce: '<?php echo $nonce; ?>' 
+				},
+				beforeSend: function() {
+					jQuery(".event-reviews").html("<i class='fa fa-spinner fa-pulse fa-fw'></i>");
+				},
+				success: function(html){ //so, if data is retrieved, store it in html
+					console.log("Response: " + html);
+					jQuery(".event-reviews").html(html);
+				}
+			}); //close jQuery.ajax(
+		}
+		// When the document loads do everything inside here ...
+		jQuery("#event-id").on('change', function() {
+			var eventId = jQuery('#event-id').val();
+
+			console.log("Getting reviews for event: " + eventId);
+			get_reviews( eventId );
+		});
+		-->
+	</script>
+
+	<?php
+
 	echo '</div>';
 }
 

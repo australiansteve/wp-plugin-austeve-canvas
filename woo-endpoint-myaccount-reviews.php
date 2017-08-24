@@ -346,3 +346,38 @@ function austeve_save_review_ajax() {
 	die();
 }
 add_action( 'wp_ajax_save_review', 'austeve_save_review_ajax' );
+
+function austeve_get_event_reviews_ajax() {
+	check_ajax_referer( "austevegeteventreviews" );
+
+	if( $_POST[ 'eventId' ] !== 'undefined' )
+	{
+		$event_id = $_POST[ 'eventId' ];
+		if (get_field('reviews', $event_id))
+		{
+			$reviews = json_decode(get_field('reviews', $event_id), true);
+			echo "<div class='event-review header'>";
+			echo "<div class='user'>User</div>";
+			echo "<div class='rating'>Rating</div>";
+			echo "<div class='feedback'>Feedback</div>";
+			echo "</div>";
+
+			foreach($reviews as $user_id=>$review)
+			{
+				$userdata = get_userdata($user_id);
+				echo "<div class='event-review'>";
+				echo "<div class='user'>".$userdata->first_name." ".$userdata->last_name." (<a href='mailto:".$userdata->user_email."' target='_blank'>".$userdata->user_email."</a>)</div>";
+				echo "<div class='rating'>".$review['rating']."/5</div>";
+				echo "<div class='feedback'>".$review['feedback']."</div>";
+				echo "</div>";
+			}
+		}
+		else {
+			echo "No reviews for this event";
+		}
+		die();
+	}
+	error_log("ERROR: There was a problem retrieving event reviews");
+	die();
+}
+add_action( 'wp_ajax_get_event_reviews', 'austeve_get_event_reviews_ajax' );
