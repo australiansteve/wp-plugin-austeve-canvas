@@ -94,11 +94,11 @@ class AUSteve_My_Account_Reviews {
 		<div class='event' data-event='<?php echo $eventID; ?>'>
 			<label>How would you rate the host of the event?</label>
 			<select class='host-rating'>
-				<option value='5'>5 - Great</option>
-				<option value='4'>4 - Good</option>
-				<option value='3'>3 - OK</option>
-				<option value='2'>2 - Bad</option>
-				<option value='1'>1 - Terrible</option>
+				<option value='5'>5 - Amazing</option>
+				<option value='4'>4 - Great</option>
+				<option value='3'>3 - Good</option>
+				<option value='2'>2 - Okay</option>
+				<option value='1'>1 - No Fun</option>
 			</select>
 
 			<label>Feedback</label>
