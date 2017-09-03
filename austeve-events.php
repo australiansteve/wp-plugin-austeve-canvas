@@ -520,10 +520,11 @@ function austeve_display_reviews() {
 
 	//Get all previous events
 	$args = austeve_event_query_args(
-		array('number_of_posts' => 5,
+		array('number_of_posts' => -1,
 	        'future_events' => 'false',
 	        'past_events' => 'true',
-	        'order' => 'DESC'
+	        'order' => 'DESC',
+	        'number_of_days' => 30
 	    )
     );
 
@@ -537,10 +538,14 @@ function austeve_display_reviews() {
 	{
 		$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time', $event->ID));
 
-		echo "<option value='".$event->ID."' ".(($event_id == $event->ID) ? "selected" : "").">".$event->post_title.", ".get_field('venue', $event->ID)->post_title." (".$eventDate->format('d M Y').")</option>";
+		echo "<option value='".$event->ID."' ".(($event_id == $event->ID) ? "selected" : "").">".$eventDate->format('d M Y')." - ".$event->post_title.", ".get_field('venue', $event->ID)->post_title."</option>";
 
 	}
 	echo "</select>";
+	echo '<div class="load-more-event-reviews">';
+	echo '<input type="hidden" id="days-back" value="30" />';
+	echo '<button id="load-more-event-reviews" >Load more events</button>';
+	echo '</div>';
 	echo '<div class="event-reviews">';
 	if ($event_id > 0)
 	{
@@ -602,6 +607,40 @@ function austeve_display_reviews() {
 				}
 			}); //close jQuery.ajax(
 		}
+
+		function get_events( daysBack ) {
+			console.log("Getting events for last " + daysBack + " days");
+			jQuery.ajax({
+				type: "post", 
+				url: '<?php echo admin_url("admin-ajax.php"); ?>', 
+				data: { 
+					action: 'get_events_for_reviews', 
+					daysBack: daysBack, 
+					_ajax_nonce: '<?php echo wp_create_nonce( 'austevegeteventsforreviews' ); ?>' 
+				},
+				beforeSend: function() {
+					jQuery("#event-id").html("<option>Loading...</option>");
+					jQuery("#event-id").after("<i class='fa fa-spinner fa-pulse fa-fw load-events-spinner'></i>");
+				},
+				statusCode: {
+					403: function (xhr) {
+						console.log('403 response');
+					}
+				},
+				success: function(html){ //so, if data is retrieved, store it in html
+					console.log("Response: " + html);
+					jQuery("#event-id").html(html);
+					jQuery(".load-events-spinner").remove();
+					jQuery('#days-back').val(daysBack); 
+				},
+				error: function(html){ //so, if data is retrieved, store it in html
+					console.log("Response: " + html);
+					jQuery("#event-id").html("<option>Error</option>");
+					jQuery(".load-events-spinner").remove();
+				}
+			}); //close jQuery.ajax(
+		}
+
 		// When the document loads do everything inside here ...
 		jQuery("#event-id").on('change', function() {
 			var eventId = jQuery('#event-id').val();
@@ -609,6 +648,14 @@ function austeve_display_reviews() {
 			console.log("Getting reviews for event: " + eventId);
 			get_reviews( eventId );
 		});
+
+		jQuery("#load-more-event-reviews").on('click', function() {
+			var daysBack = parseInt(jQuery('#days-back').val()) + parseInt(30);
+
+			console.log("Getting events for last " + daysBack + " days");
+			get_events( daysBack );
+		});
+
 		-->
 	</script>
 

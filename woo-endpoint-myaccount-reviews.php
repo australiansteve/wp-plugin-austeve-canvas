@@ -381,3 +381,36 @@ function austeve_get_event_reviews_ajax() {
 	die();
 }
 add_action( 'wp_ajax_get_event_reviews', 'austeve_get_event_reviews_ajax' );
+
+function austeve_get_events_for_reviews_ajax() {
+	check_ajax_referer( "austevegeteventsforreviews" );
+
+	if( $_POST[ 'daysBack' ] !== 'undefined' )
+	{
+		$daysBack = $_POST[ 'daysBack' ];
+
+		//Get all previous events
+		$args = austeve_event_query_args(
+			array('number_of_posts' => -1,
+		        'future_events' => 'false',
+		        'past_events' => 'true',
+		        'order' => 'DESC',
+		        'number_of_days' => $daysBack
+		    )
+	    );
+
+	    $posts_array = get_posts( $args );
+	    echo "<option value='0' ".(($event_id == 0) ? "selected" : "").">Select an event</option>";
+		foreach($posts_array as $event)
+		{
+			$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time', $event->ID));
+
+			echo "<option value='".$event->ID."' ".(($event_id == $event->ID) ? "selected" : "").">".$eventDate->format('d M Y')." - ".$event->post_title.", ".get_field('venue', $event->ID)->post_title."</option>";
+
+		}
+		die();
+	}
+	error_log("ERROR: There was a problem retrieving events");
+	die();
+}
+add_action( 'wp_ajax_get_events_for_reviews', 'austeve_get_events_for_reviews_ajax' );

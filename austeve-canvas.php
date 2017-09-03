@@ -46,7 +46,7 @@ add_action( 'wp_enqueue_scripts', 'austeve_canvas_enqueue_script' );
 
 
 function austeve_canvas_enqueue_admin_style() {
-	wp_enqueue_style( 'austeve-canvas', plugin_dir_url( __FILE__ ). '/style-admin.css' , false , '4.8'); 
+	wp_enqueue_style( 'austeve-canvas', plugin_dir_url( __FILE__ ). '/style-admin.css' , false , '4.9'); 
 }
 
 add_action( 'admin_enqueue_scripts', 'austeve_canvas_enqueue_admin_style' );
