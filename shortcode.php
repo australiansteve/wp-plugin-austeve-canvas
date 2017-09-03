@@ -19,6 +19,7 @@ function austeve_event_query_args($atts)
         'host_id' => -1,
         'show_filters' => 'false',
         'include_api' => 'true',
+        'number_of_days' => -1,
     ), $atts );
 
     extract( $atts );
@@ -48,7 +49,19 @@ function austeve_event_query_args($atts)
             'value'         => $date_now->format("Y-m-d H:i:s"),
             'type'          => 'DATETIME',
         );
+
         $meta_query[] = $past_events_query;
+
+        if ($number_of_days >= 0)
+        {
+            $after_date_query = array(
+                'key'           => 'start_time',
+                'compare'       => '>=',
+                'value'         => date('Y-m-d', strtotime("-".$number_of_days." days")),
+                'type'          => 'DATETIME',
+            );
+            $meta_query[] = $after_date_query;
+        }
     }
     if ($future_events === 'true') //future events
     {
@@ -61,6 +74,17 @@ function austeve_event_query_args($atts)
             'type'          => 'DATETIME',
         );
         $meta_query[] = $future_events_query;
+
+        if ($number_of_days >= 0)
+        {
+            $before_date_query = array(
+                'key'           => 'start_time',
+                'compare'       => '<=',
+                'value'         => date('Y-m-d', strtotime("+".$number_of_days." days")),
+                'type'          => 'DATETIME',
+            );
+            $meta_query[] = $before_date_query;
+        }
     }
 
     //Setup creation query

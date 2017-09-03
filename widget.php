@@ -28,10 +28,11 @@ add_action( 'wp_dashboard_setup', 'austeve_admin_widgets' );
 function austeve_admin_recent_events() {
 
 	$args = austeve_event_query_args(
-		array('number_of_posts' => 5,
+		array('number_of_posts' => -1,
 	        'future_events' => 'false',
 	        'past_events' => 'true',
-	        'order' => 'DESC'
+	        'order' => 'DESC',
+	        'number_of_days' => 30
 	    )
     );
 
@@ -104,10 +105,11 @@ function austeve_admin_recent_events() {
 function austeve_admin_upcoming_events() {
 
 	$args = austeve_event_query_args(
-		array('number_of_posts' => 5,
+		array('number_of_posts' => -1,
 	        'future_events' => 'true',
 	        'past_events' => 'false',
-	        'order' => 'ASC'
+	        'order' => 'ASC',
+	        'number_of_days' => 30
     	)
     );
 
