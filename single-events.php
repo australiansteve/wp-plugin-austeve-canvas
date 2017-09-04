@@ -98,7 +98,13 @@ get_header(); ?>
 								$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time'));
 								echo $eventDate->format('F jS Y @g:ia');?></h3>
 						  <p class="guest-list">Guestlist: <?php echo implode($emailList, '; ');?></p>
-						  <p class="message">We can add more default details here so that you can easily copy & paste into an email. Just need to know exactly what you want to say each time!</p>
+						  <div class="message">
+							<p>It's almost time to create!  We're looking forward to seeing you at <?php echo get_the_title(get_field('venue')); ?> for "<?php echo the_title(); ?>". </p>
+							<p>Start time: <?php echo $eventDate->format('g:ia, F jS Y');?></p>
+							<p>Address: <?php echo get_field('address', get_field('venue'))['address']; ?></p>							
+							<?php echo get_field('arrival');?>
+							<p>See you there!</p>
+						  </div>
 						  <button class="close-button" data-close aria-label="Close modal" type="button">
 						    <span aria-hidden="true">&times;</span>
 						  </button>
@@ -110,7 +116,11 @@ get_header(); ?>
 								$eventDate = DateTime::createFromFormat('Y-m-d H:i:s', get_field('start_time'));
 								echo $eventDate->format('F jS Y @g:ia');?></h3>
 						  <p class="guest-list">Guestlist: <?php echo implode($emailList, '; ');?></p>
-						  <p class="message">We can add more default details here so that you can easily copy & paste into an email. Just need to know exactly what you want to say each time!</p>
+						  <div class="message">
+						  	<p>Hello Create over Cocktails Insiders!
+
+							<p>How was your latest Create over Cocktails experience?  Now you can <a href="<?php echo site_url('my-account'); ?>">log in to your account</a> & rate your most recent experience as well as any other previously attended events purchased through our new website!  We appreciate your feedback and look forward to hearing from you! :)
+						  </div>
 						  <button class="close-button" data-close aria-label="Close modal" type="button">
 						    <span aria-hidden="true">&times;</span>
 						  </button>
