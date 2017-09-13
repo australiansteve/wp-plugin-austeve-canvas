@@ -25,6 +25,66 @@ get_header(); ?>
 					?>
 				</header><!-- .page-header -->
 
+				<div class="row" id="creations-search">
+					<div class="small-12 columns">
+						<form method="GET" action="#" id="search-filters" onsubmit="return validateSearch()">
+							<input id="title-filter" type="text" class="filter" data-filter="title" placeholder="Search by name" value="<?php echo (isset($_GET['title']) ? $_GET['title'] : ''); ?>" />
+							<input type="submit" value="Search"/>
+						</form>
+					</div>
+				</div>
+				
+				<?php
+				global $wp;
+				$home_url = home_url();
+				$current_url = home_url(add_query_arg(array(),$wp->request));
+				$afterhome = strlen($current_url) - strlen($home_url);
+				$request_url = substr($current_url, -($afterhome-1));
+				$paging = strrpos ( $request_url , "/page/" );
+				if ($paging)
+				{
+					$request_url = substr($request_url, 0, $paging);
+				}
+				?>
+
+				<script type="text/javascript">
+					function validateSearch() {
+
+						// vars
+						var url = "<?php echo home_url( $request_url ); ?>";
+						var args = {};			
+						
+						// loop over filters
+						jQuery('#search-filters .filter').each(function(){
+							
+							// vars
+							var filter = jQuery(this).data('filter'),
+								vals = [ jQuery(this).attr('value')];
+							
+							// append to args
+							args[ filter ] = vals.join(',');
+							
+						});		
+						
+						// update url
+						url += '?';
+						
+						
+						// loop over args
+						jQuery.each(args, function( name, value ){			
+							url += name + '=' + value + '&';			
+						});
+						
+						
+						// remove last &
+						url = url.slice(0, -1);
+								
+						// reload page
+						window.location.replace( url );		
+						return false;
+					}
+				</script>
+
 				<div class="row small-up-1 medium-up-2 large-up-3 align-middle text-center" id="creations-block-grid">
 
 				<?php /* Start the Loop */ ?>

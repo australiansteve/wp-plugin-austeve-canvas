@@ -179,7 +179,53 @@ function austeve_filter_objects_creations( $query ) {
 			//Always get $numCreationPosts creations at a time
 			$query->set( 'posts_per_page', $numCreationPosts );
 			$query->set( 'orderby', 'title');	
-			$query->set( 'order', 'ASC');	 
+			$query->set( 'order', 'ASC');
+
+			if (isset($_GET['title']))
+			{
+				error_log("Filter creations by title: ".$_GET['title']);
+				$query->set( 's', $_GET['title']);
+			}
+
+			if (isset($_GET['categories']))
+			{
+				//error_log("Filter creations by categories: ".$_GET['categories']);
+				$tax_query = $query->get( 'tax_query');
+				//error_log("Tax query before: ".print_r($tax_query, true));
+				if (!is_array($tax_query))
+				{
+					$tax_query = [];
+				}
+				$tax_query[] = array(
+		            'taxonomy' => 'austeve_creation_categories',
+		            'field'    => 'slug',
+		            'terms' => explode(",", $_GET['categories']),
+		            'compare' => 'IN',
+		            'include_children' => true
+		        );
+		        $query->set('tax_query', $tax_query);
+				//error_log("Tax query after: ".print_r($tax_query, true));
+			}
+
+			if (isset($_GET['tags']))
+			{
+				error_log("Filter creations by tags: ".$_GET['tags']);
+				$tax_query = $query->get( 'tax_query');
+				error_log("Tax query before: ".print_r($tax_query, true));
+				if (!is_array($tax_query))
+				{
+					$tax_query = [];
+				}
+				$tax_query[] = array(
+		            'taxonomy' => 'austeve_creation_tags',
+		            'field'    => 'slug',
+		            'terms' => explode(",", $_GET['tags']),
+		            'compare' => 'IN',
+		            'include_children' => true
+		        );
+		        $query->set('tax_query', $tax_query);
+		        error_log("Tax query after: ".print_r($tax_query, true));
+			}
 		}
 	}
 	if (array_key_exists('austeve_creation_categories', $query->query) || array_key_exists('austeve_creation_tags', $query->query))
