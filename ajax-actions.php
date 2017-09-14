@@ -259,6 +259,42 @@ function austeve_get_creations_ajax() {
 			);
 			$args['meta_query'] = $artist_meta;
 		}
+
+
+		if (array_key_exists('titleFilter', $_POST) && !empty($_POST[ 'titleFilter' ]))
+		{
+			$args['s'] = $_POST[ 'titleFilter' ];
+		}
+
+		if (array_key_exists('categoryFilter', $_POST) && !empty($_POST[ 'categoryFilter' ]))
+		{
+			if (!isset($args['tax_query']))
+			{
+				$args['tax_query'] = [];
+			}
+			$args['tax_query'][] = array(
+	            'taxonomy' => 'austeve_creation_categories',
+	            'field'    => 'slug',
+	            'terms' => explode(",", $_POST['categoryFilter']),
+	            'compare' => 'IN',
+	            'include_children' => true
+	        );
+		}
+
+		if (array_key_exists('tagFilter', $_POST) && !empty($_POST[ 'tagFilter' ]))
+		{
+			if (!isset($args['tax_query']))
+			{
+				$args['tax_query'] = [];
+			}
+			$args['tax_query'][] = array(
+	            'taxonomy' => 'austeve_creation_tags',
+	            'field'    => 'slug',
+	            'terms' => explode(",", $_POST['tagFilter']),
+	            'compare' => 'IN',
+	            'include_children' => true
+	        );
+		}
 		
 		error_log("Get creations args: ".print_r($args, true));
 	    // the query

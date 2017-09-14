@@ -137,7 +137,7 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 					function resetSearch() {
 						// vars
 						var url = "<?php echo home_url( $request_url ); ?>";
-						
+
 						// reload page
 						window.location.replace( url );		
 						return false;
@@ -165,7 +165,7 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 
 				</div> <!-- #creations-block-grid -->
 
-				<a id="more_posts" class="button" data-next="2"><?php esc_html_e('Load More', 'dessertstorm') ?></a>
+				<a id="more_posts" class="button" data-next="2" data-title="<?php echo isset($_GET['title'])?$_GET['title']:'';?>" data-categories="<?php echo isset($_GET['categories'])?$_GET['categories']:'';?>" data-tags="<?php echo isset($_GET['tags'])?$_GET['tags']:'';?>"><?php esc_html_e('Load More', 'dessertstorm') ?></a>
 
 				<?php $nonce = 'austevegetcreations'; 
 				$query_type='post_type';
@@ -178,7 +178,7 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 				?>
 				<script type='text/javascript'>
 		            <!--
-		            function get_more_creations( nextPage ) {
+		            function get_more_creations( nextPage, titleFilter, categoryFilter, tagFilter ) {
 		                jQuery.ajax({
 		                    type: "post", 
 		                    url: '<?php echo admin_url("admin-ajax.php"); ?>', 
@@ -187,6 +187,9 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 		                        queryType: '<?php echo $query_type; ?>',
 		                        queryObject: '<?php echo $query_object; ?>',
 		                        nextPage: nextPage, 
+		                        titleFilter: titleFilter, 
+		                        categoryFilter: categoryFilter, 
+		                        tagFilter: tagFilter, 
 		                        _ajax_nonce: '<?php echo $nonce; ?>' 
 		                    },
 		                    beforeSend: function() {
@@ -218,7 +221,12 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 
 		            // When the document loads do everything inside here ...
 		            jQuery("#more_posts").on('click', function() {
-		            	get_more_creations( jQuery(this).attr('data-next'))
+		            	var nextPage = jQuery(this).attr('data-next');
+		            	var titleFilter = jQuery(this).attr('data-title');
+		            	var categoryFilter = jQuery(this).attr('data-categories');
+		            	var tagFilter = jQuery(this).attr('data-tags');
+
+		            	get_more_creations( nextPage, titleFilter, categoryFilter, tagFilter );
 		            });
 
 		            -->
