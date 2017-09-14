@@ -9,6 +9,24 @@
 
 get_header(); ?>
 
+<?php
+function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefix, $selectedTerms = array())
+{
+	$child_terms = get_terms( array( 
+	    'taxonomy' => $taxonomy,
+	    'hide_empty'   => true,
+	    'parent' => $parentId,
+	    'order_by' => 'name'
+	) );
+
+	foreach ( $child_terms as $term )
+	{
+		echo "<option value='".$term->slug."' ".(in_array($term->slug, $selectedTerms) ? 'selected=selected': '').">".$spacing.$prefix." ".ucfirst($term->name)."</option>";
+		austeve_print_child_term_options($taxonomy, $term->term_id, "&nbsp&nbsp".$spacing, "-", $selectedTerms);
+	}									
+}
+?>
+
 <div class="row"><!-- .row start -->
 
 	<div class="small-12 columns"><!-- .columns start -->
@@ -28,12 +46,43 @@ get_header(); ?>
 				<div class="row" id="creations-search">
 					<div class="small-12 columns">
 						<form method="GET" action="#" id="search-filters" onsubmit="return validateSearch()">
-							<input id="title-filter" type="text" class="filter" data-filter="title" placeholder="Search by name" value="<?php echo (isset($_GET['title']) ? $_GET['title'] : ''); ?>" />
-							<input type="submit" value="Search"/>
+							
+							<div class="row">
+								<div class="small-12 medium-6 columns">
+									<label>Categories</label>
+									<select id="category-filter" class="filter" data-filter="categories" multiple size="6">
+										<?php
+											austeve_print_child_term_options('austeve_creation_categories', 0, "", "", isset($_GET['categories']) ? explode(',', $_GET['categories']) : []);
+										?>
+									</select>
+								</div>
+								<div class="small-12 medium-6 columns">
+									<label>Tags</label>
+									<select id="tag-filter" class="filter" data-filter="tags" multiple size="6">
+										<?php
+											austeve_print_child_term_options('austeve_creation_tags', 0, "", "", isset($_GET['tags']) ? explode(',', $_GET['tags']) : []);
+										?>
+									</select>
+									<label>Hold Ctrl to select multiple categories and tags</label>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="small-12 medium-10 columns">
+									<input id="title-filter" type="text" class="filter" data-filter="title" placeholder="Search by name" value="<?php echo (isset($_GET['title']) ? $_GET['title'] : ''); ?>" />
+								</div>
+								<div class="small-12 medium-1 columns">
+									<input type="submit" value="Search"/>
+								</div>
+								<div class="small-12 medium-1 columns">
+									<input type="button" onclick="return resetSearch()" value="Reset"/>
+								</div>
+							</div>
+
 						</form>
 					</div>
 				</div>
-				
+
 				<?php
 				global $wp;
 				$home_url = home_url();
@@ -59,7 +108,7 @@ get_header(); ?>
 							
 							// vars
 							var filter = jQuery(this).data('filter'),
-								vals = [ jQuery(this).attr('value')];
+								vals = [ jQuery(this).val()];
 							
 							// append to args
 							args[ filter ] = vals.join(',');
@@ -71,14 +120,24 @@ get_header(); ?>
 						
 						
 						// loop over args
-						jQuery.each(args, function( name, value ){			
-							url += name + '=' + value + '&';			
+						jQuery.each(args, function( name, value ){	
+							if (value.length > 0)		
+								url += name + '=' + value + '&';			
 						});
 						
 						
 						// remove last &
 						url = url.slice(0, -1);
 								
+						// reload page
+						window.location.replace( url );		
+						return false;
+					}
+
+					function resetSearch() {
+						// vars
+						var url = "<?php echo home_url( $request_url ); ?>";
+						
 						// reload page
 						window.location.replace( url );		
 						return false;
