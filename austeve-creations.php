@@ -239,4 +239,17 @@ function austeve_filter_objects_creations( $query ) {
 
 add_action( 'pre_get_posts', 'austeve_filter_objects_creations' , 10, 1 );
 
+
+function austeve_creations_archive_template( $template ) {
+	global $post;
+
+	if ( is_post_type_archive ( 'austeve-creations' ) ) {
+		$template = plugin_dir_path( __FILE__ ) . '/archive-creations.php';
+		error_log("Change template to: ".print_r($template, true));
+	}
+
+	return $template;
+}
+
+add_filter( 'archive_template', 'austeve_creations_archive_template' );
 ?>

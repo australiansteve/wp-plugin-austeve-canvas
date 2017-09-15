@@ -34,115 +34,116 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 		<div id="primary" class="content-area">
 			<main id="main" class="site-main" role="main">
 
-			<?php if ( have_posts() ) : ?>
 
-				<header class="page-header">
-					<?php
-						the_archive_title( '<h1 class="page-title">', '</h1>' );
-						the_archive_description( '<div class="taxonomy-description">', '</div>' );
-					?>
-				</header><!-- .page-header -->
-
-				<div class="row" id="creations-search">
-					<div class="small-12 columns">
-						<form method="GET" action="#" id="search-filters" onsubmit="return validateSearch()">
-							
-							<div class="row">
-								<div class="small-12 medium-6 columns">
-									<label>Categories</label>
-									<select id="category-filter" class="filter" data-filter="categories" multiple size="6">
-										<?php
-											austeve_print_child_term_options('austeve_creation_categories', 0, "", "", isset($_GET['categories']) ? explode(',', $_GET['categories']) : []);
-										?>
-									</select>
-								</div>
-								<div class="small-12 medium-6 columns">
-									<label>Tags</label>
-									<select id="tag-filter" class="filter" data-filter="tags" multiple size="6">
-										<?php
-											austeve_print_child_term_options('austeve_creation_tags', 0, "", "", isset($_GET['tags']) ? explode(',', $_GET['tags']) : []);
-										?>
-									</select>
-									<label>Hold Ctrl to select multiple categories and tags</label>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="small-12 medium-10 columns">
-									<input id="title-filter" type="text" class="filter" data-filter="title" placeholder="Search by name" value="<?php echo (isset($_GET['title']) ? $_GET['title'] : ''); ?>" />
-								</div>
-								<div class="small-12 medium-1 columns">
-									<input type="submit" value="Search"/>
-								</div>
-								<div class="small-12 medium-1 columns">
-									<input type="button" onclick="return resetSearch()" value="Reset"/>
-								</div>
-							</div>
-
-						</form>
-					</div>
-				</div>
-
+			<header class="page-header">
 				<?php
-				global $wp;
-				$home_url = home_url();
-				$current_url = home_url(add_query_arg(array(),$wp->request));
-				$afterhome = strlen($current_url) - strlen($home_url);
-				$request_url = substr($current_url, -($afterhome-1));
-				$paging = strrpos ( $request_url , "/page/" );
-				if ($paging)
-				{
-					$request_url = substr($request_url, 0, $paging);
-				}
+					the_archive_title( '<h1 class="page-title">', '</h1>' );
+					the_archive_description( '<div class="taxonomy-description">', '</div>' );
 				?>
+			</header><!-- .page-header -->
 
-				<script type="text/javascript">
-					function validateSearch() {
+			<div class="row" id="creations-search">
+				<div class="small-12 columns">
+					<form method="GET" action="#" id="search-filters" onsubmit="return validateSearch()">
+						
+						<div class="row">
+							<div class="small-12 medium-6 columns">
+								<label>Categories</label>
+								<select id="category-filter" class="filter" data-filter="categories" multiple size="6">
+									<?php
+										austeve_print_child_term_options('austeve_creation_categories', 0, "", "", isset($_GET['categories']) ? explode(',', $_GET['categories']) : []);
+									?>
+								</select>
+							</div>
+							<div class="small-12 medium-6 columns">
+								<label>Tags</label>
+								<select id="tag-filter" class="filter" data-filter="tags" multiple size="6">
+									<?php
+										austeve_print_child_term_options('austeve_creation_tags', 0, "", "", isset($_GET['tags']) ? explode(',', $_GET['tags']) : []);
+									?>
+								</select>
+								<label>Hold Ctrl to select multiple categories and tags</label>
+							</div>
+						</div>
 
+						<div class="row">
+							<div class="small-12 medium-10 columns">
+								<input id="title-filter" type="text" class="filter" data-filter="title" placeholder="Search by name" value="<?php echo (isset($_GET['title']) ? $_GET['title'] : ''); ?>" />
+							</div>
+							<div class="small-12 medium-1 columns">
+								<input type="submit" value="Search"/>
+							</div>
+							<div class="small-12 medium-1 columns">
+								<input type="button" onclick="return resetSearch()" value="Reset"/>
+							</div>
+						</div>
+
+					</form>
+				</div>
+			</div>
+
+			<?php
+			global $wp;
+			$home_url = home_url();
+			$current_url = home_url(add_query_arg(array(),$wp->request));
+			$afterhome = strlen($current_url) - strlen($home_url);
+			$request_url = substr($current_url, -($afterhome-1));
+			$paging = strrpos ( $request_url , "/page/" );
+			if ($paging)
+			{
+				$request_url = substr($request_url, 0, $paging);
+			}
+			?>
+
+			<script type="text/javascript">
+				function validateSearch() {
+
+					// vars
+					var url = "<?php echo home_url( $request_url ); ?>";
+					var args = {};			
+					
+					// loop over filters
+					jQuery('#search-filters .filter').each(function(){
+						
 						// vars
-						var url = "<?php echo home_url( $request_url ); ?>";
-						var args = {};			
+						var filter = jQuery(this).data('filter'),
+							vals = [ jQuery(this).val()];
 						
-						// loop over filters
-						jQuery('#search-filters .filter').each(function(){
+						// append to args
+						args[ filter ] = vals.join(',');
+						
+					});		
+					
+					// update url
+					url += '?';
+					
+					
+					// loop over args
+					jQuery.each(args, function( name, value ){	
+						if (value.length > 0)		
+							url += name + '=' + value + '&';			
+					});
+					
+					
+					// remove last &
+					url = url.slice(0, -1);
 							
-							// vars
-							var filter = jQuery(this).data('filter'),
-								vals = [ jQuery(this).val()];
-							
-							// append to args
-							args[ filter ] = vals.join(',');
-							
-						});		
-						
-						// update url
-						url += '?';
-						
-						
-						// loop over args
-						jQuery.each(args, function( name, value ){	
-							if (value.length > 0)		
-								url += name + '=' + value + '&';			
-						});
-						
-						
-						// remove last &
-						url = url.slice(0, -1);
-								
-						// reload page
-						window.location.replace( url );		
-						return false;
-					}
+					// reload page
+					window.location.replace( url );		
+					return false;
+				}
 
-					function resetSearch() {
-						// vars
-						var url = "<?php echo home_url( $request_url ); ?>";
+				function resetSearch() {
+					// vars
+					var url = "<?php echo home_url( $request_url ); ?>";
 
-						// reload page
-						window.location.replace( url );		
-						return false;
-					}
-				</script>
+					// reload page
+					window.location.replace( url );		
+					return false;
+				}
+			</script>
+
+			<?php if ( have_posts() ) : ?>
 
 				<div class="row small-up-1 medium-up-2 large-up-3 align-middle text-center" id="creations-block-grid">
 
@@ -234,8 +235,12 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 
 			<?php else : ?>
 
-				<?php get_template_part( 'page-templates/partials/content', 'none' ); ?>
+				<div class="row small-up-1 medium-up-2 large-up-3 align-middle text-center" id="creations-block-grid">
 
+					<div class="column">Nothing found. Try broadening your search</div>
+
+				</div>
+				
 			<?php endif; ?>
 
 			</main><!-- #main -->
