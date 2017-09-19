@@ -270,4 +270,20 @@ function austeve_creations_archive_template( $template ) {
 }
 
 add_filter( 'archive_template', 'austeve_creations_archive_template' );
+
+/*
+ * Remove the archive pages for custom taxonomies
+ */
+add_action('pre_get_posts', function($qry) {
+
+            if (is_admin()) return;
+
+            if (is_tax('austeve_creation_categories') || is_tax('austeve_creation_tags')){
+                $qry->set_404();
+            }
+
+        }
+
+    );
+
 ?>
