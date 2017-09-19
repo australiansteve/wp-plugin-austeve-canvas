@@ -47,7 +47,7 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 					<form method="GET" action="#" id="search-filters" onsubmit="return validateSearch()">
 						
 						<div class="row">
-							<div class="small-12 medium-6 columns">
+							<div class="small-12 medium-4 columns">
 								<label>Categories</label>
 								<select id="category-filter" class="filter" data-filter="categories" multiple size="6">
 									<?php
@@ -55,7 +55,7 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 									?>
 								</select>
 							</div>
-							<div class="small-12 medium-6 columns">
+							<div class="small-12 medium-4 columns">
 								<label>Tags</label>
 								<select id="tag-filter" class="filter" data-filter="tags" multiple size="6">
 									<?php
@@ -63,6 +63,12 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 									?>
 								</select>
 								<label>Hold Ctrl to select multiple categories and tags</label>
+							</div>
+							<div class="small-12 medium-4 columns">
+								<label>Difficulty</label>
+								<input type="checkbox" name="difficulty-filter" data-filter="difficulty" <?php echo isset($_GET['difficulty']) ? (in_array('easy', explode(',', $_GET['difficulty'])) ? 'checked=checked' : '' ) : '' ?> value="easy">Easy</input><br/>
+								<input type="checkbox" name="difficulty-filter" data-filter="difficulty" <?php echo isset($_GET['difficulty']) ? (in_array('medium', explode(',', $_GET['difficulty'])) ? 'checked=checked' : '' ) : '' ?> value="medium">Moderate</input><br/>
+								<input type="checkbox" name="difficulty-filter" data-filter="difficulty" <?php echo isset($_GET['difficulty']) ? (in_array('expert', explode(',', $_GET['difficulty'])) ? 'checked=checked' : '' ) : '' ?> value="expert">Expert</input>
 							</div>
 						</div>
 
@@ -113,6 +119,18 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 						args[ filter ] = vals.join(',');
 						
 					});		
+
+					var diffVals = [];
+					jQuery('#search-filters input[name=difficulty-filter]').each(function(){
+
+						//console.log(jQuery(this).val() + " " + jQuery(this).attr('checked'))
+						if (jQuery(this).attr('checked') == 'checked')
+							diffVals.push(jQuery(this).val());
+
+					});
+
+					// append to args
+					args[ 'difficulty' ] = diffVals.join(',');
 					
 					// update url
 					url += '?';
@@ -127,9 +145,11 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 					
 					// remove last &
 					url = url.slice(0, -1);
-							
+
+
 					// reload page
-					window.location.replace( url );		
+					window.location.replace( url );
+					//console.log(url);
 					return false;
 				}
 
@@ -166,7 +186,7 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 
 				</div> <!-- #creations-block-grid -->
 
-				<a id="more_posts" class="button" data-next="2" data-title="<?php echo isset($_GET['title'])?$_GET['title']:'';?>" data-categories="<?php echo isset($_GET['categories'])?$_GET['categories']:'';?>" data-tags="<?php echo isset($_GET['tags'])?$_GET['tags']:'';?>"><?php esc_html_e('Load More', 'dessertstorm') ?></a>
+				<a id="more_posts" class="button" data-next="2" data-title="<?php echo isset($_GET['title'])?$_GET['title']:'';?>" data-categories="<?php echo isset($_GET['categories'])?$_GET['categories']:'';?>" data-tags="<?php echo isset($_GET['tags'])?$_GET['tags']:'';?>" data-difficulty="<?php echo isset($_GET['difficulty'])?$_GET['difficulty']:'';?>" ><?php esc_html_e('Load More', 'dessertstorm') ?></a>
 
 				<?php $nonce = 'austevegetcreations'; 
 				$query_type='post_type';
@@ -179,7 +199,7 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 				?>
 				<script type='text/javascript'>
 		            <!--
-		            function get_more_creations( nextPage, titleFilter, categoryFilter, tagFilter ) {
+		            function get_more_creations( nextPage, titleFilter, categoryFilter, tagFilter, difficultyFilter ) {
 		                jQuery.ajax({
 		                    type: "post", 
 		                    url: '<?php echo admin_url("admin-ajax.php"); ?>', 
@@ -191,6 +211,7 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 		                        titleFilter: titleFilter, 
 		                        categoryFilter: categoryFilter, 
 		                        tagFilter: tagFilter, 
+		                        difficultyFilter: difficultyFilter, 
 		                        _ajax_nonce: '<?php echo $nonce; ?>' 
 		                    },
 		                    beforeSend: function() {
@@ -226,8 +247,9 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 		            	var titleFilter = jQuery(this).attr('data-title');
 		            	var categoryFilter = jQuery(this).attr('data-categories');
 		            	var tagFilter = jQuery(this).attr('data-tags');
+		            	var difficultyFilter = jQuery(this).attr('data-difficulty');
 
-		            	get_more_creations( nextPage, titleFilter, categoryFilter, tagFilter );
+						get_more_creations( nextPage, titleFilter, categoryFilter, tagFilter, difficultyFilter );
 		            });
 
 		            -->

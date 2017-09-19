@@ -296,6 +296,19 @@ function austeve_get_creations_ajax() {
 	        );
 		}
 		
+		if (array_key_exists('difficultyFilter', $_POST) && !empty($_POST[ 'difficultyFilter' ]))
+		{
+			if (!isset($args['meta_query']))
+			{
+				$args['meta_query'] = [];
+			}
+			$args['meta_query'][] = array(
+				'key' => 'difficulty_level',
+				'value' => explode(",", $_POST['difficultyFilter']),
+				'compare' => 'IN',
+			);
+		}
+
 		error_log("Get creations args: ".print_r($args, true));
 	    // the query
 		$the_query = new WP_Query( $args );

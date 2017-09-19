@@ -226,6 +226,24 @@ function austeve_filter_objects_creations( $query ) {
 		        $query->set('tax_query', $tax_query);
 		        error_log("Tax query after: ".print_r($tax_query, true));
 			}
+
+			if (!empty($_GET['difficulty']))
+			{
+				error_log("Filter creations by difficulty: ".$_GET['difficulty']);
+				$meta_query = $query->get( 'meta_query');
+				error_log("Meta query before: ".print_r($meta_query, true));
+				if (!is_array($meta_query))
+				{
+					$meta_query = [];
+				}
+				$meta_query[] = array(
+					'key' => 'difficulty_level',
+					'value' => explode(",", $_GET['difficulty']),
+					'compare' => 'IN',
+				);
+				$query->set('meta_query', $meta_query);
+				error_log("Meta query after: ".print_r($meta_query, true));
+			}
 		}
 	}
 	if (array_key_exists('austeve_creation_categories', $query->query) || array_key_exists('austeve_creation_tags', $query->query))
