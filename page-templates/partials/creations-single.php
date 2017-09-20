@@ -61,17 +61,7 @@
 				if ( $terms && ! is_wp_error( $terms ) )
 				{
 					foreach ( $terms as $term ) {
-	 
-					    // The $term is an object, so we don't need to specify the $taxonomy.
-					    $term_link = get_term_link( $term );
-					    
-					    // If there was an error, continue to the next term.
-					    if ( is_wp_error( $term_link ) ) {
-					        continue;
-					    }
-					 
-					    // We successfully got a link. Print it out.
-					    $termArray[] = '<a href="' . esc_url( $term_link ) . '">' . $term->name . '</a>';
+					    $termArray[] = '<a href="' . site_url('creations?categories='.$term->slug) . '">' . $term->name . '</a>';
 					}
 				}
 				?>
@@ -91,34 +81,24 @@
 				<?php 
 				//Get Tags
 				$terms = get_the_terms( get_the_ID(), 'austeve_creation_tags' );
-				$termString = [];
+				$termArray = [];
 	                         
 				if ( $terms && ! is_wp_error( $terms ) )
 				{
 					foreach($terms as $term)
 					{
-						// The $term is an object, so we don't need to specify the $taxonomy.
-					    $term_link = get_term_link( $term );
-					    
-					    // If there was an error, continue to the next term.
-					    if ( is_wp_error( $term_link ) ) {
-					        continue;
-					    }
-				 
-					    // We successfully got a link. Print it out.
-					    $termString[] = '<a href="' . esc_url( $term_link ) . '">' . $term->name . '</a>';
-
+						$termArray[] = '<a href="' . site_url('creations?tags='.$term->slug) . '">' . $term->name . '</a>';
 					}
 				}
 
-				if (count($termString) > 0) :
+				if (count($termArray) > 0) :
 				?>
 				<div class="row">
 
 					<div class="small-12 columns">
 
 						<div class="creation-tags">
-							Tags: <?php echo implode(", ", $termString); ?>
+							Tags: <?php echo implode(", ", $termArray); ?>
 						</div>
 
 					</div>

@@ -86,18 +86,9 @@
                          
 			if ( $terms && ! is_wp_error( $terms ) )
 			{
-				foreach ( $terms as $term ) {
- 
-				    // The $term is an object, so we don't need to specify the $taxonomy.
-				    $term_link = get_term_link( $term );
-				    
-				    // If there was an error, continue to the next term.
-				    if ( is_wp_error( $term_link ) ) {
-				        continue;
-				    }
-				 
-				    // We successfully got a link. Print it out.
-				    $termArray[] = '<a href="' . esc_url( $term_link ) . '">' . $term->name . '</a>';
+				foreach ( $terms as $term ) 
+				{
+					    $termArray[] = '<a href="' . site_url('creations?categories='.$term->slug) . '">' . $term->name . '</a>';
 				}
 			}
 			?>
