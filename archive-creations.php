@@ -44,47 +44,53 @@ function austeve_print_child_term_options($taxonomy, $parentId, $spacing, $prefi
 
 			<div class="row" id="creations-search">
 				<div class="small-12 columns">
-					<form method="GET" action="#" id="search-filters" onsubmit="return validateSearch()">
-						
-						<div class="row">
-							<div class="small-12 medium-4 columns">
-								<label>Categories</label>
-								<select id="category-filter" class="filter" data-filter="categories" multiple size="6">
-									<?php
-										austeve_print_child_term_options('austeve_creation_categories', 0, "", "", isset($_GET['categories']) ? explode(',', $_GET['categories']) : []);
-									?>
-								</select>
-							</div>
-							<div class="small-12 medium-4 columns">
-								<label>Tags</label>
-								<select id="tag-filter" class="filter" data-filter="tags" multiple size="6">
-									<?php
-										austeve_print_child_term_options('austeve_creation_tags', 0, "", "", isset($_GET['tags']) ? explode(',', $_GET['tags']) : []);
-									?>
-								</select>
-								<label>Hold Ctrl to select multiple categories and tags</label>
-							</div>
-							<div class="small-12 medium-4 columns">
-								<label>Difficulty</label>
-								<input type="checkbox" name="difficulty-filter" data-filter="difficulty" <?php echo isset($_GET['difficulty']) ? (in_array('easy', explode(',', $_GET['difficulty'])) ? 'checked=checked' : '' ) : '' ?> value="easy">Easy</input><br/>
-								<input type="checkbox" name="difficulty-filter" data-filter="difficulty" <?php echo isset($_GET['difficulty']) ? (in_array('medium', explode(',', $_GET['difficulty'])) ? 'checked=checked' : '' ) : '' ?> value="medium">Moderate</input><br/>
-								<input type="checkbox" name="difficulty-filter" data-filter="difficulty" <?php echo isset($_GET['difficulty']) ? (in_array('expert', explode(',', $_GET['difficulty'])) ? 'checked=checked' : '' ) : '' ?> value="expert">Expert</input>
-							</div>
-						</div>
 
-						<div class="row">
-							<div class="small-12 medium-10 columns">
-								<input id="title-filter" type="text" class="filter" data-filter="title" placeholder="Search by name" value="<?php echo (isset($_GET['title']) ? $_GET['title'] : ''); ?>" />
-							</div>
-							<div class="small-12 medium-1 columns">
-								<input type="submit" value="Search"/>
-							</div>
-							<div class="small-12 medium-1 columns">
-								<input type="button" onclick="return resetSearch()" value="Reset"/>
-							</div>
-						</div>
+					<div id="creations-accordion">
+						<h3 class="title">Search creations</h3>
+						<div class="filter-content">
+							<form method="GET" action="#" id="search-filters" onsubmit="return validateSearch()">
+								
+								<div class="row">
+									<div class="small-12 medium-4 columns">
+										<label>Categories</label>
+										<select id="category-filter" class="filter" data-filter="categories" multiple size="6">
+											<?php
+												austeve_print_child_term_options('austeve_creation_categories', 0, "", "", isset($_GET['categories']) ? explode(',', $_GET['categories']) : []);
+											?>
+										</select>
+										<label>Hold Ctrl to select multiple categories and tags</label>
+									</div>
+									<div class="small-12 medium-4 columns">
+										<label>Tags</label>
+										<select id="tag-filter" class="filter" data-filter="tags" multiple size="6">
+											<?php
+												austeve_print_child_term_options('austeve_creation_tags', 0, "", "", isset($_GET['tags']) ? explode(',', $_GET['tags']) : []);
+											?>
+										</select>
+									</div>
+									<div class="small-12 medium-4 columns">
+										<label>Difficulty</label>
+										<input type="checkbox" name="difficulty-filter" data-filter="difficulty" <?php echo isset($_GET['difficulty']) ? (in_array('easy', explode(',', $_GET['difficulty'])) ? 'checked=checked' : '' ) : '' ?> value="easy">Easy</input><br/>
+										<input type="checkbox" name="difficulty-filter" data-filter="difficulty" <?php echo isset($_GET['difficulty']) ? (in_array('medium', explode(',', $_GET['difficulty'])) ? 'checked=checked' : '' ) : '' ?> value="medium">Moderate</input><br/>
+										<input type="checkbox" name="difficulty-filter" data-filter="difficulty" <?php echo isset($_GET['difficulty']) ? (in_array('expert', explode(',', $_GET['difficulty'])) ? 'checked=checked' : '' ) : '' ?> value="expert">Expert</input>
+									</div>
+								</div>
 
-					</form>
+								<div class="row">
+									<div class="small-12 medium-10 columns">
+										<input id="title-filter" type="text" class="filter" data-filter="title" placeholder="Search by name" value="<?php echo (isset($_GET['title']) ? $_GET['title'] : ''); ?>" />
+									</div>
+									<div class="small-12 medium-1 columns">
+										<input type="submit" value="Search"/>
+									</div>
+									<div class="small-12 medium-1 columns">
+										<input type="button" onclick="return resetSearch()" value="Reset"/>
+									</div>
+								</div>
+
+							</form>
+						</div>
+					</div>
 				</div>
 			</div>
 

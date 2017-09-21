@@ -25,18 +25,19 @@ register_activation_hook( __FILE__, 'austeve_add_roles_on_plugin_activation' );
 
 
 function austeve_canvas_enqueue_style() {
-	wp_enqueue_style( 'austeve-canvas', plugin_dir_url( __FILE__ ). '/style.css' , false , '4.8'); 
+	wp_enqueue_style( 'jquery-ui-css', 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css');
+	wp_enqueue_style( 'austeve-canvas', plugin_dir_url( __FILE__ ). '/style.css' , false , '4.9'); 
 }
 
 function austeve_canvas_enqueue_script() {
 	
 	if ( WP_DEBUG )
 	{
-		wp_enqueue_script( 'austeve-profiles-js', plugin_dir_url( __FILE__ ). '/js/front-end.js' , array( 'jquery' ) , '1.0'); 
+		wp_enqueue_script( 'austeve-profiles-js', plugin_dir_url( __FILE__ ). '/js/front-end.js' , array( 'jquery-ui-accordion', 'jquery' ) , '1.1'); 
 	}
 	else 
 	{
-		wp_enqueue_script( 'austeve-profiles-js', plugin_dir_url( __FILE__ ). '/assets/dist/js/front-end.min.js' , array( 'jquery' ) , '1.0'); 
+		wp_enqueue_script( 'austeve-profiles-js', plugin_dir_url( __FILE__ ). '/assets/dist/js/front-end.min.js' , array( 'jquery-ui-accordion', 'jquery' ) , '1.1'); 
 	}
 
 }

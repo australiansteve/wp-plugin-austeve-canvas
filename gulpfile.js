@@ -56,6 +56,7 @@ gulp.task('deploylocal', function() {
 	var files = [
 		'page-templates/**/*.php',
 		'assets/**/*.*',
+		'images/**/*.*',
 		'js/**/*.js',
 		'*.php',
 		'*.css'];
