@@ -82,4 +82,17 @@ function austeve_remove_wc_from_search() {
 }
 add_action( 'init', 'austeve_remove_wc_from_search', 99 );
 
+/**
+ * Customise the wording of "Account Password" on the checkout page to something more clear for customers (an account is being created)
+ * 
+ */
+function austeve_custom_override_checkout_fields( $fields ) {
+     
+     $fields['account']['account_password']['label'] = 'Create a password for your new account';
+     return $fields;
+
+}
+add_filter( 'woocommerce_checkout_fields' , 'austeve_custom_override_checkout_fields' );
+
+
 ?>
