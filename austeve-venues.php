@@ -27,7 +27,7 @@ function austeve_create_venues_post_type() {
 	
 	$args = array(
 		'label'               => __( 'Venues', 'austeve-canvas' ),
-		'description'         => __( 'Event Venues', 'austeve-canvas' ),
+		'description'         => __( 'Event venues', 'austeve-canvas' ),
 		'labels'              => $labels,
 		// Features this CPT supports in Post Editor
 		'supports'            => array( 'title', 'author', 'revisions', ),

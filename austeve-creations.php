@@ -33,7 +33,7 @@ function austeve_create_creations_post_type() {
 	);
 	$args = array(
 		'label'                 => __( 'Creation', 'austeve-canvas' ),
-		'description'           => __( 'Creations for Canvas & Cocktails events', 'austeve-canvas' ),
+		'description'           => __( 'Creations for '.get_bloginfo( 'name' ).' events', 'austeve-canvas' ),
 		'labels'                => $labels,
 		'supports'              => array( 'title', 'author', 'thumbnail', 'revisions', ),
 		'taxonomies'            => array( 'creation_tags' ),

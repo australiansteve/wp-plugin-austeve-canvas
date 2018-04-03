@@ -27,7 +27,7 @@ function austeve_create_events_post_type() {
 	
 	$args = array(
 		'label'               => __( 'Events', 'austeve-canvas' ),
-		'description'         => __( 'Canvas & Cocktail Events', 'austeve-canvas' ),
+		'description'         => __( get_bloginfo( 'name' ).' events', 'austeve-canvas' ),
 		'labels'              => $labels,
 		// Features this CPT supports in Post Editor
 		'supports'            => array( 'title', 'author', 'revisions', ),

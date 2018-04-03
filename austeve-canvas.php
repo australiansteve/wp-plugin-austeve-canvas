@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Canvas & Cocktails - Events, Venues & Profiles
+ * Plugin Name: Create Over Cocktails - Events, Venues & Profiles
  * Plugin URI: https://github.com/australiansteve/wp-plugin-austeve-canvas
- * Description: Functionality for Canvas & Cocktails website
- * Version: 0.0.1
+ * Description: Functionality for Create Over Cocktails website
+ * Version: 1.0.1
  * Author: AustralianSteve
  * Author URI: http://weavercrawford.com
  * License: GPL2
